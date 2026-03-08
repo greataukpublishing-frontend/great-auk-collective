@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, BookOpen, UserCheck, Users, ShoppingCart,
-  Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText,
+  Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText, ToggleRight,
   LogOut, ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
 
@@ -20,6 +20,7 @@ import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminSettings from "@/components/admin/AdminSettings";
 import AdminServices from "@/components/admin/AdminServices";
 import AdminContent from "@/components/admin/AdminContent";
+import AdminFeatureToggles from "@/components/admin/AdminFeatureToggles";
 
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
   { id: "services", label: "Premium Services", icon: Briefcase },
   { id: "content", label: "Content & Homepage", icon: FileText },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "features", label: "Feature Toggles", icon: ToggleRight },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -196,6 +198,7 @@ export default function AdminDashboardPage() {
               {tab === "services" && <AdminServices services={services} serviceOrders={serviceOrders} onRefresh={fetchAll} />}
               {tab === "content" && <AdminContent books={books} onRefresh={fetchAll} />}
               {tab === "analytics" && <AdminAnalytics books={books} orders={orders} profiles={profiles} roles={roles} categories={categories} />}
+              {tab === "features" && <AdminFeatureToggles onRefresh={fetchAll} />}
               {tab === "settings" && <AdminSettings settings={settings} onRefresh={fetchAll} />}
             </>
           )}

@@ -278,6 +278,30 @@ export type Database = {
           },
         ]
       }
+      site_features: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          key: string
+          label: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          key: string
+          label: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          key?: string
+          label?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
