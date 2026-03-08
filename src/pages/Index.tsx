@@ -26,8 +26,8 @@ export default function HomePage() {
             <div className="animate-fade-in-up">
               <p className="text-gold font-medium text-sm tracking-widest uppercase mb-4">Restoring Lost Knowledge</p>
               <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight mb-6">
-                Discover Books<br />
-                <span className="text-gold">Forgotten by Time</span>
+                Restoring Lost Books.<br />
+                <span className="text-gold">Publishing New Voices.</span>
               </h1>
               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
                 Great Auk Books is a publishing ecosystem that restores forgotten classics and empowers new authors to publish globally.
