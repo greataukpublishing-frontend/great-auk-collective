@@ -12,6 +12,7 @@ import { useAukPlaying } from "@/hooks/useAukPlaying";
 
 export default function HomePage() {
   const aukPlaying = useAukPlaying();
+  const featuredBooks = mockBooks.filter((b) => b.featured);
   const restoredBooks = mockBooks.filter((b) => b.tag === "restored");
   const bestsellerBooks = mockBooks.filter((b) => b.bestseller);
 
