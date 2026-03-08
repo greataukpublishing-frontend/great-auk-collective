@@ -35,8 +35,8 @@ export default function AuthorLoginPage() {
         email,
         password,
         options: {
-          data: { display_name: displayName },
-          emailRedirectTo: window.location.origin,
+          data: { display_name: displayName, signup_type: "author" },
+          emailRedirectTo: window.location.origin + "/author-login",
         },
       });
       if (error) {
