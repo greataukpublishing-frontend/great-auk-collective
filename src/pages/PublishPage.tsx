@@ -69,6 +69,7 @@ export default function PublishPage() {
       )}
 
       {/* Royalties */}
+      {isEnabled('publish_royalties') && (
       <section className="bg-secondary/50">
         <div className="container mx-auto px-4 py-20">
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
@@ -105,8 +106,10 @@ export default function PublishPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Premium Services */}
+      {isEnabled('publish_premium_services') && (
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-12">
           <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Premium Services</p>
@@ -124,6 +127,7 @@ export default function PublishPage() {
           ))}
         </div>
       </section>
+      )}
 
       <Footer />
     </div>
