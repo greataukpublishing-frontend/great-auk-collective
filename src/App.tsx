@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedAuthorRoute from "@/components/ProtectedAuthorRoute";
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BookstorePage from "./pages/BookstorePage";
@@ -18,6 +19,8 @@ import MembershipPage from "./pages/MembershipPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import BringBookBackPage from "./pages/BringBookBackPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +46,10 @@ const App = () => (
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/bring-book-back" element={<BringBookBackPage />} />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
+            <Route path="/admin" element={
+              <ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
