@@ -14,6 +14,7 @@ import AuthorProfilePage from "./pages/AuthorProfilePage";
 import MembershipPage from "./pages/MembershipPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import BringBookBackPage from "./pages/BringBookBackPage";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/membership" element={<MembershipPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/bring-book-back" element={<BringBookBackPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
