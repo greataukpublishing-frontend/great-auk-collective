@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 
 export default function BookstorePage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -125,16 +123,13 @@ export default function BookstorePage() {
                 id={book.id}
                 title={book.title}
                 author={book.author_name}
-                authorId={book.author_id || ""}
                 price={book.print_price || 0}
                 ebookPrice={book.ebook_price || 0}
                 rating={4.5}
                 reviews={0}
                 category={book.category}
                 cover={book.cover_url || ""}
-                format={book.format || ["ebook"]}
                 tag={book.featured ? "new" : undefined}
-                description={book.description || ""}
               />
             ))}
           </div>
