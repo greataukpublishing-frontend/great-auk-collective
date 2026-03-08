@@ -23,7 +23,7 @@ export default function AboutPage() {
           </p>
           <h3 className="text-foreground font-display font-semibold text-xl !mt-8 !mb-2">Restoring Forgotten Books</h3>
           <p className="!mt-0">
-            We identify valuable public-domain works in literature, philosophy, science, and other fields, and carefully restore them for modern readers, preserving ideas that might otherwise fade from memory.
+            We identify valuable public domain works in literature, philosophy, science, and other fields, and carefully restore them for modern readers, preserving ideas that might otherwise fade from memory.
           </p>
           <h3 className="text-foreground font-display font-semibold text-xl !mt-8 !mb-2">Empowering New Authors</h3>
           <p className="!mt-0">
