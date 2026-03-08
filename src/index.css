@@ -121,4 +121,35 @@
   .gradient-gold {
     background: linear-gradient(135deg, hsl(42 80% 55%) 0%, hsl(38 75% 45%) 100%);
   }
+  }
+
+  /* Great Auk bird animation - subtle head bob and body rock while audio plays */
+  @keyframes auk-alive {
+    0%, 100% {
+      transform: rotate(0deg) translateY(0);
+    }
+    15% {
+      transform: rotate(-2deg) translateY(-2px);
+    }
+    30% {
+      transform: rotate(1.5deg) translateY(0);
+    }
+    45% {
+      transform: rotate(-1deg) translateY(-1px);
+    }
+    60% {
+      transform: rotate(2deg) translateY(-2px);
+    }
+    75% {
+      transform: rotate(-1.5deg) translateY(0);
+    }
+    90% {
+      transform: rotate(0.5deg) translateY(-1px);
+    }
+  }
+
+  .auk-playing {
+    animation: auk-alive 1.2s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px hsl(var(--gold) / 0.5));
+  }
 }
