@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { mockBooks, mockAuthors } from "@/data/mockData";
 import greatAukHero from "@/assets/great-auk-hero.png";
+import { toggleAukCall } from "@/lib/aukSound";
 
 
 export default function HomePage() {
