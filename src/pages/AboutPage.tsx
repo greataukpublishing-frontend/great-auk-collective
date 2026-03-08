@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import greatAukHero from "@/assets/great-auk-hero.png";
+import { toggleAukCall } from "@/lib/aukSound";
 
 export default function AboutPage() {
   return (
@@ -8,7 +9,7 @@ export default function AboutPage() {
       <Navbar />
       <div className="container mx-auto px-4 py-20 max-w-3xl">
         <div className="text-center mb-12">
-          <img src={greatAukHero} alt="Great Auk" className="w-32 h-32 mx-auto mb-6 object-contain" />
+          <img src={greatAukHero} alt="Great Auk" className="w-32 h-32 mx-auto mb-6 object-contain cursor-pointer hover:scale-105 transition-transform" onClick={() => toggleAukCall()} title="Click to hear the Great Auk" />
           <h1 className="font-display text-4xl font-bold text-foreground">About Great Auk Books</h1>
         </div>
         <div className="prose prose-lg mx-auto text-foreground/80 space-y-6">

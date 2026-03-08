@@ -4,7 +4,7 @@ import { Menu, X, Search, ShoppingCart, User, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import greatAukLogo from "@/assets/great-auk-hero.png";
-import { playAukCall } from "@/lib/aukSound";
+import { toggleAukCall } from "@/lib/aukSound";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -30,7 +30,7 @@ export default function Navbar() {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              playAukCall();
+              toggleAukCall();
             }}
             title="Click to hear the Great Auk"
           />
