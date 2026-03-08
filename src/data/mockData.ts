@@ -1,107 +1,20 @@
-export const mockBooks = [
-  {
-    id: "1",
-    title: "The Lost Garden",
-    author: "Eleanor Whitfield",
-    authorId: "eleanor-whitfield",
-    price: 14.99,
-    ebookPrice: 9.99,
-    rating: 4.7,
-    reviews: 234,
-    category: "Classic Literature",
-    tag: "restored",
-    description: "A beautifully restored classic exploring the hidden gardens of Victorian England and the secrets they hold.",
-    cover: "book-cover-1",
-    format: ["ebook", "paperback"],
-    featured: true,
-    bestseller: true,
-  },
-  {
-    id: "2",
-    title: "Whispers of Dawn",
-    author: "Reclain Saden",
-    authorId: "reclain-saden",
-    price: 16.99,
-    ebookPrice: 11.99,
-    rating: 4.5,
-    reviews: 189,
-    category: "Fiction",
-    tag: "new",
-    description: "A sweeping tale of resilience set against the vast deserts, where one journey changes everything.",
-    cover: "book-cover-2",
-    format: ["ebook", "paperback", "audiobook"],
-    featured: true,
-    bestseller: false,
-  },
-  {
-    id: "3",
-    title: "Meditations Restored",
-    author: "Marcus Aurelius",
-    authorId: "marcus-aurelius",
-    price: 12.99,
-    ebookPrice: 7.99,
-    rating: 4.9,
-    reviews: 1024,
-    category: "Philosophy",
-    tag: "restored",
-    description: "The timeless wisdom of Marcus Aurelius, meticulously restored with modern annotations and context.",
-    cover: "book-cover-3",
-    format: ["ebook", "paperback"],
-    featured: true,
-    bestseller: true,
-  },
-  {
-    id: "4",
-    title: "Natural Wonders",
-    author: "Dr. Amelia Hartley",
-    authorId: "amelia-hartley",
-    price: 19.99,
-    ebookPrice: 12.99,
-    rating: 4.6,
-    reviews: 156,
-    category: "Science",
-    tag: "restored",
-    description: "An exquisite botanical reference restored from 19th-century archives, celebrating nature's diversity.",
-    cover: "book-cover-4",
-    format: ["ebook", "paperback"],
-    featured: false,
-    bestseller: false,
-  },
-  {
-    id: "5",
-    title: "The Vanishing Hour",
-    author: "James Caldwell",
-    authorId: "james-caldwell",
-    price: 15.99,
-    ebookPrice: 10.99,
-    rating: 4.3,
-    reviews: 312,
-    category: "Mystery",
-    tag: "new",
-    description: "A gripping noir mystery set in a fog-drenched city where nothing is as it seems.",
-    cover: "book-cover-5",
-    format: ["ebook", "paperback", "audiobook"],
-    featured: true,
-    bestseller: true,
-  },
-  {
-    id: "6",
-    title: "Echoes of Empire",
-    author: "Biatinn Haueuw",
-    authorId: "biatinn-haueuw",
-    price: 18.99,
-    ebookPrice: 13.99,
-    rating: 4.4,
-    reviews: 98,
-    category: "Historical Fiction",
-    tag: "new",
-    description: "An epic historical journey through crumbling empires and the people who shape destiny.",
-    cover: "book-cover-6",
-    format: ["ebook", "paperback"],
-    featured: false,
-    bestseller: false,
-  },
-];
+export const mockBooks: {
+  id: string;
+  title: string;
+  author: string;
+  authorId: string;
+  price: number;
+  ebookPrice: number;
+  rating: number;
+  reviews: number;
+  category: string;
+  tag: string;
+  description: string;
+  cover: string;
+  format: string[];
+  featured: boolean;
+  bestseller: boolean;
+}[] = [];
 
 export const categories = [
   "All",
@@ -115,26 +28,10 @@ export const categories = [
   "Self-Help",
 ];
 
-export const mockAuthors = [
-  {
-    id: "eleanor-whitfield",
-    name: "Eleanor Whitfield",
-    bio: "Award-winning author specializing in Victorian literature restoration and historical fiction.",
-    booksCount: 4,
-    avatar: null,
-  },
-  {
-    id: "james-caldwell",
-    name: "James Caldwell",
-    bio: "Bestselling mystery writer whose atmospheric noir novels have captivated millions worldwide.",
-    booksCount: 7,
-    avatar: null,
-  },
-  {
-    id: "amelia-hartley",
-    name: "Dr. Amelia Hartley",
-    bio: "Botanist and science communicator dedicated to restoring forgotten scientific works.",
-    booksCount: 3,
-    avatar: null,
-  },
-];
+export const mockAuthors: {
+  id: string;
+  name: string;
+  bio: string;
+  booksCount: number;
+  avatar: string | null;
+}[] = [];
