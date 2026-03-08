@@ -52,7 +52,7 @@ const App = () => (
             <Route path="/admin" element={
               <ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>
             } />
-            <Route path="/auth/callback" element={<AuthCallbackPage />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
