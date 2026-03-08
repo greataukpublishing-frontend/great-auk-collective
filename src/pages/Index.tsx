@@ -29,7 +29,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in-up">
               
-              <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight mb-6">
+              <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground leading-tight mb-6">
                 Restoring Lost Books.<br />
                 <span className="text-gold">Publishing New Voices.</span>
               </h1>
