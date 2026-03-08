@@ -52,6 +52,7 @@ const App = () => (
             <Route path="/admin" element={
               <ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>
             } />
+            <Route path="/~oauth" element={<div className="min-h-screen bg-background flex items-center justify-center"><p className="text-muted-foreground">Signing you in...</p></div>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
