@@ -33,7 +33,7 @@ export default function AboutPage() {
             At Great Auk, we believe every great book deserves to be read, whether it was written yesterday or two centuries ago.
           </p>
           <p className="text-sm text-muted-foreground !mt-10">
-            Great Auk Books is part of Pillion Intelligence Ltd.
+            Great Auk Books is part of Pillion Intelligence Ltd. Mayfair, London, United Kingdom.
           </p>
         </div>
       </div>
