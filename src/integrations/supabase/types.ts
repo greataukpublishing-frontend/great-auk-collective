@@ -14,6 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
+      books: {
+        Row: {
+          author_id: string | null
+          author_name: string
+          category: string
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          ebook_price: number | null
+          featured: boolean | null
+          format: string[] | null
+          id: string
+          print_price: number | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          author_name: string
+          category?: string
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          ebook_price?: number | null
+          featured?: boolean | null
+          format?: string[] | null
+          id?: string
+          print_price?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string
+          category?: string
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          ebook_price?: number | null
+          featured?: boolean | null
+          format?: string[] | null
+          id?: string
+          print_price?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          amount: number
+          author_share: number
+          book_id: string | null
+          buyer_id: string | null
+          created_at: string
+          id: string
+          platform_share: number
+          status: string
+        }
+        Insert: {
+          amount: number
+          author_share: number
+          book_id?: string | null
+          buyer_id?: string | null
+          created_at?: string
+          id?: string
+          platform_share: number
+          status?: string
+        }
+        Update: {
+          amount?: number
+          author_share?: number
+          book_id?: string | null
+          buyer_id?: string | null
+          created_at?: string
+          id?: string
+          platform_share?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
