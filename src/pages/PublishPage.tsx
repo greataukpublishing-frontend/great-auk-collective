@@ -3,6 +3,7 @@ import { ArrowRight, Upload, DollarSign, CheckCircle, BookOpen, Headphones, Pain
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
 const steps = [
   { num: "01", icon: BookOpen, title: "Book Details", desc: "Enter title, description, keywords, and choose your category." },
@@ -21,6 +22,8 @@ const services = [
 ];
 
 export default function PublishPage() {
+  const { isEnabled, loading } = useFeatureToggles();
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -44,6 +47,7 @@ export default function PublishPage() {
       </section>
 
       {/* How it works */}
+      {isEnabled('publish_how_it_works') && (
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Simple Process</p>
@@ -62,6 +66,7 @@ export default function PublishPage() {
           ))}
         </div>
       </section>
+      )}
 
       {/* Royalties */}
       <section className="bg-secondary/50">
