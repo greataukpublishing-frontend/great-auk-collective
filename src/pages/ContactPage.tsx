@@ -1,9 +1,21 @@
+import { useState } from "react";
 import { Mail, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 
 export default function ContactPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSend = () => {
+    const subject = encodeURIComponent(`Contact from ${firstName} ${lastName}`);
+    const body = encodeURIComponent(`From: ${firstName} ${lastName}\nEmail: ${email}\n\n${message}`);
+    window.location.href = `mailto:greataukpublishing@gmail.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -18,22 +30,22 @@ export default function ContactPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-card-foreground block mb-1">First Name</label>
-                  <input className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" />
+                  <input value={firstName} onChange={e => setFirstName(e.target.value)} className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-card-foreground block mb-1">Last Name</label>
-                  <input className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" />
+                  <input value={lastName} onChange={e => setLastName(e.target.value)} className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" />
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-card-foreground block mb-1">Email</label>
-                <input type="email" className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" />
               </div>
               <div>
                 <label className="text-sm font-medium text-card-foreground block mb-1">Message</label>
-                <textarea className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm resize-none h-32" />
+                <textarea value={message} onChange={e => setMessage(e.target.value)} className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm resize-none h-32" />
               </div>
-              <Button variant="hero" className="w-full">Send Message</Button>
+              <Button variant="hero" className="w-full" onClick={handleSend}>Send Message</Button>
             </div>
           </div>
           <div className="space-y-6">
