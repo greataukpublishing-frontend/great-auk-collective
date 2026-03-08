@@ -34,7 +34,7 @@ export default function AuthorLoginPage() {
     setSocialLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/author-login",
+        redirect_uri: window.location.origin,
       });
       console.log("[AuthorLogin] OAuth result:", JSON.stringify(result));
       if (result?.error) {
