@@ -4,14 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
-  LayoutDashboard, BookOpen, UserCheck, Users, ShoppingCart,
+  LayoutDashboard, BookOpen, Users, ShoppingCart,
   Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText, ToggleRight,
   LogOut, ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
 
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminBooks from "@/components/admin/AdminBooks";
-import AdminAuthors from "@/components/admin/AdminAuthors";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCategories from "@/components/admin/AdminCategories";
@@ -25,7 +24,6 @@ import AdminFeatureToggles from "@/components/admin/AdminFeatureToggles";
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "books", label: "Books", icon: BookOpen },
-  { id: "authors", label: "Authors", icon: UserCheck },
   { id: "users", label: "Users", icon: Users },
   { id: "orders", label: "Orders & Sales", icon: ShoppingCart },
   { id: "categories", label: "Categories", icon: Tags },
@@ -190,7 +188,6 @@ export default function AdminDashboardPage() {
                   onNavigate={navigate} />
               )}
               {tab === "books" && <AdminBooks books={books} categories={categories} onRefresh={fetchAll} />}
-              {tab === "authors" && <AdminAuthors profiles={profiles} books={books} orders={orders} roles={roles} onRefresh={fetchAll} />}
               {tab === "users" && <AdminUsers profiles={profiles} roles={roles} onRefresh={fetchAll} />}
               {tab === "orders" && <AdminOrders orders={orders} books={books} />}
               {tab === "categories" && <AdminCategories categories={categories} books={books} onRefresh={fetchAll} />}
