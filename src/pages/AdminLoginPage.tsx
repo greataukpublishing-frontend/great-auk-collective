@@ -34,31 +34,39 @@ export default function AdminLoginPage() {
     }
 
     try {
+      console.log("Attempting sign in for:", email);
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      console.log("Sign in result:", { user: data?.user?.id, error: error?.message });
+      
       if (error) {
         toast({ title: "Login failed", description: error.message, variant: "destructive" });
         setLoading(false);
         return;
       }
 
+      console.log("Fetching roles for user:", data.user.id);
       const { data: roles, error: rolesError } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", data.user.id);
 
-      console.log("Roles check:", roles, rolesError);
+      console.log("Roles result:", JSON.stringify(roles), "Error:", rolesError?.message);
 
-      if (roles?.some((r) => r.role === "admin")) {
+      if (roles && roles.length > 0 && roles.some((r) => r.role === "admin")) {
+        console.log("Admin confirmed, redirecting...");
         window.location.href = "/admin";
+        return;
       } else {
+        console.log("Not admin, signing out");
         await supabase.auth.signOut();
         toast({ title: "Access denied", description: "This account does not have admin privileges.", variant: "destructive" });
       }
     } catch (err: any) {
       console.error("Login error:", err);
       toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
