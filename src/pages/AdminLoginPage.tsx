@@ -13,12 +13,25 @@ export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    if (isSignUp) {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        toast({ title: "Sign up failed", description: error.message, variant: "destructive" });
+      } else {
+        toast({ title: "Account created!", description: "Please check your email to verify, then sign in." });
+        setIsSignUp(false);
+      }
+      setLoading(false);
+      return;
+    }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
@@ -27,7 +40,6 @@ export default function AdminLoginPage() {
       return;
     }
 
-    // Check admin role
     const { data: roles } = await supabase
       .from("user_roles")
       .select("role")
@@ -64,8 +76,14 @@ export default function AdminLoginPage() {
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
             <Button type="submit" variant="hero" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Please wait..." : isSignUp ? "Sign Up" : "Sign In"}
             </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              {isSignUp ? "Already have an account?" : "Need an account?"}{" "}
+              <button type="button" className="text-primary underline" onClick={() => setIsSignUp(!isSignUp)}>
+                {isSignUp ? "Sign In" : "Sign Up"}
+              </button>
+            </p>
           </form>
         </div>
       </div>
