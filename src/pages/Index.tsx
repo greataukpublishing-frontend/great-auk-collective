@@ -30,7 +30,7 @@ export default function HomePage() {
                 <span className="text-gold">Forgotten by Time</span>
               </h1>
               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
-                Great Auk Books is a publishing ecosystem that restores forgotten classics and empowers new authors to publish globally.
+                Great Auk restores rare and forgotten books while empowering new authors to publish globally.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/bookstore">
