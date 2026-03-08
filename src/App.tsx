@@ -22,7 +22,6 @@ import BringBookBackPage from "./pages/BringBookBackPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ReaderLoginPage from "./pages/ReaderLoginPage";
-import AuthCallbackPage from "./pages/AuthCallbackPage";
 
 const queryClient = new QueryClient();
 
