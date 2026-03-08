@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Search, ShoppingCart, User } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, User, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import greatAukLogo from "@/assets/great-auk-hero.png";
 
 const navLinks = [
@@ -51,9 +52,23 @@ export default function Navbar() {
           <button className="text-primary-foreground/80 hover:text-gold transition-colors">
             <ShoppingCart className="w-5 h-5" />
           </button>
-          <Link to="/author-dashboard">
-            <Button variant="hero" size="sm">Author Login</Button>
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="hero" size="sm">Login</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link to="/buyer-login" className="flex items-center gap-2 cursor-pointer">
+                  <ShoppingCart className="w-4 h-4" /> Buyer Login
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/author-dashboard" className="flex items-center gap-2 cursor-pointer">
+                  <BookOpen className="w-4 h-4" /> Author Login
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Mobile hamburger */}
@@ -77,9 +92,16 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="px-6 pt-2">
+          <div className="px-6 pt-2 space-y-2">
+            <Link to="/buyer-login" onClick={() => setOpen(false)}>
+              <Button variant="hero" size="sm" className="w-full flex items-center gap-2">
+                <ShoppingCart className="w-4 h-4" /> Buyer Login
+              </Button>
+            </Link>
             <Link to="/author-dashboard" onClick={() => setOpen(false)}>
-              <Button variant="hero" size="sm" className="w-full">Author Login</Button>
+              <Button variant="heroOutline" size="sm" className="w-full flex items-center gap-2">
+                <BookOpen className="w-4 h-4" /> Author Login
+              </Button>
             </Link>
           </div>
         </div>
