@@ -22,7 +22,6 @@ import BringBookBackPage from "./pages/BringBookBackPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ReaderLoginPage from "./pages/ReaderLoginPage";
-import AuthCallbackPage from "./pages/AuthCallbackPage";
 
 const queryClient = new QueryClient();
 
@@ -53,7 +52,7 @@ const App = () => (
             <Route path="/admin" element={
               <ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>
             } />
-            <Route path="/auth/callback" element={<AuthCallbackPage />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
