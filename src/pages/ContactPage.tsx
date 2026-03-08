@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,8 @@ export default function ContactPage() {
           </div>
           <div className="space-y-6">
             {[
-              { icon: Mail, label: "Email", value: "hello@greataukbooks.com" },
-              { icon: Phone, label: "Phone", value: "+1 (555) 123-4567" },
-              { icon: MapPin, label: "Address", value: "123 Publishing Lane\nNew York, NY 10001" },
+              { icon: Mail, label: "Email", value: "greataukpublishing@gmail.com" },
+              { icon: MapPin, label: "Address", value: "Pillion Intelligence Ltd\nOffice 130, Unit 5\n399-405 Oxford Street\nMayfair, London, UK" },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
                 <item.icon className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
