@@ -34,7 +34,6 @@ export default function AdminLoginPage() {
     }
 
     try {
-      console.log("Attempting sign in for:", email);
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
@@ -43,33 +42,25 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Wait for auth lock to settle
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Retry roles query up to 3 times
-      let roles: any[] | null = null;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        try {
-          const { data: rolesData, error: rolesError } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", data.user.id);
-          
-          if (!rolesError && rolesData) {
-            roles = rolesData;
-            break;
-          }
-          console.log(`Roles attempt ${attempt + 1} failed:`, rolesError?.message);
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        } catch (e) {
-          console.log(`Roles attempt ${attempt + 1} exception:`, e);
-          await new Promise((resolve) => setTimeout(resolve, 500));
+      // Use direct fetch to avoid auth lock issues
+      const token = data.session?.access_token;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      
+      const res = await fetch(
+        `${supabaseUrl}/rest/v1/user_roles?user_id=eq.${data.user.id}&select=role`,
+        {
+          headers: {
+            "apikey": anonKey,
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
-      }
+      );
+      const roles = await res.json();
+      console.log("Roles via fetch:", roles);
 
-      console.log("Final roles result:", JSON.stringify(roles));
-
-      if (roles && roles.length > 0 && roles.some((r) => r.role === "admin")) {
+      if (Array.isArray(roles) && roles.some((r: any) => r.role === "admin")) {
         window.location.href = "/admin";
         return;
       } else {
