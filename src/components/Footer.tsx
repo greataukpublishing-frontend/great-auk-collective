@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src={greatAukLogo} alt="Great Auk" className="h-10 w-10 object-contain" />
+              <img src={greatAukLogo} alt="Great Auk" className="h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform" onClick={() => toggleAukCall()} title="Click to hear the Great Auk" />
               <span className="font-display text-lg font-bold">
                 Great Auk <span className="text-gold">Books</span>
               </span>

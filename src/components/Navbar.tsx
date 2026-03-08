@@ -27,7 +27,9 @@ export default function Navbar() {
           <img 
             src={greatAukLogo} 
             alt="Great Auk" 
-            className="h-10 w-10 object-contain" 
+            className="h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform" 
+            onClick={(e) => { e.preventDefault(); toggleAukCall(); }}
+            title="Click to hear the Great Auk"
           />
           <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
             Great Auk <span className="text-gold">Books</span>
