@@ -33,23 +33,30 @@ export default function AdminLoginPage() {
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      toast({ title: "Login failed", description: error.message, variant: "destructive" });
-      setLoading(false);
-      return;
-    }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        toast({ title: "Login failed", description: error.message, variant: "destructive" });
+        setLoading(false);
+        return;
+      }
 
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", data.user.id);
+      const { data: roles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.user.id);
 
-    if (roles?.some((r) => r.role === "admin")) {
-      navigate("/admin");
-    } else {
-      await supabase.auth.signOut();
-      toast({ title: "Access denied", description: "This account does not have admin privileges.", variant: "destructive" });
+      console.log("Roles check:", roles, rolesError);
+
+      if (roles?.some((r) => r.role === "admin")) {
+        window.location.href = "/admin";
+      } else {
+        await supabase.auth.signOut();
+        toast({ title: "Access denied", description: "This account does not have admin privileges.", variant: "destructive" });
+      }
+    } catch (err: any) {
+      console.error("Login error:", err);
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     }
     setLoading(false);
   };
