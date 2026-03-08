@@ -72,16 +72,50 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     <div className="space-y-6">
       <div>
         <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
-        <p className="text-muted-foreground text-sm mt-1">Approve, edit, feature, and manage all books on the platform</p>
+        <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
       </div>
 
       {/* Quick stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Total</p><p className="text-lg font-bold">{books.length}</p></CardContent></Card>
-        <Card className="border-amber-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Pending</p><p className="text-lg font-bold text-amber-600">{pending}</p></CardContent></Card>
+        <Card className="border-amber-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Pending Review</p><p className="text-lg font-bold text-amber-600">{pending}</p></CardContent></Card>
         <Card className="border-emerald-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Approved</p><p className="text-lg font-bold text-emerald-600">{approved}</p></CardContent></Card>
         <Card><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Featured</p><p className="text-lg font-bold text-gold">{featured}</p></CardContent></Card>
       </div>
+
+      {/* Pending Manuscripts Review Section */}
+      {pending > 0 && (
+        <Card className="border-amber-300 bg-amber-50/50 dark:bg-amber-950/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Upload className="w-5 h-5 text-amber-600" />
+              Manuscripts Pending Review ({pending})
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {books.filter(b => b.status === "pending").map(b => (
+              <div key={b.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-background rounded-lg border border-border gap-3">
+                <div>
+                  <p className="font-medium text-foreground">{b.title}</p>
+                  <p className="text-xs text-muted-foreground">by {b.author_name} · {b.category} · Submitted {new Date(b.created_at).toLocaleDateString()}</p>
+                  {b.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{b.description}</p>}
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button size="sm" variant="default" onClick={() => updateStatus(b.id, "approved")} className="gap-1">
+                    <CheckCircle className="w-3.5 h-3.5" /> Approve
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => updateStatus(b.id, "rejected")} className="gap-1">
+                    <XCircle className="w-3.5 h-3.5" /> Reject
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => openEdit(b)} className="gap-1">
+                    <Pencil className="w-3.5 h-3.5" /> Edit
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
