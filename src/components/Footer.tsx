@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Facebook, Twitter, Instagram, Youtube, Linkedin } from "lucide-react";
 import greatAukLogo from "@/assets/great-auk-hero.png";
 
 export default function Footer() {
@@ -16,6 +17,26 @@ export default function Footer() {
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
               Restoring forgotten books and empowering authors to publish globally.
             </p>
+            <div className="flex items-center gap-3 mt-5">
+              {[
+                { icon: Facebook, href: "https://facebook.com/greataukbooks", label: "Facebook" },
+                { icon: Twitter, href: "https://x.com/greataukbooks", label: "X (Twitter)" },
+                { icon: Instagram, href: "https://instagram.com/greataukbooks", label: "Instagram" },
+                { icon: Youtube, href: "https://youtube.com/@greataukbooks", label: "YouTube" },
+                { icon: Linkedin, href: "https://linkedin.com/company/greataukbooks", label: "LinkedIn" },
+              ].map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="p-2 rounded-lg bg-primary-foreground/10 text-primary-foreground/70 hover:bg-gold hover:text-primary transition-colors"
+                >
+                  <social.icon size={16} />
+                </a>
+              ))}
+            </div>
           </div>
           <div>
             <h4 className="font-display font-semibold mb-4 text-gold">Explore</h4>
