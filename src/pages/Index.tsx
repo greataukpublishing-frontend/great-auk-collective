@@ -7,6 +7,7 @@ import BookCard from "@/components/BookCard";
 import { mockBooks, mockAuthors } from "@/data/mockData";
 import greatAukHero from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
+import { useAukPlaying } from "@/hooks/useAukPlaying";
 
 
 export default function HomePage() {
