@@ -25,22 +25,17 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary/80">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2">
           <img 
             src={greatAukLogo} 
             alt="Great Auk" 
-            className={`h-12 w-12 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
+            className={`h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
             onClick={(e) => { e.preventDefault(); toggleAukCall(); }}
             title="Click to hear the Great Auk"
           />
-          <div className="flex flex-col leading-none">
-            <span className="font-display text-2xl font-bold text-primary-foreground tracking-wider uppercase">
-              Great Auk
-            </span>
-            <span className="font-display text-sm font-semibold text-gold tracking-[0.25em] uppercase">
-              Books
-            </span>
-          </div>
+          <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
+            Great Auk <span className="text-gold">Books</span>
+          </span>
         </Link>
 
         {/* Desktop nav */}
