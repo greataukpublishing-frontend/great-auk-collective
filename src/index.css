@@ -121,35 +121,37 @@
   .gradient-gold {
     background: linear-gradient(135deg, hsl(42 80% 55%) 0%, hsl(38 75% 45%) 100%);
   }
-  }
 
-  /* Great Auk bird animation - subtle head bob and body rock while audio plays */
-  @keyframes auk-alive {
+  /* Great Auk animation - waddle side-to-side like the real bird's shuffle */
+  @keyframes auk-waddle {
     0%, 100% {
-      transform: rotate(0deg) translateY(0);
+      transform: translateX(0) rotate(0deg) translateY(0);
     }
-    15% {
-      transform: rotate(-2deg) translateY(-2px);
+    12% {
+      transform: translateX(-1.5px) rotate(-1.5deg) translateY(-1px);
     }
-    30% {
-      transform: rotate(1.5deg) translateY(0);
+    25% {
+      transform: translateX(0) rotate(0deg) translateY(0);
     }
-    45% {
-      transform: rotate(-1deg) translateY(-1px);
+    37% {
+      transform: translateX(1.5px) rotate(1.5deg) translateY(-1px);
     }
-    60% {
-      transform: rotate(2deg) translateY(-2px);
+    50% {
+      transform: translateX(0) rotate(0deg) translateY(0);
+    }
+    62% {
+      transform: translateX(-1px) rotate(-1deg) translateY(-0.5px);
     }
     75% {
-      transform: rotate(-1.5deg) translateY(0);
+      transform: translateX(0) rotate(0deg) translateY(0);
     }
-    90% {
-      transform: rotate(0.5deg) translateY(-1px);
+    87% {
+      transform: translateX(1px) rotate(1deg) translateY(-0.5px);
     }
   }
 
   .auk-playing {
-    animation: auk-alive 1.2s ease-in-out infinite;
-    filter: drop-shadow(0 0 8px hsl(var(--gold) / 0.5));
+    animation: auk-waddle 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px hsl(var(--gold) / 0.4));
   }
 }
