@@ -21,6 +21,7 @@ import ContactPage from "./pages/ContactPage";
 import BringBookBackPage from "./pages/BringBookBackPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import ReaderLoginPage from "./pages/ReaderLoginPage";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/publish" element={<PublishPage />} />
             <Route path="/publish-book" element={<PublishBookPage />} />
             <Route path="/author-login" element={<AuthorLoginPage />} />
+            <Route path="/reader-login" element={<ReaderLoginPage />} />
             <Route path="/author-dashboard" element={
               <ProtectedAuthorRoute><AuthorDashboardPage /></ProtectedAuthorRoute>
             } />
