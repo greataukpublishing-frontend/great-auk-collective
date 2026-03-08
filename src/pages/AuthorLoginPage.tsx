@@ -21,7 +21,7 @@ export default function AuthorLoginPage() {
   const [socialLoading, setSocialLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isAuthor, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -45,11 +45,6 @@ export default function AuthorLoginPage() {
     setLoading(true);
 
     if (isSignUp) {
-      // Check if email is already used as a reader
-      const { data: existingUser } = await supabase.auth.signInWithPassword({ email, password: "check-only-dummy-password-12345" });
-      // If sign-in succeeds or returns "Invalid login credentials", user exists
-      // We proceed with signup - Supabase will reject if email already exists
-
       const { error } = await supabase.auth.signUp({
         email,
         password,
