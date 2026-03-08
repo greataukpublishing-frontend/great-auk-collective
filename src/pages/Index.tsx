@@ -54,7 +54,7 @@ export default function HomePage() {
               <img
                 src={greatAukHero}
                 alt="The Great Auk"
-                className="w-80 h-80 object-contain drop-shadow-2xl cursor-pointer hover:scale-105 transition-transform"
+                className={`w-80 h-80 object-contain drop-shadow-2xl cursor-pointer hover:scale-105 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
                 onClick={() => toggleAukCall()}
                 title="Click to hear the Great Auk" />
               
