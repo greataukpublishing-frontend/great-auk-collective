@@ -83,7 +83,8 @@ export default function HomePage() {
       </section>
       */}
 
-      {/* Featured Books */}
+      {/* Featured Books - only shows when books exist */}
+      {featuredBooks.length > 0 && (
       <section className="container mx-auto px-4 py-20">
         <div className="flex items-end justify-between mb-10">
           <div>
@@ -100,8 +101,10 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      )}
 
-      {/* Restored Classics */}
+      {/* Restored Classics - only shows when books exist */}
+      {restoredBooks.length > 0 && (
       <section className="bg-secondary/50">
         <div className="container mx-auto px-4 py-20">
           <div className="text-center mb-12">
@@ -118,6 +121,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Bring a Book Back CTA */}
       <section className="container mx-auto px-4 py-16">
@@ -137,7 +141,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Authors Spotlight */}
+      {/* Authors Spotlight - only shows when authors exist */}
+      {mockAuthors.length > 0 && (
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-12">
           <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Meet Our Authors</p>
@@ -158,6 +163,7 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      )}
 
       {/* Become an Author CTA */}
       <section className="gradient-hero">
