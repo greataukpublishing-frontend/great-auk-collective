@@ -20,6 +20,7 @@ const navLinks = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const aukPlaying = useAukPlaying();
 
   return (
     <nav className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary/80">
@@ -28,7 +29,7 @@ export default function Navbar() {
           <img 
             src={greatAukLogo} 
             alt="Great Auk" 
-            className="h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform" 
+            className={`h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
             onClick={(e) => { e.preventDefault(); toggleAukCall(); }}
             title="Click to hear the Great Auk"
           />
