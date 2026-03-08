@@ -76,14 +76,6 @@ export default function AdminUsers({ profiles, roles, onRefresh }: Props) {
               </div>
             </div>
             <div className="flex gap-2 flex-wrap">
-              {getRole(p.id) !== "author" && (
-                <Button size="sm" variant="outline" onClick={() => setUserRole(p.id, "author")} className="gap-1">
-                  <BookOpen className="w-3.5 h-3.5" /> Make Author
-                </Button>
-              )}
-              {getRole(p.id) !== "reader" && getRole(p.id) !== "admin" && (
-                <Button size="sm" variant="ghost" onClick={() => setUserRole(p.id, "reader")}>Make Reader</Button>
-              )}
               <Button size="sm" variant={p.suspended ? "outline" : "ghost"} onClick={() => suspendUser(p.id, p.suspended)} className={p.suspended ? "" : "text-destructive"}>
                 {p.suspended ? <><UserCheck className="w-3.5 h-3.5 mr-1" /> Reactivate</> : <><UserX className="w-3.5 h-3.5 mr-1" /> Suspend</>}
               </Button>
