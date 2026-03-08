@@ -7,9 +7,11 @@ import BookCard from "@/components/BookCard";
 import { mockBooks, mockAuthors } from "@/data/mockData";
 import greatAukHero from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
+import { useAukPlaying } from "@/hooks/useAukPlaying";
 
 
 export default function HomePage() {
+  const aukPlaying = useAukPlaying();
   const featuredBooks = mockBooks.filter((b) => b.featured);
   const restoredBooks = mockBooks.filter((b) => b.tag === "restored");
   const bestsellerBooks = mockBooks.filter((b) => b.bestseller);
@@ -52,7 +54,7 @@ export default function HomePage() {
               <img
                 src={greatAukHero}
                 alt="The Great Auk"
-                className="w-80 h-80 object-contain drop-shadow-2xl cursor-pointer hover:scale-105 transition-transform"
+                className={`w-80 h-80 object-contain drop-shadow-2xl cursor-pointer hover:scale-105 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
                 onClick={() => toggleAukCall()}
                 title="Click to hear the Great Auk" />
               
