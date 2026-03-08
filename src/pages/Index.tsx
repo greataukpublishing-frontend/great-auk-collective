@@ -63,7 +63,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Stats - hidden for now, will reveal later
       <section className="bg-card border-b border-border">
         <div className="container mx-auto px-4 py-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -81,6 +81,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      */}
 
       {/* Featured Books */}
       <section className="container mx-auto px-4 py-20">
