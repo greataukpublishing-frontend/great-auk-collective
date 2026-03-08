@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Search, ShoppingCart, User, BookOpen } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, User, BookOpen, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import greatAukLogo from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
-
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -21,6 +21,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const aukPlaying = useAukPlaying();
+  const { user, isAuthor, loading, signOut } = useAuth();
 
   return (
     <nav className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary/80">
@@ -62,23 +63,58 @@ export default function Navbar() {
           <button className="text-primary-foreground/80 hover:text-gold transition-colors">
             <ShoppingCart className="w-5 h-5" />
           </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="hero" size="sm">Login</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem asChild>
-                <Link to="/reader-login" className="flex items-center gap-2 cursor-pointer">
-                  <ShoppingCart className="w-4 h-4" /> Reader Login
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/author-login" className="flex items-center gap-2 cursor-pointer">
-                  <BookOpen className="w-4 h-4" /> Author Login
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+
+          {!loading && user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="hero" size="sm" className="gap-2">
+                  <User className="w-4 h-4" />
+                  {user.user_metadata?.display_name || user.email?.split("@")[0] || "Account"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-2 py-1.5">
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                  <p className="text-xs font-medium text-foreground">{isAuthor ? "Author" : "Reader"}</p>
+                </div>
+                <DropdownMenuSeparator />
+                {isAuthor && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/author-dashboard" className="flex items-center gap-2 cursor-pointer">
+                      <BookOpen className="w-4 h-4" /> Author Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem asChild>
+                  <Link to="/bookstore" className="flex items-center gap-2 cursor-pointer">
+                    <ShoppingCart className="w-4 h-4" /> Bookstore
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={signOut} className="flex items-center gap-2 cursor-pointer text-destructive">
+                  <LogOut className="w-4 h-4" /> Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="hero" size="sm">Login</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link to="/reader-login" className="flex items-center gap-2 cursor-pointer">
+                    <ShoppingCart className="w-4 h-4" /> Reader Login
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/author-login" className="flex items-center gap-2 cursor-pointer">
+                    <BookOpen className="w-4 h-4" /> Author Login
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -103,16 +139,37 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="px-6 pt-2 space-y-2">
-            <Link to="/reader-login" onClick={() => setOpen(false)}>
-              <Button variant="hero" size="sm" className="w-full flex items-center gap-2">
-                <ShoppingCart className="w-4 h-4" /> Reader Login
-              </Button>
-            </Link>
-            <Link to="/author-login" onClick={() => setOpen(false)}>
-              <Button variant="heroOutline" size="sm" className="w-full flex items-center gap-2">
-                <BookOpen className="w-4 h-4" /> Author Login
-              </Button>
-            </Link>
+            {!loading && user ? (
+              <>
+                <div className="text-primary-foreground/70 text-xs pb-1">
+                  Signed in as <span className="text-gold">{user.user_metadata?.display_name || user.email}</span>
+                  {isAuthor && <span className="ml-1">(Author)</span>}
+                </div>
+                {isAuthor && (
+                  <Link to="/author-dashboard" onClick={() => setOpen(false)}>
+                    <Button variant="hero" size="sm" className="w-full flex items-center gap-2">
+                      <BookOpen className="w-4 h-4" /> Author Dashboard
+                    </Button>
+                  </Link>
+                )}
+                <Button variant="heroOutline" size="sm" className="w-full flex items-center gap-2" onClick={() => { signOut(); setOpen(false); }}>
+                  <LogOut className="w-4 h-4" /> Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/reader-login" onClick={() => setOpen(false)}>
+                  <Button variant="hero" size="sm" className="w-full flex items-center gap-2">
+                    <ShoppingCart className="w-4 h-4" /> Reader Login
+                  </Button>
+                </Link>
+                <Link to="/author-login" onClick={() => setOpen(false)}>
+                  <Button variant="heroOutline" size="sm" className="w-full flex items-center gap-2">
+                    <BookOpen className="w-4 h-4" /> Author Login
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
