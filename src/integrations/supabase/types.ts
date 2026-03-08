@@ -65,6 +65,27 @@ export type Database = {
         }
         Relationships: []
       }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           amount: number
@@ -106,6 +127,54 @@ export type Database = {
           },
         ]
       }
+      platform_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      premium_services: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          price?: number
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -113,6 +182,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          suspended: boolean | null
           updated_at: string
         }
         Insert: {
@@ -121,6 +191,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id: string
+          suspended?: boolean | null
           updated_at?: string
         }
         Update: {
@@ -129,9 +200,83 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          suspended?: boolean | null
           updated_at?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          book_id: string
+          content: string | null
+          created_at: string
+          flagged: boolean | null
+          id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          book_id: string
+          content?: string | null
+          created_at?: string
+          flagged?: boolean | null
+          id?: string
+          rating?: number
+          user_id: string
+        }
+        Update: {
+          book_id?: string
+          content?: string | null
+          created_at?: string
+          flagged?: boolean | null
+          id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_orders: {
+        Row: {
+          amount: number
+          author_id: string
+          created_at: string
+          id: string
+          service_id: string | null
+          status: string
+        }
+        Insert: {
+          amount?: number
+          author_id: string
+          created_at?: string
+          id?: string
+          service_id?: string | null
+          status?: string
+        }
+        Update: {
+          amount?: number
+          author_id?: string
+          created_at?: string
+          id?: string
+          service_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_orders_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "premium_services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
