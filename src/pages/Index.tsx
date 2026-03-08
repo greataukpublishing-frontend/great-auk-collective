@@ -24,10 +24,10 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-24 md:py-32 relative">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in-up">
-              <p className="text-gold font-medium text-sm tracking-widest uppercase mb-4">Restoring Lost Knowledge</p>
+              
               <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight mb-6">
-                Restoring Lost Books.<br />
-                <span className="text-gold">Publishing New Voices.</span>
+                Discover Books<br />
+                <span className="text-gold">Forgotten by Time</span>
               </h1>
               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
                 Great Auk Books is a publishing ecosystem that restores forgotten classics and empowers new authors to publish globally.
@@ -50,8 +50,8 @@ export default function HomePage() {
               <img
                 src={greatAukHero}
                 alt="The Great Auk"
-                className="w-80 h-80 object-contain drop-shadow-2xl"
-              />
+                className="w-80 h-80 object-contain drop-shadow-2xl" />
+              
             </div>
           </div>
         </div>
@@ -62,16 +62,16 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { label: "Books Published", value: "12,500+" },
-              { label: "Authors", value: "3,200+" },
-              { label: "Restored Classics", value: "800+" },
-              { label: "Countries", value: "45+" },
-            ].map((stat) => (
-              <div key={stat.label}>
+            { label: "Books Published", value: "12,500+" },
+            { label: "Authors", value: "3,200+" },
+            { label: "Restored Classics", value: "800+" },
+            { label: "Countries", value: "45+" }].
+            map((stat) =>
+            <div key={stat.label}>
                 <p className="font-display text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
                 <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -88,9 +88,9 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {featuredBooks.map((book) => (
-            <BookCard key={book.id} {...book} />
-          ))}
+          {featuredBooks.map((book) =>
+          <BookCard key={book.id} {...book} />
+          )}
         </div>
       </section>
 
@@ -105,9 +105,9 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {restoredBooks.map((book) => (
-              <BookCard key={book.id} {...book} />
-            ))}
+            {restoredBooks.map((book) =>
+            <BookCard key={book.id} {...book} />
+            )}
           </div>
         </div>
       </section>
@@ -119,8 +119,8 @@ export default function HomePage() {
           <h2 className="font-display text-3xl font-bold text-foreground">Author Spotlight</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
-          {mockAuthors.map((author) => (
-            <Link key={author.id} to={`/author/${author.id}`} className="group">
+          {mockAuthors.map((author) =>
+          <Link key={author.id} to={`/author/${author.id}`} className="group">
               <div className="bg-card rounded-lg p-6 text-center shadow-sm hover:shadow-lg transition-all group-hover:-translate-y-1">
                 <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
                   <Feather className="w-8 h-8 text-primary" />
@@ -130,7 +130,7 @@ export default function HomePage() {
                 <p className="text-xs text-accent font-medium mt-3">{author.booksCount} books published</p>
               </div>
             </Link>
-          ))}
+          )}
         </div>
       </section>
 
@@ -153,16 +153,16 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
             {[
-              { icon: Sparkles, title: "Easy Upload", desc: "Upload DOCX, PDF or EPUB — we convert it for you" },
-              { icon: Crown, title: "Keep 70% Royalty", desc: "Industry-leading author earnings on every sale" },
-              { icon: BookOpen, title: "Global Reach", desc: "Sell ebooks, paperbacks, and audiobooks worldwide" },
-            ].map((item) => (
-              <div key={item.title} className="text-center">
+            { icon: Sparkles, title: "Easy Upload", desc: "Upload DOCX, PDF or EPUB — we convert it for you" },
+            { icon: Crown, title: "Keep 70% Royalty", desc: "Industry-leading author earnings on every sale" },
+            { icon: BookOpen, title: "Global Reach", desc: "Sell ebooks, paperbacks, and audiobooks worldwide" }].
+            map((item) =>
+            <div key={item.title} className="text-center">
                 <item.icon className="w-8 h-8 text-gold mx-auto mb-3" />
                 <h3 className="font-display font-semibold text-primary-foreground text-lg">{item.title}</h3>
                 <p className="text-primary-foreground/70 text-sm mt-1">{item.desc}</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -184,20 +184,20 @@ export default function HomePage() {
           </div>
           <div className="flex gap-4">
             {[
-              { plan: "Reader", price: "$9.99/mo", perks: "10% off all books" },
-              { plan: "Premium", price: "$19.99/mo", perks: "30% off + free classics" },
-            ].map((p) => (
-              <div key={p.plan} className="bg-background rounded-xl p-6 border border-border text-center min-w-[160px]">
+            { plan: "Reader", price: "$9.99/mo", perks: "10% off all books" },
+            { plan: "Premium", price: "$19.99/mo", perks: "30% off + free classics" }].
+            map((p) =>
+            <div key={p.plan} className="bg-background rounded-xl p-6 border border-border text-center min-w-[160px]">
                 <p className="font-display font-semibold text-foreground">{p.plan}</p>
                 <p className="text-2xl font-bold text-accent mt-2">{p.price}</p>
                 <p className="text-xs text-muted-foreground mt-2">{p.perks}</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>);
+
 }
