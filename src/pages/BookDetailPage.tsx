@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { Button } from "@/components/ui/button";
 import ShareButtons from "@/components/ShareButtons";
+import BookActions from "@/components/BookActions";
 import { mockBooks } from "@/data/mockData";
 import { getBookCover } from "@/lib/covers";
 
@@ -102,9 +103,12 @@ export default function BookDetailPage() {
               <Button variant="outline" size="lg">Add to Wishlist</Button>
             </div>
 
-            <div className="mt-8 flex items-center justify-between">
+            <div className="mt-8 space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <BookActions bookId={book.id} initialUpvotes={Math.floor(book.reviews * 0.7)} initialDownvotes={Math.floor(book.reviews * 0.05)} />
+                <ShareButtons title={book.title} bookId={book.id} />
+              </div>
               <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">Category:</span> {book.category}</p>
-              <ShareButtons title={book.title} bookId={book.id} />
             </div>
           </div>
         </div>
