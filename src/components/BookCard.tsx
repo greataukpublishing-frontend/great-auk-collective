@@ -43,7 +43,6 @@ export default function BookCard({ id, title, author, price, ebookPrice, rating,
           <div className="flex items-center gap-1 mt-2">
             <Star className="w-3.5 h-3.5 fill-accent text-accent" />
             <span className="text-xs font-medium text-card-foreground">{rating}</span>
-            <span className="text-xs text-muted-foreground">({reviews})</span>
           </div>
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-baseline gap-2">
