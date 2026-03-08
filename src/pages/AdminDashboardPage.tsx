@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, BookOpen, UserCheck, Users, ShoppingCart,
-  Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText,
+  Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText, ToggleRight,
   LogOut, ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
 
@@ -33,7 +33,7 @@ const NAV_ITEMS = [
   { id: "services", label: "Premium Services", icon: Briefcase },
   { id: "content", label: "Content & Homepage", icon: FileText },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
-  { id: "features", label: "Feature Toggles", icon: Settings },
+  { id: "features", label: "Feature Toggles", icon: ToggleRight },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
