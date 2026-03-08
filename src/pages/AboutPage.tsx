@@ -13,20 +13,27 @@ export default function AboutPage() {
         </div>
         <div className="prose prose-lg mx-auto text-foreground/80 space-y-6">
           <p>
-            The Great Auk was a majestic flightless bird that once roamed the North Atlantic — hunted to extinction by the mid-19th century. Its disappearance became a symbol of irreversible loss.
+            The Great Auk was a majestic flightless bird that once inhabited the North Atlantic. Hunted to extinction by the mid-19th century, its disappearance became a powerful symbol of irreversible loss.
           </p>
           <p>
-            <strong className="text-foreground">Great Auk Books</strong> takes its name from this extinct bird to symbolize our mission: <em>bringing lost knowledge back to life.</em>
+            <strong className="text-foreground">Great Auk Books</strong> takes its name from this lost species to represent our mission: <em>bringing forgotten knowledge back to life.</em>
           </p>
           <p>
-            We are a modern publishing ecosystem that operates on two pillars:
+            We are a modern publishing ecosystem built on two pillars:
           </p>
-          <ul className="space-y-2">
-            <li><strong className="text-foreground">Restoring forgotten books</strong> — We identify public domain works in literature, philosophy, science, and more, then carefully restore them for modern readers.</li>
-            <li><strong className="text-foreground">Empowering new authors</strong> — Our self-publishing platform lets authors go from manuscript to marketplace in minutes, reaching readers worldwide.</li>
-          </ul>
+          <h3 className="text-foreground font-display font-semibold text-xl !mt-8 !mb-2">Restoring Forgotten Books</h3>
+          <p className="!mt-0">
+            We identify valuable public-domain works in literature, philosophy, science, and other fields, and carefully restore them for modern readers, preserving ideas that might otherwise fade from memory.
+          </p>
+          <h3 className="text-foreground font-display font-semibold text-xl !mt-8 !mb-2">Empowering New Authors</h3>
+          <p className="!mt-0">
+            Our self-publishing platform enables authors to move from manuscript to marketplace with ease, connecting their work to readers around the world.
+          </p>
           <p>
-            We believe every great book deserves to be read — whether it was written yesterday or two centuries ago.
+            At Great Auk, we believe every great book deserves to be read — whether it was written yesterday or two centuries ago.
+          </p>
+          <p className="text-sm text-muted-foreground !mt-10">
+            Great Auk Books is part of Pillion Intelligence Ltd.
           </p>
         </div>
       </div>
