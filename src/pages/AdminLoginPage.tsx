@@ -36,7 +36,6 @@ export default function AdminLoginPage() {
     try {
       console.log("Attempting sign in for:", email);
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      console.log("Sign in result:", { user: data?.user?.id, error: error?.message });
       
       if (error) {
         toast({ title: "Login failed", description: error.message, variant: "destructive" });
@@ -44,20 +43,36 @@ export default function AdminLoginPage() {
         return;
       }
 
-      console.log("Fetching roles for user:", data.user.id);
-      const { data: roles, error: rolesError } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", data.user.id);
+      // Wait for auth lock to settle
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      console.log("Roles result:", JSON.stringify(roles), "Error:", rolesError?.message);
+      // Retry roles query up to 3 times
+      let roles: any[] | null = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const { data: rolesData, error: rolesError } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", data.user.id);
+          
+          if (!rolesError && rolesData) {
+            roles = rolesData;
+            break;
+          }
+          console.log(`Roles attempt ${attempt + 1} failed:`, rolesError?.message);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        } catch (e) {
+          console.log(`Roles attempt ${attempt + 1} exception:`, e);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+      }
+
+      console.log("Final roles result:", JSON.stringify(roles));
 
       if (roles && roles.length > 0 && roles.some((r) => r.role === "admin")) {
-        console.log("Admin confirmed, redirecting...");
         window.location.href = "/admin";
         return;
       } else {
-        console.log("Not admin, signing out");
         await supabase.auth.signOut();
         toast({ title: "Access denied", description: "This account does not have admin privileges.", variant: "destructive" });
       }
