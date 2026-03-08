@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { getBookCover } from "@/lib/covers";
 import { Star } from "lucide-react";
+import ShareButtons from "@/components/ShareButtons";
 
 interface BookCardProps {
   id: string;
@@ -44,11 +45,14 @@ export default function BookCard({ id, title, author, price, ebookPrice, rating,
             <span className="text-xs font-medium text-card-foreground">{rating}</span>
             <span className="text-xs text-muted-foreground">({reviews})</span>
           </div>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="font-semibold text-card-foreground">${ebookPrice?.toFixed(2) ?? price.toFixed(2)}</span>
-            {ebookPrice && (
-              <span className="text-xs text-muted-foreground line-through">${price.toFixed(2)}</span>
-            )}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-baseline gap-2">
+              <span className="font-semibold text-card-foreground">${ebookPrice?.toFixed(2) ?? price.toFixed(2)}</span>
+              {ebookPrice && (
+                <span className="text-xs text-muted-foreground line-through">${price.toFixed(2)}</span>
+              )}
+            </div>
+            <ShareButtons title={title} bookId={id} compact />
           </div>
         </div>
       </div>
