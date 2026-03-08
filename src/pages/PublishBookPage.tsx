@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload, ArrowRight, ArrowLeft, CheckCircle } from "lucide-react";
+import { Upload, ArrowRight, ArrowLeft, CheckCircle, Download, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -67,15 +67,60 @@ export default function PublishBookPage() {
           )}
 
           {step === 1 && (
-            <div className="space-y-4">
-              <h2 className="font-display text-xl font-semibold text-card-foreground">Upload Manuscript</h2>
-              <p className="text-sm text-muted-foreground">Accepted formats: DOCX, PDF, EPUB</p>
-              <div className="border-2 border-dashed border-border rounded-lg p-12 text-center">
+            <div className="space-y-6">
+              <div>
+                <h2 className="font-display text-xl font-semibold text-card-foreground">Upload Manuscript</h2>
+                <p className="text-sm text-muted-foreground mt-1">Accepted formats: DOCX, PDF, EPUB</p>
+              </div>
+
+              {/* Download Templates */}
+              <div className="bg-secondary/50 rounded-lg p-5 border border-border">
+                <div className="flex items-start gap-3 mb-3">
+                  <FileText className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Manuscript Templates</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Download a pre-formatted template to ensure your manuscript meets our publishing standards.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[
+                    { label: "Fiction Template", format: "DOCX", desc: "Chapters, front matter, back matter" },
+                    { label: "Non-Fiction Template", format: "DOCX", desc: "Sections, headings, bibliography" },
+                    { label: "Poetry Template", format: "DOCX", desc: "Stanzas, collections, formatting" },
+                  ].map((tpl) => (
+                    <a
+                      key={tpl.label}
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // In production, link to actual template files hosted on storage
+                        alert(`Download: ${tpl.label} (${tpl.format})\nTemplate files will be available once the backend is connected.`);
+                      }}
+                      className="flex items-center gap-3 bg-card rounded-lg p-3 border border-border hover:border-accent hover:shadow-sm transition-all group"
+                    >
+                      <Download className="w-4 h-4 text-muted-foreground group-hover:text-accent flex-shrink-0" />
+                      <div>
+                        <p className="text-xs font-medium text-card-foreground group-hover:text-accent transition-colors">{tpl.label}</p>
+                        <p className="text-[10px] text-muted-foreground">{tpl.desc}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Upload Area */}
+              <div className="border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-accent/50 transition-colors">
                 <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
                 <p className="text-foreground font-medium">Drag and drop your manuscript</p>
                 <p className="text-sm text-muted-foreground mt-1">or click to browse files</p>
                 <Button variant="outline" className="mt-4">Choose File</Button>
               </div>
+
+              <p className="text-xs text-muted-foreground">
+                Max file size: 50MB. Ensure your manuscript follows the template guidelines for faster review.
+              </p>
             </div>
           )}
 
