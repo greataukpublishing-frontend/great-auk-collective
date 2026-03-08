@@ -73,7 +73,7 @@ export default function Navbar() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/author-dashboard" className="flex items-center gap-2 cursor-pointer">
+                <Link to="/author-login" className="flex items-center gap-2 cursor-pointer">
                   <BookOpen className="w-4 h-4" /> Author Login
                 </Link>
               </DropdownMenuItem>
@@ -108,7 +108,7 @@ export default function Navbar() {
                 <ShoppingCart className="w-4 h-4" /> Reader Login
               </Button>
             </Link>
-            <Link to="/author-dashboard" onClick={() => setOpen(false)}>
+            <Link to="/author-login" onClick={() => setOpen(false)}>
               <Button variant="heroOutline" size="sm" className="w-full flex items-center gap-2">
                 <BookOpen className="w-4 h-4" /> Author Login
               </Button>
