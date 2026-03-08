@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin } from "lucide-react";
-import greatAukLogo from "@/assets/great-auk-hero.png";
+import greatAukFooter from "@/assets/great-auk-footer.png";
 import { toggleAukCall } from "@/lib/aukSound";
 
 export default function Footer() {
