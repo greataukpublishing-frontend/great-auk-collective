@@ -1,0 +1,1 @@
+DELETE FROM public.user_roles WHERE user_id = '3491a810-92f0-4e52-84fe-00d0664285c9'; DELETE FROM public.profiles WHERE id = '3491a810-92f0-4e52-84fe-00d0664285c9'; DELETE FROM auth.users WHERE id = '3491a810-92f0-4e52-84fe-00d0664285c9';
