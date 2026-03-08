@@ -58,8 +58,8 @@ export default function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem asChild>
-                <Link to="/buyer-login" className="flex items-center gap-2 cursor-pointer">
-                  <ShoppingCart className="w-4 h-4" /> Buyer Login
+                <Link to="/reader-login" className="flex items-center gap-2 cursor-pointer">
+                  <ShoppingCart className="w-4 h-4" /> Reader Login
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
@@ -93,9 +93,9 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="px-6 pt-2 space-y-2">
-            <Link to="/buyer-login" onClick={() => setOpen(false)}>
+            <Link to="/reader-login" onClick={() => setOpen(false)}>
               <Button variant="hero" size="sm" className="w-full flex items-center gap-2">
-                <ShoppingCart className="w-4 h-4" /> Buyer Login
+                <ShoppingCart className="w-4 h-4" /> Reader Login
               </Button>
             </Link>
             <Link to="/author-dashboard" onClick={() => setOpen(false)}>
