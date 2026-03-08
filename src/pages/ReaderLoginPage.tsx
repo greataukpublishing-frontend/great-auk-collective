@@ -30,12 +30,19 @@ export default function ReaderLoginPage() {
   }, [user, authLoading, navigate]);
 
   const handleGoogleSignIn = async () => {
+    console.log("[ReaderLogin] Google sign-in clicked");
     setSocialLoading(true);
-    const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/reader-login",
-    });
-    if (error) {
-      toast({ title: "Google sign-in failed", description: String(error), variant: "destructive" });
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin + "/reader-login",
+      });
+      console.log("[ReaderLogin] OAuth result:", JSON.stringify(result));
+      if (result?.error) {
+        toast({ title: "Google sign-in failed", description: String(result.error), variant: "destructive" });
+      }
+    } catch (err) {
+      console.error("[ReaderLogin] OAuth exception:", err);
+      toast({ title: "Google sign-in failed", description: String(err), variant: "destructive" });
     }
     setSocialLoading(false);
   };
