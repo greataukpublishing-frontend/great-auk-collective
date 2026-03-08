@@ -39,6 +39,7 @@ const App = () => (
             <Route path="/publish" element={<PublishPage />} />
             <Route path="/publish-book" element={<PublishBookPage />} />
             <Route path="/author-login" element={<AuthorLoginPage />} />
+            <Route path="/reader-login" element={<ReaderLoginPage />} />
             <Route path="/author-dashboard" element={
               <ProtectedAuthorRoute><AuthorDashboardPage /></ProtectedAuthorRoute>
             } />
