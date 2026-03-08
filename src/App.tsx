@@ -21,6 +21,7 @@ import ContactPage from "./pages/ContactPage";
 import BringBookBackPage from "./pages/BringBookBackPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import ReaderLoginPage from "./pages/ReaderLoginPage";
 
 const queryClient = new QueryClient();
 
