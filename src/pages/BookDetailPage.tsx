@@ -64,7 +64,7 @@ export default function BookDetailPage() {
                 ))}
               </div>
               <span className="text-sm font-medium">{book.rating}</span>
-              <span className="text-sm text-muted-foreground">({book.reviews} reviews)</span>
+              <span className="text-sm text-muted-foreground">({book.reviews})</span>
             </div>
 
             <p className="text-foreground/80 leading-relaxed mt-6 text-lg">{book.description}</p>
