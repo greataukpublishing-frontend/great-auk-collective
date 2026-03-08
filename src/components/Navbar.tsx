@@ -4,6 +4,7 @@ import { Menu, X, Search, ShoppingCart, User, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import greatAukLogo from "@/assets/great-auk-hero.png";
+import { playAukCall } from "@/lib/aukSound";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -22,7 +23,17 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary/80">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <Link to="/" className="flex items-center gap-2">
-          <img src={greatAukLogo} alt="Great Auk" className="h-10 w-10 object-contain" />
+          <img 
+            src={greatAukLogo} 
+            alt="Great Auk" 
+            className="h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform" 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              playAukCall();
+            }}
+            title="Click to hear the Great Auk"
+          />
           <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
             Great Auk <span className="text-gold">Books</span>
           </span>
