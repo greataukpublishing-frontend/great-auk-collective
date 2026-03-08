@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function ProtectedAdminRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -8,16 +10,14 @@ export default function ProtectedAdminRoute({ children }: { children: React.Reac
 
   useEffect(() => {
     if (!loading && user) {
-      import("@/integrations/supabase/client").then(({ supabase }) => {
-        supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", user.id)
-          .then(({ data }) => {
-            setIsAdmin(data?.some((r) => r.role === "admin") ?? false);
-            setChecking(false);
-          });
-      });
+      supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .then(({ data }) => {
+          setIsAdmin(data?.some((r) => r.role === "admin") ?? false);
+          setChecking(false);
+        });
     } else if (!loading) {
       setChecking(false);
     }
@@ -31,9 +31,7 @@ export default function ProtectedAdminRoute({ children }: { children: React.Reac
     );
   }
 
-  if (!user) {
-    return <Navigate to="/admin-login" replace />;
-  }
+  if (!user) return <Navigate to="/admin-login" replace />;
 
   if (!isAdmin) {
     return (
@@ -48,5 +46,3 @@ export default function ProtectedAdminRoute({ children }: { children: React.Reac
 
   return <>{children}</>;
 }
-
-import { useState, useEffect } from "react";
