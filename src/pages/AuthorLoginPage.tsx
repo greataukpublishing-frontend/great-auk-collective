@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -30,19 +29,15 @@ export default function AuthorLoginPage() {
   }, [user, authLoading, navigate]);
 
   const handleGoogleSignIn = async () => {
-    console.log("[AuthorLogin] Google sign-in clicked");
     setSocialLoading(true);
-    try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-      });
-      console.log("[AuthorLogin] OAuth result:", JSON.stringify(result));
-      if (result?.error) {
-        toast({ title: "Google sign-in failed", description: String(result.error), variant: "destructive" });
-      }
-    } catch (err) {
-      console.error("[AuthorLogin] OAuth exception:", err);
-      toast({ title: "Google sign-in failed", description: String(err), variant: "destructive" });
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + "/auth/callback",
+      },
+    });
+    if (error) {
+      toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
     }
     setSocialLoading(false);
   };
