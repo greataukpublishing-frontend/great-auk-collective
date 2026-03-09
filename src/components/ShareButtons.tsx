@@ -15,7 +15,7 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
   const [open, setOpen] = useState(false);
   const bookUrl = `${baseUrl}/book/${bookId}`;
   const encodedUrl = encodeURIComponent(bookUrl);
-  const encodedTitle = encodeURIComponent(`Check out "${title}" on Great Auk Books!`);
+  const encodedTitle = encodeURIComponent(`Check out "${title}" on Great Auk Publishing!`);
 
   const shareLinks = [
     {

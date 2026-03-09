@@ -42,7 +42,7 @@ export default function Navbar() {
             title="Click to hear the Great Auk"
           />
           <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
-            Great Auk <span className="text-gold">Books</span>
+            Great Auk <span className="text-gold">Publishing</span>
           </span>
         </Link>
 

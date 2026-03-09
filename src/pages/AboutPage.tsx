@@ -12,14 +12,14 @@ export default function AboutPage() {
       <div className="container mx-auto px-4 py-20 max-w-3xl">
         <div className="text-center mb-12">
           <img src={greatAukHero} alt="Great Auk" className={`w-32 h-32 mx-auto mb-6 object-contain cursor-pointer hover:scale-105 transition-transform ${aukPlaying ? 'auk-playing' : ''}`} onClick={() => toggleAukCall()} title="Click to hear the Great Auk" />
-          <h1 className="font-display text-4xl font-bold text-foreground">About Great Auk Books</h1>
+          <h1 className="font-display text-4xl font-bold text-foreground">About Great Auk Publishing</h1>
         </div>
         <div className="prose prose-lg mx-auto text-foreground/80 space-y-6">
           <p>
             The Great Auk was a majestic flightless bird that once inhabited the North Atlantic. Hunted to extinction by the mid-19th century, its disappearance became a powerful symbol of irreversible loss.
           </p>
           <p>
-            <strong className="text-foreground">Great Auk Books</strong> takes its name from this lost species to represent our mission: <em>bringing forgotten knowledge back to life.</em>
+            <strong className="text-foreground">Great Auk Publishing</strong> takes its name from this lost species to represent our mission: <em>bringing forgotten knowledge back to life.</em>
           </p>
           <p>
             We are a modern publishing ecosystem built on two pillars:
@@ -36,7 +36,7 @@ export default function AboutPage() {
             At Great Auk, we believe every great book deserves to be read, whether it was written yesterday or two centuries ago.
           </p>
           <p className="text-sm text-muted-foreground !mt-10">
-            Great Auk Books is part of Pillion Intelligence Ltd.<br />Mayfair, London, United Kingdom.
+            Great Auk Publishing is part of Pillion Intelligence Ltd.<br />Mayfair, London, United Kingdom.
           </p>
         </div>
       </div>

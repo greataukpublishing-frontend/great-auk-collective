@@ -157,7 +157,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <h3 className="font-display font-semibold text-card-foreground">{author.display_name || "Anonymous"}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{author.bio || "Author at Great Auk Books"}</p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{author.bio || "Author at Great Auk Publishing"}</p>
                 </div>
               </Link>
             ))}
@@ -173,7 +173,7 @@ export default function HomePage() {
             Publish Your Book in Minutes
           </h2>
           <p className="text-primary-foreground/80 max-w-lg mx-auto mb-8 text-lg">
-            Join thousands of authors who trust Great Auk Books to bring their stories to the world. From manuscript to marketplace, we handle it all.
+            Join thousands of authors who trust Great Auk Publishing to bring their stories to the world. From manuscript to marketplace, we handle it all.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/publish">
