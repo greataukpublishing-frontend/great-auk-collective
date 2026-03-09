@@ -3,7 +3,7 @@ import { getBookCover } from "@/lib/covers";
 import { Star, Heart } from "lucide-react";
 import ShareButtons from "@/components/ShareButtons";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BookCardProps {
   id: string;
@@ -33,7 +33,28 @@ export default function BookCard({
 
   const [favorited, setFavorited] = useState(false)
 
+  useEffect(() => {
+    checkFavorite()
+  }, [])
+
+  async function checkFavorite() {
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const { data } = await supabase
+      .from("favorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("book_id", id)
+
+    if (data && data.length > 0) {
+      setFavorited(true)
+    }
+  }
+
   async function toggleFavorite(e: React.MouseEvent) {
+
     e.preventDefault()
     e.stopPropagation()
 
@@ -44,15 +65,27 @@ export default function BookCard({
       return
     }
 
-    const { error } = await supabase
-      .from("favorites")
-      .insert({
-        user_id: user.id,
-        book_id: id
-      })
+    if (favorited) {
 
-    if (!error) {
+      await supabase
+        .from("favorites")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("book_id", id)
+
+      setFavorited(false)
+
+    } else {
+
+      await supabase
+        .from("favorites")
+        .insert({
+          user_id: user.id,
+          book_id: id
+        })
+
       setFavorited(true)
+
     }
   }
 
@@ -66,7 +99,8 @@ export default function BookCard({
       >
         <Heart
           size={18}
-          className={favorited ? "text-red-500 fill-red-500" : "text-gray-500"}
+          fill={favorited ? "currentColor" : "none"}
+          className={favorited ? "text-red-500" : "text-gray-500"}
         />
       </button>
 
