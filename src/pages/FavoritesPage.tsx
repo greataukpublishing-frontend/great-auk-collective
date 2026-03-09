@@ -30,7 +30,6 @@ export default function FavoritesPage() {
           id,
           title,
           cover_url,
-          price,
           ebook_price,
           print_price
         )
@@ -82,7 +81,6 @@ export default function FavoritesPage() {
             id,
             title,
             cover_url,
-            price,
             ebook_price,
             print_price
           )
@@ -139,7 +137,6 @@ export default function FavoritesPage() {
             const book = fav.books
 
             const price =
-              book.price ||
               book.ebook_price ||
               book.print_price ||
               0
