@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 export default function FavoritesPage() {
 
   const [favorites, setFavorites] = useState<any[]>([])
+  const [userFavorites, setUserFavorites] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -38,27 +39,61 @@ export default function FavoritesPage() {
 
     if (!error && data) {
       setFavorites(data)
+      setUserFavorites(data.map(f => f.book_id))
     }
 
     setLoading(false)
   }
 
-  async function removeFavorite(bookId: string) {
+  async function toggleFavorite(bookId: string) {
 
     const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user) return
+    if (!user) {
+      alert("Please login to favorite books ❤️")
+      return
+    }
 
-    const { error } = await supabase
-      .from("favorites")
-      .delete()
-      .eq("user_id", user.id)
-      .eq("book_id", bookId)
+    const isFavorited = userFavorites.includes(bookId)
 
-    if (!error) {
+    if (isFavorited) {
+
+      await supabase
+        .from("favorites")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("book_id", bookId)
+
+      setUserFavorites(prev => prev.filter(id => id !== bookId))
       setFavorites(prev => prev.filter(f => f.book_id !== bookId))
+
     } else {
-      console.error("Error removing favorite:", error.message)
+
+      const { data } = await supabase
+        .from("favorites")
+        .insert({
+          user_id: user.id,
+          book_id: bookId
+        })
+        .select(`
+          id,
+          book_id,
+          books (
+            id,
+            title,
+            cover_url,
+            price,
+            ebook_price,
+            print_price
+          )
+        `)
+        .single()
+
+      if (data) {
+        setFavorites(prev => [...prev, data])
+        setUserFavorites(prev => [...prev, bookId])
+      }
+
     }
 
   }
@@ -70,16 +105,14 @@ export default function FavoritesPage() {
         My Favorites
       </h1>
 
-      {loading && (
-        <p>Loading your favorites...</p>
-      )}
+      {loading && <p>Loading your favorites...</p>}
 
       {!loading && favorites.length === 0 && (
 
         <div className="text-center py-20">
 
           <h2 className="text-2xl text-[#1E392A] mb-4">
-            ❤️ No favorites yet
+            ❤️ You have no favorites yet
           </h2>
 
           <p className="text-gray-600 mb-6">
@@ -138,11 +171,12 @@ export default function FavoritesPage() {
                     ${price}
                   </p>
 
+                  {/* HEART BUTTON */}
                   <button
-                    onClick={() => removeFavorite(book.id)}
-                    className="mt-4 w-full py-2 border rounded-full text-sm hover:bg-gray-100 transition"
+                    onClick={() => toggleFavorite(book.id)}
+                    className="mt-4 text-2xl"
                   >
-                    Remove Favorite
+                    {userFavorites.includes(book.id) ? "❤️" : "🤍"}
                   </button>
 
                 </div>
