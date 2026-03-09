@@ -245,7 +245,7 @@ export default function BringBookBackPage() {
                 <textarea
                   value={form.whyRestore}
                   onChange={(e) => update("whyRestore", e.target.value)}
-                  placeholder="Tell us why this book matters, its historical significance, or why readers would benefit from its rediscovery..."
+                  placeholder="Tell us why this book matters, its historical significance, or why readers would benefit from its restoration..."
                   rows={4}
                   className={`${inputClass} resize-none ${errors.whyRestore ? errorInputClass : "border-input"}`}
                   maxLength={1000}
