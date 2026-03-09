@@ -19,7 +19,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              Restoring forgotten books and empowering authors to publish globally.
+              Rediscovering forgotten books and empowering authors to publish globally.
             </p>
             <div className="flex items-center gap-3 mt-5">
               {[
@@ -48,7 +48,7 @@ export default function Footer() {
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">Bookstore</Link></li>
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">New Releases</Link></li>
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">Bestsellers</Link></li>
-              <li><Link to="/bookstore" className="hover:text-gold transition-colors">Restored Classics</Link></li>
+              <li><Link to="/bookstore" className="hover:text-gold transition-colors">Rediscovered Classics</Link></li>
             </ul>
           </div>
           <div>

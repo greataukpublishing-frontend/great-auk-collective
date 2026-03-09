@@ -24,9 +24,9 @@ export default function AboutPage() {
           <p>
             We are a modern publishing ecosystem built on two pillars:
           </p>
-          <h3 className="text-foreground font-display font-semibold text-xl !mt-8 !mb-2">Restoring Forgotten Books</h3>
-          <p className="!mt-0">
-            We identify valuable public domain works in literature, philosophy, science, and other fields, and carefully restore them for modern readers, preserving ideas that might otherwise fade from memory.
+           <h3 className="text-foreground font-display font-semibold text-xl !mt-8 !mb-2">Rediscovering Forgotten Books</h3>
+           <p className="!mt-0">
+             We identify valuable public domain works in literature, philosophy, science, and other fields, and carefully rediscover them for modern readers, preserving ideas that might otherwise fade from memory.
           </p>
           <h3 className="text-foreground font-display font-semibold text-xl !mt-8 !mb-2">Empowering New Authors</h3>
           <p className="!mt-0">

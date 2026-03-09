@@ -118,7 +118,7 @@ export default function BringBookBackPage() {
               We've received your submission for <strong className="text-foreground">"{form.bookTitle}"</strong> by {form.author}.
             </p>
             <p className="text-muted-foreground text-sm mb-8">
-              Our team will review this book and assess its restoration potential. We'll notify you at <strong>{form.submitterEmail}</strong> if we proceed.
+              Our team will review this book and assess its potential. We'll notify you at <strong>{form.submitterEmail}</strong> if we proceed.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button onClick={() => { setSubmitted(false); setForm(initialForm); }}>
@@ -147,7 +147,7 @@ export default function BringBookBackPage() {
             Bring a Book Back to Life
           </h1>
           <p className="text-primary-foreground/80 max-w-xl mx-auto text-lg">
-            Know a forgotten masterpiece that deserves to be read again? Tell us about it and help us restore it for a new generation.
+            Know a forgotten masterpiece that deserves to be read again? Tell us about it and help us rediscover it for a new generation.
           </p>
         </div>
       </section>
@@ -157,8 +157,8 @@ export default function BringBookBackPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto text-center">
           {[
             { icon: Send, title: "Submit", desc: "Tell us about a book that's been lost, forgotten, or out of print." },
-            { icon: Sparkles, title: "We Review", desc: "Our editors assess restoration potential using AI and expert review." },
-            { icon: BookOpen, title: "It Lives Again", desc: "The book is restored, formatted, and published for modern readers." },
+             { icon: Sparkles, title: "We Review", desc: "Our editors assess its potential using AI and expert review." },
+             { icon: BookOpen, title: "It Lives Again", desc: "The book is rediscovered, formatted, and published for modern readers." },
           ].map((step) => (
             <div key={step.title}>
               <step.icon className="w-8 h-8 text-accent mx-auto mb-3" />
