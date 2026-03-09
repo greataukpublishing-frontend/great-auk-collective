@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/integrations/supabase/client"
+import { Link } from "react-router-dom"
 
 export default function FavoritesPage() {
 
@@ -44,18 +45,34 @@ export default function FavoritesPage() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
 
-      <h1 className="text-3xl font-bold text-foreground mb-8">
+      <h1 className="text-3xl font-bold mb-8">
         My Favorites ❤️
       </h1>
 
-      {loading && (
-        <p>Loading favorites...</p>
-      )}
+      {loading && <p>Loading favorites...</p>}
 
       {!loading && favorites.length === 0 && (
-        <p className="text-muted-foreground">
-          You haven't added any favorites yet.
-        </p>
+
+        <div className="text-center py-20">
+
+          <div className="text-5xl mb-4">❤️</div>
+
+          <h2 className="text-xl font-semibold mb-2">
+            No favorites yet
+          </h2>
+
+          <p className="text-muted-foreground mb-6">
+            Browse the bookstore to add books you love.
+          </p>
+
+          <Link
+            to="/bookstore"
+            className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:opacity-90"
+          >
+            Go to Bookstore
+          </Link>
+
+        </div>
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -67,7 +84,7 @@ export default function FavoritesPage() {
           return (
             <div
               key={fav.id}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
+              className="rounded-xl border bg-card shadow-sm hover:shadow-md transition overflow-hidden"
             >
 
               <img
@@ -88,7 +105,9 @@ export default function FavoritesPage() {
 
                 <div className="flex gap-2 mt-4">
 
-                  <button className="flex-1 bg-primary text-white text-sm py-2 rounded-lg hover:opacity-90">
+                  <button
+                    className="flex-1 bg-primary text-primary-foreground text-sm py-2 rounded-lg hover:opacity-90"
+                  >
                     Add to Cart
                   </button>
 
