@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 export default function FavoritesPage() {
 
-  const [favorites, setFavorites] = useState([])
+  const [favorites, setFavorites] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -12,17 +12,29 @@ export default function FavoritesPage() {
   }, [])
 
   async function loadFavorites() {
+
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      setLoading(false)
+      return
+    }
+
     const { data, error } = await supabase
       .from("favorites")
       .select(`
         id,
+        book_id,
         books (
           id,
           title,
           cover_url,
-          price
+          price,
+          ebook_price,
+          print_price
         )
       `)
+      .eq("user_id", user.id)
 
     if (!error && data) {
       setFavorites(data)
@@ -31,86 +43,119 @@ export default function FavoritesPage() {
     setLoading(false)
   }
 
-  async function removeFavorite(id) {
-    await supabase
+  async function removeFavorite(bookId: string) {
+
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return
+
+    const { error } = await supabase
       .from("favorites")
       .delete()
-      .eq("id", id)
+      .eq("user_id", user.id)
+      .eq("book_id", bookId)
 
-    setFavorites(favorites.filter((fav) => fav.id !== id))
+    if (!error) {
+      setFavorites(prev => prev.filter(f => f.book_id !== bookId))
+    } else {
+      console.error("Error removing favorite:", error.message)
+    }
+
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 font-sans">
+    <div className="container mx-auto px-6 py-12">
 
-      <h1 className="text-4xl font-semibold text-[#1E392A] mb-10 tracking-tight">
+      <h1 className="text-4xl font-semibold text-[#1E392A] mb-10">
         My Favorites
       </h1>
 
-      {loading && <p className="text-gray-600">Loading your cherished books...</p>}
-
-      {!loading && favorites.length === 0 && (
-        <div className="text-center py-20 bg-gray-50 rounded-lg shadow-inner">
-          <div className="text-6xl mb-6">✨</div>
-          <h2 className="text-2xl font-medium text-[#1E392A] mb-3">
-            Your favorites shelf is empty
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Discover captivating stories and add them to your personal collection.
-          </p>
-          <Link
-            to="/bookstore"
-            className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-[#1E392A] hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EAB333] transition-colors duration-200"
-          >
-            Explore the Bookstore
-          </Link>
-        </div>
+      {loading && (
+        <p>Loading your favorites...</p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      {!loading && favorites.length === 0 && (
 
-        {favorites.map((fav) => {
-          const book = fav.books
-          return (
-            <div
-              key={fav.id}
-              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden border border-gray-100"
-            >
-              <Link to={`/book/${book.id}`}>
-                <img
-                  src={book.cover_url}
-                  alt={book.title}
-                  className="w-full h-72 object-cover rounded-t-xl"
-                />
-              </Link>
-              <div className="p-5">
-                <Link to={`/book/${book.id}`} className="block">
-                  <h2 className="font-semibold text-xl text-[#1E392A] leading-tight line-clamp-2 hover:text-green-700 transition-colors duration-200">
-                    {book.title}
-                  </h2>
+        <div className="text-center py-20">
+
+          <h2 className="text-2xl text-[#1E392A] mb-4">
+            ❤️ No favorites yet
+          </h2>
+
+          <p className="text-gray-600 mb-6">
+            Browse the bookstore to add books you love.
+          </p>
+
+          <Link
+            to="/bookstore"
+            className="px-6 py-3 rounded-full bg-[#1E392A] text-white hover:bg-green-800 transition"
+          >
+            Go to Bookstore
+          </Link>
+
+        </div>
+
+      )}
+
+      {favorites.length > 0 && (
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+          {favorites.map((fav) => {
+
+            const book = fav.books
+
+            const price =
+              book.price ||
+              book.ebook_price ||
+              book.print_price ||
+              0
+
+            return (
+
+              <div
+                key={fav.id}
+                className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+              >
+
+                <Link to={`/book/${book.id}`}>
+                  <img
+                    src={book.cover_url}
+                    alt={book.title}
+                    className="w-full h-72 object-cover"
+                  />
                 </Link>
-                <p className="text-lg text-[#EAB333] font-medium mt-2">
-                  ${book.price}
-                </p>
-                <div className="flex flex-col space-y-3 mt-5">
-                  <button
-                    className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-[#1E392A] bg-[#EAB333] hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EAB333] transition-colors duration-200"
-                  >
-                    Add to Cart
-                  </button>
-                  <button
-                    onClick={() => removeFavorite(fav.id)}
-                    className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-200"
-                  >
-                    Remove from Favorites
-                  </button>
-                </div>
-              </div>
-            </div>
-          )
-        })}
 
-      </div>
+                <div className="p-4">
+
+                  <Link to={`/book/${book.id}`}>
+                    <h3 className="font-semibold text-[#1E392A] line-clamp-2">
+                      {book.title}
+                    </h3>
+                  </Link>
+
+                  <p className="text-[#EAB333] font-medium mt-2">
+                    ${price}
+                  </p>
+
+                  <button
+                    onClick={() => removeFavorite(book.id)}
+                    className="mt-4 w-full py-2 border rounded-full text-sm hover:bg-gray-100 transition"
+                  >
+                    Remove Favorite
+                  </button>
+
+                </div>
+
+              </div>
+
+            )
+
+          })}
+
+        </div>
+
+      )}
 
     </div>
   )
