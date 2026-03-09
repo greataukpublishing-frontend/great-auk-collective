@@ -32,7 +32,7 @@ export default function BookCard({
 }: BookCardProps) {
 
   const [favorited, setFavorited] = useState(false)
-
+  const [imageLoaded, setImageLoaded] = useState(false)
   useEffect(() => {
     checkFavorite()
   }, [])
@@ -108,15 +108,19 @@ export default function BookCard({
         <div className="bg-card rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
 
           <div className="relative aspect-[2/3] overflow-hidden bg-muted">
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-muted animate-pulse">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/40 to-transparent animate-[shimmer_1.5s_infinite]" />
+              </div>
+            )}
             <img
               src={getBookCover(cover)}
               alt={title}
               loading="lazy"
               decoding="async"
               fetchPriority="low"
-              className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-              onLoad={(e) => e.currentTarget.classList.add("opacity-100")}
-              style={{ opacity: 0, transition: "opacity 0.3s ease-in" }}
+              className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              onLoad={() => setImageLoaded(true)}
             />
 
             {tag && (
