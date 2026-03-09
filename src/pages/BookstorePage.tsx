@@ -124,6 +124,16 @@ export default function BookstorePage() {
             <option value="price-high">Price: High to Low</option>
           </select>
 
+          <select
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+            className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
+          >
+            {LANGUAGES.map((lang) => (
+              <option key={lang} value={lang}>{lang}</option>
+            ))}
+          </select>
+
         </div>
 
         {/* Categories */}
