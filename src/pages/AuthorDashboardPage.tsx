@@ -146,9 +146,7 @@ export default function AuthorDashboardPage() {
                     <stat.icon className="w-5 h-5 text-primary" />
                     <div>
                       <p className="text-xl font-bold">{stat.value}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {stat.label}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{stat.label}</p>
                     </div>
                   </div>
                 </div>
@@ -168,9 +166,8 @@ export default function AuthorDashboardPage() {
                 );
 
                 return (
-                  <Link
+                  <div
                     key={book.id}
-                    to={`/book/${book.id}`}
                     className="flex items-center gap-4 p-6 border-b hover:bg-muted/40 transition"
                   >
                     {book.cover_url ? (
@@ -185,12 +182,10 @@ export default function AuthorDashboardPage() {
                       </div>
                     )}
 
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{book.title}</h3>
-                      <p className="text-xs text-muted-foreground">
-                        {book.category}
-                      </p>
-                    </div>
+                    <Link to={`/book/${book.id}`} className="flex-1">
+                      <h3 className="font-semibold hover:underline">{book.title}</h3>
+                      <p className="text-xs text-muted-foreground">{book.category}</p>
+                    </Link>
 
                     <div className="text-right">
                       <p className="text-sm">{bookOrders.length} sales</p>
@@ -200,15 +195,12 @@ export default function AuthorDashboardPage() {
                     </div>
 
                     <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleDeleteBook(book.id);
-                      }}
+                      onClick={() => handleDeleteBook(book.id)}
                       className="text-muted-foreground hover:text-destructive"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
