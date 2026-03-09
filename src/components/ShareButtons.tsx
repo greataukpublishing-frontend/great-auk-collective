@@ -58,9 +58,13 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
       <Popover>
         <PopoverTrigger asChild>
           <button
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onMouseDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
             className="p-2 rounded-full bg-card/90 text-muted-foreground hover:text-accent hover:bg-card shadow-sm transition-colors"
             aria-label="Share this book"
+            type="button"
           >
             <Share2 size={15} />
           </button>
