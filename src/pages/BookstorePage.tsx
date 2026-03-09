@@ -46,11 +46,7 @@ export default function BookstorePage() {
     setLoading(false);
   }
 
-  function toggleLanguage(lang: string) {
-    setSelectedLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
-    );
-  }
+  // (language dropdown handles selection directly)
 
   // filtering
   const filtered = books.filter((b) => {
