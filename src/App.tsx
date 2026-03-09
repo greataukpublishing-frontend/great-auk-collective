@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedAuthorRoute from "@/components/ProtectedAuthorRoute";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BookstorePage from "./pages/BookstorePage";
@@ -22,6 +23,7 @@ import BringBookBackPage from "./pages/BringBookBackPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ReaderLoginPage from "./pages/ReaderLoginPage";
+import EditBookPage from "./pages/EditBookPage";
 
 const queryClient = new QueryClient();
 
@@ -31,31 +33,56 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+
         <BrowserRouter>
           <Routes>
+
             <Route path="/" element={<Index />} />
             <Route path="/bookstore" element={<BookstorePage />} />
             <Route path="/book/:id" element={<BookDetailPage />} />
+
             <Route path="/publish" element={<PublishPage />} />
             <Route path="/publish-book" element={<PublishBookPage />} />
+
             <Route path="/author-login" element={<AuthorLoginPage />} />
             <Route path="/reader-login" element={<ReaderLoginPage />} />
-            <Route path="/author-dashboard" element={
-              <ProtectedAuthorRoute><AuthorDashboardPage /></ProtectedAuthorRoute>
-            } />
+
+            <Route
+              path="/author-dashboard"
+              element={
+                <ProtectedAuthorRoute>
+                  <AuthorDashboardPage />
+                </ProtectedAuthorRoute>
+              }
+            />
+
             <Route path="/author/:id" element={<AuthorProfilePage />} />
+
             <Route path="/membership" element={<MembershipPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/bring-book-back" element={<BringBookBackPage />} />
+
             <Route path="/admin-login" element={<AdminLoginPage />} />
-            <Route path="/admin" element={
-              <ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>
-            } />
-            
+
+            <Route
+              path="/admin"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminDashboardPage />
+                </ProtectedAdminRoute>
+              }
+            />
+
+            {/* Edit Book */}
+            <Route path="/edit-book/:id" element={<EditBookPage />} />
+
+            {/* Always keep this LAST */}
             <Route path="*" element={<NotFound />} />
+
           </Routes>
         </BrowserRouter>
+
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
