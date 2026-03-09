@@ -124,12 +124,12 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-16">
         <div className="bg-accent/10 rounded-2xl p-10 md:p-14 border border-accent/20 text-center">
           <Heart className="w-10 h-10 text-accent mx-auto mb-4" />
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
-            Know a Forgotten Book?
-          </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto mb-6">
-            Help us bring lost masterpieces back to life. Submit a book you believe deserves to be restored and republished for modern readers.
-          </p>
+           <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+             Have a Book Worth Reviving?
+           </h2>
+           <p className="text-muted-foreground max-w-lg mx-auto mb-6">
+             Know a rare or out-of-print book that deserves a second life? Tell us about it and help us bring forgotten works back to readers everywhere.
+           </p>
           <Link to="/bring-book-back">
             <Button size="lg">
               <Heart className="w-4 h-4 mr-2" /> Suggest a Book
