@@ -147,7 +147,7 @@ export default function BringBookBackPage() {
             Bring a Book Back to Life
           </h1>
           <p className="text-primary-foreground/80 max-w-xl mx-auto text-lg">
-            Know a forgotten masterpiece that deserves to be read again? Tell us about it and help us restore it for a new generation.
+            Know a forgotten masterpiece that deserves to be read again? Tell us about it and help us rediscover it for a new generation.
           </p>
         </div>
       </section>
