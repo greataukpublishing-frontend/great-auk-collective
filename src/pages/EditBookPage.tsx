@@ -39,7 +39,7 @@ export default function EditBookPage() {
     }
 
     setDescription(data.description || "")
-    setPrice(data.ebook_price || "")
+    setPrice(String(data.ebook_price || ""))
     setCategory(data.category || "")
     setLoading(false)
   }
