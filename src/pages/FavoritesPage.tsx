@@ -42,9 +42,9 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto px-6 py-10">
 
-      <h1 className="text-3xl font-bold mb-8">
+      <h1 className="text-3xl font-bold text-foreground mb-8">
         My Favorites ❤️
       </h1>
 
@@ -53,10 +53,12 @@ export default function FavoritesPage() {
       )}
 
       {!loading && favorites.length === 0 && (
-        <p>No favorite books yet.</p>
+        <p className="text-muted-foreground">
+          You haven't added any favorites yet.
+        </p>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
 
         {favorites.map((fav) => {
 
@@ -65,37 +67,39 @@ export default function FavoritesPage() {
           return (
             <div
               key={fav.id}
-              className="border rounded-lg p-4 hover:shadow-lg transition bg-white"
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
             >
 
               <img
                 src={book.cover_url}
                 alt={book.title}
-                className="w-full h-48 object-cover rounded"
+                className="w-full h-56 object-cover"
               />
 
-              <h2 className="font-semibold mt-3 line-clamp-2">
-                {book.title}
-              </h2>
+              <div className="p-4">
 
-              <p className="text-sm text-muted-foreground mt-1">
-                ${book.price}
-              </p>
+                <h2 className="font-semibold text-lg line-clamp-2">
+                  {book.title}
+                </h2>
 
-              <div className="flex gap-2 mt-4">
+                <p className="text-sm text-muted-foreground mt-1">
+                  ${book.price}
+                </p>
 
-                <button
-                  className="flex-1 bg-black text-white text-sm py-1 rounded hover:bg-gray-800"
-                >
-                  Add to Cart
-                </button>
+                <div className="flex gap-2 mt-4">
 
-                <button
-                  onClick={() => removeFavorite(fav.id)}
-                  className="text-red-500 text-sm"
-                >
-                  Remove
-                </button>
+                  <button className="flex-1 bg-primary text-white text-sm py-2 rounded-lg hover:opacity-90">
+                    Add to Cart
+                  </button>
+
+                  <button
+                    onClick={() => removeFavorite(fav.id)}
+                    className="text-sm text-red-500 hover:text-red-600"
+                  >
+                    Remove
+                  </button>
+
+                </div>
 
               </div>
 
