@@ -241,7 +241,7 @@ export default function BringBookBackPage() {
               </div>
 
               <div>
-                <label className={labelClass}>Why should this book be restored? *</label>
+                <label className={labelClass}>Why should this book be rediscovered? *</label>
                 <textarea
                   value={form.whyRestore}
                   onChange={(e) => update("whyRestore", e.target.value)}
