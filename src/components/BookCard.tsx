@@ -157,13 +157,16 @@ export default function BookCard({
                   </span>
                 )}
               </div>
-
-              <ShareButtons title={title} bookId={id} compact />
             </div>
           </div>
 
         </div>
       </Link>
+
+      {/* Share button outside Link so clicks work properly */}
+      <div className="absolute bottom-3 right-3 z-10">
+        <ShareButtons title={title} bookId={id} compact />
+      </div>
 
     </div>
   )
