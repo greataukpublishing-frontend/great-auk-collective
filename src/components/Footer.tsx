@@ -72,7 +72,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-primary-foreground/10 mt-12 pt-8 text-center text-sm text-primary-foreground/50">
-          © 2026 Great Auk Books. All rights reserved. Bringing lost knowledge back to life.
+          © 2026 Great Auk Publishing. All rights reserved. Bringing lost knowledge back to life.
         </div>
       </div>
     </footer>

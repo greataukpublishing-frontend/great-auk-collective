@@ -75,7 +75,7 @@ export default function AuthorLoginPage() {
               {isSignUp ? "Create Author Account" : "Author Login"}
             </h1>
             <p className="text-muted-foreground mt-2">
-              {isSignUp ? "Join Great Auk Books as an author" : "Access your author dashboard"}
+              {isSignUp ? "Join Great Auk Publishing as an author" : "Access your author dashboard"}
             </p>
           </div>
 

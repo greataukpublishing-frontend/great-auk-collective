@@ -97,7 +97,7 @@ navigate("/");
             </h1>
             <p className="text-muted-foreground mt-2">
               {isSignUp
-                ? "Join Great Auk Books to discover and purchase books"
+                ? "Join Great Auk Publishing to discover and purchase books"
                 : "Sign in to access your library and purchases"}
             </p>
           </div>
