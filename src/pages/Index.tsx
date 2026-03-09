@@ -59,7 +59,7 @@ export default function HomePage() {
                  <span className="text-gold">Publish New Voices.</span>
                </h1>
                <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
-                 Great Auk makes rare and forgotten books accessible again — while giving new authors the tools to publish and reach readers worldwide.
+                 Great Auk makes rare and forgotten books accessible again while giving new authors the tools to publish and reach readers worldwide.
                </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/bookstore">
