@@ -1,148 +1,107 @@
-import { Facebook, Twitter, Linkedin, Link2, Mail, MessageCircle, Share2 } from "lucide-react";
+import { Facebook, Twitter, Link2, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackShare } from "@/lib/shareAnalytics";
-import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface ShareButtonsProps {
   title: string;
   bookId: string;
-  /** Compact: shows a single share icon that expands on hover (for cards) */
   compact?: boolean;
 }
 
 const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
 export default function ShareButtons({ title, bookId, compact = false }: ShareButtonsProps) {
-  const [expanded, setExpanded] = useState(false);
   const bookUrl = `${baseUrl}/book/${bookId}`;
   const encodedUrl = encodeURIComponent(bookUrl);
   const encodedTitle = encodeURIComponent(`Check out "${title}" on Great Auk Books!`);
 
   const shareLinks = [
     {
-      name: "Facebook",
-      icon: Facebook,
-      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-      hoverColor: "hover:text-[#1877F2]",
-    },
-    {
-      name: "X (Twitter)",
-      icon: Twitter,
-      url: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-      hoverColor: "hover:text-foreground",
+      name: "Copy Link",
+      icon: Link2,
+      action: "copy",
+      url: "",
     },
     {
       name: "WhatsApp",
       icon: MessageCircle,
       url: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
-      hoverColor: "hover:text-[#25D366]",
     },
     {
-      name: "LinkedIn",
-      icon: Linkedin,
-      url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-      hoverColor: "hover:text-[#0A66C2]",
+      name: "X (Twitter)",
+      icon: Twitter,
+      url: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
     },
     {
-      name: "Email",
-      icon: Mail,
-      url: `mailto:?subject=${encodedTitle}&body=I thought you might enjoy this book: ${encodedUrl}`,
-      hoverColor: "hover:text-accent",
+      name: "Facebook",
+      icon: Facebook,
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     },
   ];
 
-  const copyLink = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent, link: typeof shareLinks[0]) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText(bookUrl);
-    trackShare("copy_link", bookId, title);
-    toast({ title: "Link copied!", description: "Book link copied to clipboard." });
-  };
-
-  const handleClick = (e: React.MouseEvent, url: string, platform: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    trackShare(platform, bookId, title);
-    if (platform === "Email") {
-      window.location.href = url;
+    if (link.action === "copy") {
+      navigator.clipboard.writeText(bookUrl);
+      trackShare("copy_link", bookId, title);
+      toast({ title: "Link copied!", description: "Book link copied to clipboard." });
     } else {
-      window.open(url, "_blank", "noopener,noreferrer,width=600,height=400");
+      trackShare(link.name, bookId, title);
+      window.open(link.url, "_blank", "noopener,noreferrer,width=600,height=400");
     }
   };
 
-  // Compact mode: single share icon, expands on hover/click
   if (compact) {
     return (
-      <div
-        className="relative"
-        onMouseEnter={() => setExpanded(true)}
-        onMouseLeave={() => setExpanded(false)}
-      >
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setExpanded(!expanded);
-          }}
-          className="p-1.5 rounded-md text-muted-foreground hover:text-accent hover:bg-secondary/80 transition-colors"
-          title="Share this book"
-          aria-label="Share this book"
-        >
-          <Share2 size={14} />
-        </button>
-        {expanded && (
-          <div
-            className="absolute bottom-full right-0 mb-1 flex items-center gap-1 bg-card border border-border rounded-lg p-1.5 shadow-lg z-20 animate-fade-in"
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
             onClick={(e) => e.stopPropagation()}
+            className="p-2 rounded-full bg-card/90 text-muted-foreground hover:text-accent hover:bg-card shadow-sm transition-colors"
+            aria-label="Share this book"
           >
-            {shareLinks.slice(0, 3).map((link) => (
-              <button
-                key={link.name}
-                onClick={(e) => handleClick(e, link.url, link.name)}
-                className={`p-1.5 rounded-md text-muted-foreground hover:bg-secondary transition-colors ${link.hoverColor}`}
-                title={`Share on ${link.name}`}
-                aria-label={`Share on ${link.name}`}
-              >
-                <link.icon size={13} />
-              </button>
-            ))}
+            <Share2 size={15} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          side="top"
+          align="end"
+          sideOffset={6}
+          className="w-44 p-1.5 rounded-lg shadow-lg border border-border bg-card animate-fade-in"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {shareLinks.map((link) => (
             <button
-              onClick={copyLink}
-              className="p-1.5 rounded-md text-muted-foreground hover:bg-secondary hover:text-accent transition-colors"
-              title="Copy link"
-              aria-label="Copy link"
+              key={link.name}
+              onClick={(e) => handleClick(e, link)}
+              className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-card-foreground rounded-md hover:bg-secondary transition-colors"
             >
-              <Link2 size={13} />
+              <link.icon size={15} className="text-muted-foreground" />
+              <span>{link.name}</span>
             </button>
-          </div>
-        )}
-      </div>
+          ))}
+        </PopoverContent>
+      </Popover>
     );
   }
 
-  // Full mode: all buttons visible (book detail page)
+  // Full mode for detail page
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <span className="text-xs font-medium text-muted-foreground mr-1">Share:</span>
       {shareLinks.map((link) => (
         <button
           key={link.name}
-          onClick={(e) => handleClick(e, link.url, link.name)}
-          className={`p-2 rounded-lg bg-secondary text-muted-foreground hover:bg-secondary/80 transition-colors ${link.hoverColor}`}
-          title={`Share on ${link.name}`}
-          aria-label={`Share on ${link.name}`}
+          onClick={(e) => handleClick(e, link)}
+          className="p-2 rounded-lg bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-accent transition-colors"
+          title={link.name}
+          aria-label={link.name}
         >
           <link.icon size={16} />
         </button>
       ))}
-      <button
-        onClick={copyLink}
-        className="p-2 rounded-lg bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-accent transition-colors"
-        title="Copy link"
-        aria-label="Copy link"
-      >
-        <Link2 size={16} />
-      </button>
     </div>
   );
 }
