@@ -54,13 +54,13 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-24 md:py-32 relative">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in-up">
-              <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground leading-tight mb-6">
-                Restoring Lost Books.<br />
-                <span className="text-gold">Publishing New Voices.</span>
-              </h1>
-              <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
-                Great Auk restores rare and forgotten books while empowering new authors to publish globally.
-              </p>
+               <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground leading-tight mb-6">
+                 Rediscover Rare Books.<br />
+                 <span className="text-gold">Publish New Voices.</span>
+               </h1>
+               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
+                 Great Auk makes rare and forgotten books accessible again — while giving new authors the tools to publish and reach readers worldwide.
+               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/bookstore">
                   <Button variant="hero" size="lg">
