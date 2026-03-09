@@ -33,8 +33,8 @@ export default function AdminSubmissions({ submissions, onRefresh }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-2xl font-bold text-foreground">Book Restoration Submissions</h2>
-        <p className="text-muted-foreground text-sm mt-1">Manage books suggested by users for restoration</p>
+         <h2 className="font-display text-2xl font-bold text-foreground">Book Rediscovery Submissions</h2>
+         <p className="text-muted-foreground text-sm mt-1">Manage books suggested by users for rediscovery</p>
       </div>
 
       {/* Pending Submissions */}
@@ -69,7 +69,7 @@ export default function AdminSubmissions({ submissions, onRefresh }: Props) {
                           
                           <div className="mt-3 space-y-2">
                             <div>
-                              <p className="text-xs font-medium text-foreground">Why restore this book:</p>
+                              <p className="text-xs font-medium text-foreground">Why rediscover this book:</p>
                               <p className="text-sm text-muted-foreground mt-1">{sub.why_restore}</p>
                             </div>
                             

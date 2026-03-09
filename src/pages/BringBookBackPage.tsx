@@ -241,11 +241,11 @@ export default function BringBookBackPage() {
               </div>
 
               <div>
-                <label className={labelClass}>Why should this book be restored? *</label>
+                <label className={labelClass}>Why should this book be rediscovered? *</label>
                 <textarea
                   value={form.whyRestore}
                   onChange={(e) => update("whyRestore", e.target.value)}
-                  placeholder="Tell us why this book matters, its historical significance, or why readers would benefit from its restoration..."
+                  placeholder="Tell us why this book matters, its historical significance, or why readers would benefit from its rediscovery..."
                   rows={4}
                   className={`${inputClass} resize-none ${errors.whyRestore ? errorInputClass : "border-input"}`}
                   maxLength={1000}
@@ -300,7 +300,7 @@ export default function BringBookBackPage() {
               </div>
 
               <Button type="submit" variant="hero" size="lg" className="w-full mt-2" disabled={submitting}>
-                <Heart className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit for Restoration"}
+                <Heart className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit for Rediscovery"}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">

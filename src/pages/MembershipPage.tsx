@@ -15,14 +15,14 @@ const plans = [
     name: "Reader Membership",
     price: "$9.99/mo",
     icon: Star,
-    perks: ["10% off all purchases", "Early access to new releases", "Free restored classics library", "Priority support"],
+    perks: ["10% off all purchases", "Early access to new releases", "Free rediscovered classics library", "Priority support"],
     featured: false,
   },
   {
     name: "Premium Membership",
     price: "$19.99/mo",
     icon: Crown,
-    perks: ["30% off all purchases", "Unlimited restored classics", "Exclusive author events", "Free audiobook credits (2/mo)", "VIP support"],
+    perks: ["30% off all purchases", "Unlimited rediscovered classics", "Exclusive author events", "Free audiobook credits (2/mo)", "VIP support"],
     featured: true,
   },
 ];
@@ -38,7 +38,7 @@ export default function MembershipPage() {
             Read More, Pay Less
           </h1>
           <p className="text-primary-foreground/80 text-lg max-w-md mx-auto">
-            Subscribe to Great Auk Membership for exclusive discounts and unlimited access to restored classics.
+            Subscribe to Great Auk Membership for exclusive discounts and unlimited access to rediscovered classics.
           </p>
         </div>
       </section>
