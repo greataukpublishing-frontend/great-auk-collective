@@ -1,20 +1,46 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Star, ArrowRight, BookOpen, Feather, Crown, Sparkles, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
-import { mockBooks, mockAuthors } from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
 import greatAukHero from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
 
-
 export default function HomePage() {
   const aukPlaying = useAukPlaying();
-  const featuredBooks = mockBooks.filter((b) => b.featured);
-  const restoredBooks = mockBooks.filter((b) => b.tag === "restored");
-  const bestsellerBooks = mockBooks.filter((b) => b.bestseller);
+  const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
+  const [authors, setAuthors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    
+    // Fetch featured approved books
+    const { data: booksData } = await supabase
+      .from("books")
+      .select("*")
+      .eq("status", "approved")
+      .eq("featured", true)
+      .limit(8);
+
+    // Fetch top authors (authors with books + profile info)
+    const { data: authorsData } = await supabase
+      .from("profiles")
+      .select("id, display_name, bio, avatar_url")
+      .limit(3);
+
+    setFeaturedBooks(booksData || []);
+    setAuthors(authorsData || []);
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,7 +54,6 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-24 md:py-32 relative">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in-up">
-              
               <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground leading-tight mb-6">
                 Restoring Lost Books.<br />
                 <span className="text-gold">Publishing New Voices.</span>
@@ -56,71 +81,43 @@ export default function HomePage() {
                 alt="The Great Auk"
                 className={`w-80 h-80 object-contain drop-shadow-2xl cursor-pointer hover:scale-105 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
                 onClick={() => toggleAukCall()}
-                title="Click to hear the Great Auk" />
-              
+                title="Click to hear the Great Auk"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats - hidden for now, will reveal later
-      <section className="bg-card border-b border-border">
-        <div className="container mx-auto px-4 py-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-            { label: "Books Published", value: "12,500+" },
-            { label: "Authors", value: "3,200+" },
-            { label: "Restored Classics", value: "800+" },
-            { label: "Countries", value: "45+" }].
-            map((stat) =>
-            <div key={stat.label}>
-                <p className="font-display text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-      */}
-
-      {/* Featured Books - only shows when books exist */}
+      {/* Featured Books */}
       {featuredBooks.length > 0 && (
-      <section className="container mx-auto px-4 py-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Curated Selection</p>
-            <h2 className="font-display text-3xl font-bold text-foreground">Featured Books</h2>
+        <section className="container mx-auto px-4 py-20">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Curated Selection</p>
+              <h2 className="font-display text-3xl font-bold text-foreground">Featured Books</h2>
+            </div>
+            <Link to="/bookstore" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
+              View All <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
-          <Link to="/bookstore" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
-            View All <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {featuredBooks.map((book) =>
-          <BookCard key={book.id} {...book} />
-          )}
-        </div>
-      </section>
-      )}
-
-      {/* Restored Classics - only shows when books exist */}
-      {restoredBooks.length > 0 && (
-      <section className="bg-secondary/50">
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Public Domain Treasures</p>
-            <h2 className="font-display text-3xl font-bold text-foreground mb-3">Classic Restored Books</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Forgotten masterpieces from literature, philosophy, and science — meticulously restored by Great Auk.
-            </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {featuredBooks.map((book) => (
+              <BookCard
+                key={book.id}
+                id={book.id}
+                title={book.title}
+                author={book.author_name}
+                price={book.print_price || 0}
+                ebookPrice={book.ebook_price || 0}
+                rating={4.5}
+                reviews={0}
+                category={book.category}
+                cover={book.cover_url || ""}
+                tag="new"
+              />
+            ))}
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {restoredBooks.map((book) =>
-            <BookCard key={book.id} {...book} />
-            )}
-          </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {/* Bring a Book Back CTA */}
@@ -141,28 +138,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Authors Spotlight - only shows when authors exist */}
-      {mockAuthors.length > 0 && (
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Meet Our Authors</p>
-          <h2 className="font-display text-3xl font-bold text-foreground">Author Spotlight</h2>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {mockAuthors.map((author) =>
-          <Link key={author.id} to={`/author/${author.id}`} className="group">
-              <div className="bg-card rounded-lg p-6 text-center shadow-sm hover:shadow-lg transition-all group-hover:-translate-y-1">
-                <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
-                  <Feather className="w-8 h-8 text-primary" />
+      {/* Authors Spotlight */}
+      {authors.length > 0 && (
+        <section className="container mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Meet Our Authors</p>
+            <h2 className="font-display text-3xl font-bold text-foreground">Author Spotlight</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {authors.map((author) => (
+              <Link key={author.id} to={`/author/${author.id}`} className="group">
+                <div className="bg-card rounded-lg p-6 text-center shadow-sm hover:shadow-lg transition-all group-hover:-translate-y-1">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
+                    {author.avatar_url ? (
+                      <img src={author.avatar_url} alt={author.display_name} className="w-full h-full rounded-full object-cover" />
+                    ) : (
+                      <Feather className="w-8 h-8 text-primary" />
+                    )}
+                  </div>
+                  <h3 className="font-display font-semibold text-card-foreground">{author.display_name || "Anonymous"}</h3>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{author.bio || "Author at Great Auk Books"}</p>
                 </div>
-                <h3 className="font-display font-semibold text-card-foreground">{author.name}</h3>
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{author.bio}</p>
-                <p className="text-xs text-accent font-medium mt-3">{author.booksCount} books published</p>
-              </div>
-            </Link>
-          )}
-        </div>
-      </section>
+              </Link>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Become an Author CTA */}
@@ -184,16 +184,16 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
             {[
-            { icon: Sparkles, title: "Easy Upload", desc: "Upload DOCX, PDF or EPUB — we convert it for you" },
-            { icon: Crown, title: "Keep 70% Royalty", desc: "Industry-leading author earnings on every sale" },
-            { icon: BookOpen, title: "Global Reach", desc: "Sell ebooks, paperbacks, and audiobooks worldwide" }].
-            map((item) =>
-            <div key={item.title} className="text-center">
+              { icon: Sparkles, title: "Easy Upload", desc: "Upload DOCX, PDF or EPUB — we convert it for you" },
+              { icon: Crown, title: "Keep 70% Royalty", desc: "Industry-leading author earnings on every sale" },
+              { icon: BookOpen, title: "Global Reach", desc: "Sell ebooks, paperbacks, and audiobooks worldwide" },
+            ].map((item) => (
+              <div key={item.title} className="text-center">
                 <item.icon className="w-8 h-8 text-gold mx-auto mb-3" />
                 <h3 className="font-display font-semibold text-primary-foreground text-lg">{item.title}</h3>
                 <p className="text-primary-foreground/70 text-sm mt-1">{item.desc}</p>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </section>
@@ -215,20 +215,20 @@ export default function HomePage() {
           </div>
           <div className="flex gap-4">
             {[
-            { plan: "Reader", price: "$9.99/mo", perks: "10% off all books" },
-            { plan: "Premium", price: "$19.99/mo", perks: "30% off + free classics" }].
-            map((p) =>
-            <div key={p.plan} className="bg-background rounded-xl p-6 border border-border text-center min-w-[160px]">
+              { plan: "Reader", price: "$9.99/mo", perks: "10% off all books" },
+              { plan: "Premium", price: "$19.99/mo", perks: "30% off + free classics" },
+            ].map((p) => (
+              <div key={p.plan} className="bg-background rounded-xl p-6 border border-border text-center min-w-[160px]">
                 <p className="font-display font-semibold text-foreground">{p.plan}</p>
                 <p className="text-2xl font-bold text-accent mt-2">{p.price}</p>
                 <p className="text-xs text-muted-foreground mt-2">{p.perks}</p>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </section>
 
       <Footer />
-    </div>);
-
+    </div>
+  );
 }

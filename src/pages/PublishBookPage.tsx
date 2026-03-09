@@ -1,13 +1,129 @@
 import { useState } from "react";
 import { Upload, ArrowRight, ArrowLeft, CheckCircle, Download, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const stepLabels = ["Book Details", "Manuscript", "Cover & ISBN", "Pricing", "Submit"];
 
+interface BookData {
+  title: string;
+  subtitle: string;
+  authorName: string;
+  description: string;
+  category: string;
+  language: string;
+  keywords: string;
+  manuscriptFile: File | null;
+  coverFile: File | null;
+  ebookPrice: string;
+  printPrice: string;
+  formats: string[];
+}
+
+const initialData: BookData = {
+  title: "",
+  subtitle: "",
+  authorName: "",
+  description: "",
+  category: "Fiction",
+  language: "English",
+  keywords: "",
+  manuscriptFile: null,
+  coverFile: null,
+  ebookPrice: "9.99",
+  printPrice: "14.99",
+  formats: ["ebook"],
+};
+
 export default function PublishBookPage() {
   const [step, setStep] = useState(0);
+  const [data, setData] = useState<BookData>(initialData);
+  const [submitting, setSubmitting] = useState(false);
+  const { user, isAuthor } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const update = (field: keyof BookData, value: any) => {
+    setData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!user || !isAuthor) {
+      toast({ title: "Authentication required", description: "Please log in as an author.", variant: "destructive" });
+      navigate("/author-login");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      let coverUrl: string | null = null;
+
+      // Upload cover if provided
+      if (data.coverFile) {
+        const fileExt = data.coverFile.name.split('.').pop();
+        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from("book-files")
+          .upload(`covers/${fileName}`, data.coverFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("book-files")
+          .getPublicUrl(`covers/${fileName}`);
+        
+        coverUrl = publicUrl;
+      }
+
+      // Insert book record
+      const { error: insertError } = await supabase.from("books").insert({
+        title: data.title,
+        author_name: data.authorName,
+        author_id: user.id,
+        description: data.description,
+        category: data.category,
+        ebook_price: parseFloat(data.ebookPrice) || 0,
+        print_price: parseFloat(data.printPrice) || 0,
+        format: data.formats,
+        cover_url: coverUrl,
+        status: "pending",
+      });
+
+      if (insertError) throw insertError;
+
+      toast({
+        title: "Book submitted!",
+        description: "Your book is now pending review. We'll notify you once it's approved.",
+      });
+
+      navigate("/author-dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Submission failed",
+        description: error.message || "An error occurred.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const canProceed = () => {
+    if (step === 0) return data.title.trim() && data.authorName.trim() && data.description.trim();
+    if (step === 3) {
+      const ebook = parseFloat(data.ebookPrice);
+      const print = parseFloat(data.printPrice);
+      return (data.formats.includes("ebook") ? ebook >= 2.99 : true) &&
+             (data.formats.includes("paperback") ? print >= 6.99 : true);
+    }
+    return true;
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -35,33 +151,84 @@ export default function PublishBookPage() {
           {step === 0 && (
             <div className="space-y-4">
               <h2 className="font-display text-xl font-semibold text-card-foreground">Book Details</h2>
-              {["Title", "Subtitle", "Author Name", "Description"].map((field) => (
-                <div key={field}>
-                  <label className="text-sm font-medium text-card-foreground block mb-1">{field}</label>
-                  {field === "Description" ? (
-                    <textarea className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm resize-none h-24" placeholder={`Enter ${field.toLowerCase()}...`} />
-                  ) : (
-                    <input className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" placeholder={`Enter ${field.toLowerCase()}...`} />
-                  )}
-                </div>
-              ))}
+              <div>
+                <label className="text-sm font-medium text-card-foreground block mb-1">Title *</label>
+                <input
+                  value={data.title}
+                  onChange={(e) => update("title", e.target.value)}
+                  className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                  placeholder="Enter book title..."
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-card-foreground block mb-1">Subtitle</label>
+                <input
+                  value={data.subtitle}
+                  onChange={(e) => update("subtitle", e.target.value)}
+                  className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                  placeholder="Optional subtitle..."
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-card-foreground block mb-1">Author Name *</label>
+                <input
+                  value={data.authorName}
+                  onChange={(e) => update("authorName", e.target.value)}
+                  className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                  placeholder="Your name or pen name..."
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-card-foreground block mb-1">Description *</label>
+                <textarea
+                  value={data.description}
+                  onChange={(e) => update("description", e.target.value)}
+                  className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm resize-none h-24"
+                  placeholder="Brief description of your book..."
+                  required
+                />
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-card-foreground block mb-1">Category</label>
-                  <select className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm">
-                    <option>Fiction</option><option>Non-Fiction</option><option>Science</option><option>Philosophy</option><option>Mystery</option>
+                  <select
+                    value={data.category}
+                    onChange={(e) => update("category", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                  >
+                    <option>Fiction</option>
+                    <option>Non-Fiction</option>
+                    <option>Science</option>
+                    <option>Philosophy</option>
+                    <option>Mystery</option>
+                    <option>Romance</option>
+                    <option>Biography</option>
                   </select>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-card-foreground block mb-1">Language</label>
-                  <select className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm">
-                    <option>English</option><option>Spanish</option><option>French</option><option>German</option>
+                  <select
+                    value={data.language}
+                    onChange={(e) => update("language", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                  >
+                    <option>English</option>
+                    <option>Spanish</option>
+                    <option>French</option>
+                    <option>German</option>
                   </select>
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-card-foreground block mb-1">Keywords</label>
-                <input className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" placeholder="e.g. adventure, classic, romance" />
+                <input
+                  value={data.keywords}
+                  onChange={(e) => update("keywords", e.target.value)}
+                  className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                  placeholder="e.g. adventure, classic, romance"
+                />
               </div>
             </div>
           )}
@@ -73,83 +240,85 @@ export default function PublishBookPage() {
                 <p className="text-sm text-muted-foreground mt-1">Accepted formats: DOCX, PDF, EPUB</p>
               </div>
 
-              {/* Download Templates */}
-              <div className="bg-secondary/50 rounded-lg p-5 border border-border">
-                <div className="flex items-start gap-3 mb-3">
-                  <FileText className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Manuscript Templates</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Download a pre-formatted template to ensure your manuscript meets our publishing standards.
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { label: "Fiction Template", format: "DOCX", desc: "Chapters, front matter, back matter" },
-                    { label: "Non-Fiction Template", format: "DOCX", desc: "Sections, headings, bibliography" },
-                    { label: "Poetry Template", format: "DOCX", desc: "Stanzas, collections, formatting" },
-                  ].map((tpl) => (
-                    <a
-                      key={tpl.label}
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // In production, link to actual template files hosted on storage
-                        alert(`Download: ${tpl.label} (${tpl.format})\nTemplate files will be available once the backend is connected.`);
-                      }}
-                      className="flex items-center gap-3 bg-card rounded-lg p-3 border border-border hover:border-accent hover:shadow-sm transition-all group"
-                    >
-                      <Download className="w-4 h-4 text-muted-foreground group-hover:text-accent flex-shrink-0" />
-                      <div>
-                        <p className="text-xs font-medium text-card-foreground group-hover:text-accent transition-colors">{tpl.label}</p>
-                        <p className="text-[10px] text-muted-foreground">{tpl.desc}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Upload Area */}
               <div className="border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-accent/50 transition-colors">
                 <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                <p className="text-foreground font-medium">Drag and drop your manuscript</p>
+                <p className="text-foreground font-medium">
+                  {data.manuscriptFile ? data.manuscriptFile.name : "Drag and drop your manuscript"}
+                </p>
                 <p className="text-sm text-muted-foreground mt-1">or click to browse files</p>
-                <Button variant="outline" className="mt-4">Choose File</Button>
+                <input
+                  type="file"
+                  accept=".docx,.pdf,.epub"
+                  onChange={(e) => update("manuscriptFile", e.target.files?.[0] || null)}
+                  className="hidden"
+                  id="manuscript-upload"
+                />
+                <label htmlFor="manuscript-upload">
+                  <Button variant="outline" className="mt-4" type="button" onClick={() => document.getElementById("manuscript-upload")?.click()}>
+                    Choose File
+                  </Button>
+                </label>
               </div>
-
-              <p className="text-xs text-muted-foreground">
-                Max file size: 50MB. Ensure your manuscript follows the template guidelines for faster review.
-              </p>
+              <p className="text-xs text-muted-foreground">Max file size: 50MB</p>
             </div>
           )}
 
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="font-display text-xl font-semibold text-card-foreground">Cover & ISBN</h2>
+              <h2 className="font-display text-xl font-semibold text-card-foreground">Cover & Format</h2>
               <div>
                 <p className="text-sm font-medium text-card-foreground mb-2">Book Cover</p>
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                   <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-foreground">Upload cover image (recommended 1600×2560px)</p>
-                  <Button variant="outline" size="sm" className="mt-3">Upload Cover</Button>
+                  <p className="text-sm text-foreground">
+                    {data.coverFile ? data.coverFile.name : "Upload cover image (recommended 1600×2560px)"}
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => update("coverFile", e.target.files?.[0] || null)}
+                    className="hidden"
+                    id="cover-upload"
+                  />
+                  <label htmlFor="cover-upload">
+                    <Button variant="outline" size="sm" className="mt-3" type="button" onClick={() => document.getElementById("cover-upload")?.click()}>
+                      Upload Cover
+                    </Button>
+                  </label>
                 </div>
               </div>
               <div>
-                <p className="text-sm font-medium text-card-foreground mb-2">ISBN</p>
-                <p className="text-sm text-muted-foreground mb-2">Select your country to generate an ISBN through the national agency.</p>
-                <select className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm">
-                  <option>Select Country</option><option>United States</option><option>United Kingdom</option><option>India</option><option>Australia</option>
-                </select>
-                <Button variant="outline" size="sm" className="mt-3">Generate ISBN</Button>
-              </div>
-              <div className="bg-secondary/50 rounded-lg p-4">
-                <label className="flex items-start gap-3">
-                  <input type="checkbox" className="mt-1 rounded border-input" />
-                  <span className="text-sm text-foreground">
-                    I confirm that this is my original work and does not infringe on any copyright. I understand that I am solely responsible for any claims arising from the content of this book.
-                  </span>
-                </label>
+                <p className="text-sm font-medium text-card-foreground mb-2">Available Formats</p>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.formats.includes("ebook")}
+                      onChange={(e) => {
+                        const formats = e.target.checked
+                          ? [...data.formats, "ebook"]
+                          : data.formats.filter(f => f !== "ebook");
+                        update("formats", formats);
+                      }}
+                      className="rounded border-input"
+                    />
+                    <span className="text-sm text-foreground">Ebook</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.formats.includes("paperback")}
+                      onChange={(e) => {
+                        const formats = e.target.checked
+                          ? [...data.formats, "paperback"]
+                          : data.formats.filter(f => f !== "paperback");
+                        update("formats", formats);
+                      }}
+                      className="rounded border-input"
+                    />
+                    <span className="text-sm text-foreground">Paperback</span>
+                  </label>
+                </div>
               </div>
             </div>
           )}
@@ -158,18 +327,46 @@ export default function PublishBookPage() {
             <div className="space-y-4">
               <h2 className="font-display text-xl font-semibold text-card-foreground">Set Pricing</h2>
               <p className="text-sm text-muted-foreground">Set your prices. Minimum thresholds apply per format.</p>
-              <div>
-                <label className="text-sm font-medium text-card-foreground block mb-1">Ebook Price (USD) — min $2.99</label>
-                <input type="number" className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" placeholder="9.99" min="2.99" step="0.01" />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-card-foreground block mb-1">Paperback Price (USD) — min $6.99</label>
-                <input type="number" className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm" placeholder="14.99" min="6.99" step="0.01" />
-              </div>
+              {data.formats.includes("ebook") && (
+                <div>
+                  <label className="text-sm font-medium text-card-foreground block mb-1">Ebook Price (USD) — min $2.99</label>
+                  <input
+                    type="number"
+                    value={data.ebookPrice}
+                    onChange={(e) => update("ebookPrice", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                    placeholder="9.99"
+                    min="2.99"
+                    step="0.01"
+                  />
+                </div>
+              )}
+              {data.formats.includes("paperback") && (
+                <div>
+                  <label className="text-sm font-medium text-card-foreground block mb-1">Paperback Price (USD) — min $6.99</label>
+                  <input
+                    type="number"
+                    value={data.printPrice}
+                    onChange={(e) => update("printPrice", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm"
+                    placeholder="14.99"
+                    min="6.99"
+                    step="0.01"
+                  />
+                </div>
+              )}
               <div className="bg-secondary/50 rounded-lg p-4 text-sm">
-                <p className="font-medium text-foreground">Estimated Earnings</p>
-                <p className="text-muted-foreground mt-1">Ebook at $9.99 → You earn <span className="font-bold text-foreground">$6.99</span> (70%)</p>
-                <p className="text-muted-foreground">Paperback at $14.99 → You earn <span className="font-bold text-foreground">$10.49</span> (70%)</p>
+                <p className="font-medium text-foreground">Estimated Earnings (70% royalty)</p>
+                {data.formats.includes("ebook") && (
+                  <p className="text-muted-foreground mt-1">
+                    Ebook at ${data.ebookPrice} → You earn <span className="font-bold text-foreground">${(parseFloat(data.ebookPrice) * 0.7).toFixed(2)}</span>
+                  </p>
+                )}
+                {data.formats.includes("paperback") && (
+                  <p className="text-muted-foreground">
+                    Paperback at ${data.printPrice} → You earn <span className="font-bold text-foreground">${(parseFloat(data.printPrice) * 0.7).toFixed(2)}</span>
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -181,7 +378,15 @@ export default function PublishBookPage() {
               <p className="text-muted-foreground mt-2 max-w-md mx-auto">
                 Your book will be reviewed by the Great Auk team before publishing. This usually takes 24–48 hours.
               </p>
-              <Button variant="hero" size="lg" className="mt-6">Submit for Review</Button>
+              <Button
+                variant="hero"
+                size="lg"
+                className="mt-6"
+                onClick={handleSubmit}
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : "Submit for Review"}
+              </Button>
             </div>
           )}
 
@@ -190,7 +395,7 @@ export default function PublishBookPage() {
               <Button variant="outline" disabled={step === 0} onClick={() => setStep(step - 1)}>
                 <ArrowLeft className="w-4 h-4 mr-1" /> Previous
               </Button>
-              <Button onClick={() => setStep(step + 1)}>
+              <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
                 Next <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </div>

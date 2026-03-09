@@ -3,7 +3,8 @@ import { BookOpen, Heart, Send, Sparkles, CheckCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FormData {
   bookTitle: string;
@@ -45,7 +46,9 @@ const categories = [
 export default function BringBookBackPage() {
   const [form, setForm] = useState<FormData>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const { toast } = useToast();
 
   const update = (field: keyof FormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -69,13 +72,33 @@ export default function BringBookBackPage() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    // In production, this would send to the backend
-    console.log("[BringBookBack] Submission:", form);
-    setSubmitted(true);
-    toast({ title: "Submission received!", description: "Thank you for helping us bring a book back to life." });
+
+    setSubmitting(true);
+    
+    const { error } = await supabase.from("book_submissions").insert({
+      book_title: form.bookTitle,
+      author_name: form.author,
+      year_published: form.yearPublished,
+      language: form.language,
+      category: form.category,
+      why_restore: form.whyRestore,
+      source_link: form.sourceLink,
+      submitter_name: form.submitterName,
+      submitter_email: form.submitterEmail,
+      status: "pending",
+    });
+
+    if (error) {
+      toast({ title: "Submission failed", description: error.message, variant: "destructive" });
+    } else {
+      setSubmitted(true);
+      toast({ title: "Submission received!", description: "Thank you for helping us bring a book back to life." });
+    }
+    
+    setSubmitting(false);
   };
 
   const inputClass =
@@ -153,7 +176,6 @@ export default function BringBookBackPage() {
             <h2 className="font-display text-2xl font-bold text-card-foreground mb-6">Submit a Book for Restoration</h2>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Book Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className={labelClass}>Book Title *</label>
@@ -247,7 +269,6 @@ export default function BringBookBackPage() {
                 <p className="text-xs text-muted-foreground mt-1">Link to an archive, library catalogue, or Wikipedia page (optional)</p>
               </div>
 
-              {/* Divider */}
               <div className="border-t border-border pt-5">
                 <p className="text-sm font-medium text-foreground mb-4">Your Details</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -278,8 +299,8 @@ export default function BringBookBackPage() {
                 </div>
               </div>
 
-              <Button type="submit" variant="hero" size="lg" className="w-full mt-2">
-                <Heart className="w-4 h-4 mr-2" /> Submit for Restoration
+              <Button type="submit" variant="hero" size="lg" className="w-full mt-2" disabled={submitting}>
+                <Heart className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit for Restoration"}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">
