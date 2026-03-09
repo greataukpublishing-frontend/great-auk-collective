@@ -158,7 +158,7 @@ export default function BringBookBackPage() {
           {[
             { icon: Send, title: "Submit", desc: "Tell us about a book that's been lost, forgotten, or out of print." },
              { icon: Sparkles, title: "We Review", desc: "Our editors assess its potential using AI and expert review." },
-             { icon: BookOpen, title: "It Lives Again", desc: "The book is rediscovered, formatted, and published for modern readers." },
+             { icon: BookOpen, title: "It Lives Again", desc: "The book is restored, formatted, and published for modern readers." },
           ].map((step) => (
             <div key={step.title}>
               <step.icon className="w-8 h-8 text-accent mx-auto mb-3" />
