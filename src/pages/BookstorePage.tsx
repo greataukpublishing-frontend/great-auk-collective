@@ -115,23 +115,27 @@ export default function BookstorePage() {
           </div>
 
           <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
+            value={selectedCategory !== "All" ? `cat-${selectedCategory}` : sortBy}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val.startsWith("cat-")) {
+                setSelectedCategory(val.replace("cat-", ""));
+                setSortBy("featured");
+              } else {
+                setSelectedCategory("All");
+                setSortBy(val);
+              }
+            }}
             className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
           >
             <option value="featured">Featured</option>
+            <optgroup label="Categories">
+              {categories.filter(c => c !== "All").map((cat) => (
+                <option key={cat} value={`cat-${cat}`}>{cat}</option>
+              ))}
+            </optgroup>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
-          </select>
-
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
           </select>
 
           <select
