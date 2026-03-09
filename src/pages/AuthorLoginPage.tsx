@@ -22,7 +22,7 @@ export default function AuthorLoginPage() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      navigate("/author-dashboard", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [user, authLoading, navigate]);
 
