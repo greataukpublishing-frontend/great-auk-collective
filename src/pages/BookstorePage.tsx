@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
+import { Heart } from "lucide-react"
+import { supabase } from "@/integrations/supabase/client"
 
 export default function BookstorePage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
