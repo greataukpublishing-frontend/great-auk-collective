@@ -10,7 +10,7 @@ const LANGUAGES = ["All Languages", "English", "Hindi", "Tamil", "Bengali", "Mal
 export default function BookstorePage() {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState("All Languages");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("featured");
 
