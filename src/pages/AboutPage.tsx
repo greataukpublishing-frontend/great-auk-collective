@@ -19,7 +19,7 @@ export default function AboutPage() {
             The Great Auk was a majestic flightless bird that once inhabited the North Atlantic. Hunted to extinction by the mid-19th century, its disappearance became a powerful symbol of irreversible loss.
           </p>
           <p>
-            <strong className="text-foreground">Great Auk Books</strong> takes its name from this lost species to represent our mission: <em>bringing forgotten knowledge back to life.</em>
+            <strong className="text-foreground">Great Auk Publishing</strong> takes its name from this lost species to represent our mission: <em>bringing forgotten knowledge back to life.</em>
           </p>
           <p>
             We are a modern publishing ecosystem built on two pillars:
