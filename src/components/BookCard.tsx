@@ -176,6 +176,9 @@ export default function BookCard({
       <div
         className="absolute bottom-3 right-3 z-20"
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
       >
         <ShareButtons title={title} bookId={id} compact />
       </div>
