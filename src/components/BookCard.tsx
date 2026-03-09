@@ -145,23 +145,28 @@ export default function BookCard({
               </span>
             </div>
 
-              <div className="flex items-center justify-between mt-2">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-semibold text-card-foreground">
-                    ${ebookPrice?.toFixed(2) ?? price.toFixed(2)}
-                  </span>
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-baseline gap-2">
+                <span className="font-semibold text-card-foreground">
+                  ${ebookPrice?.toFixed(2) ?? price.toFixed(2)}
+                </span>
 
-                  {ebookPrice && (
-                    <span className="text-xs text-muted-foreground line-through">
-                      ${price.toFixed(2)}
-                    </span>
-                  )}
-                </div>
+                {ebookPrice && (
+                  <span className="text-xs text-muted-foreground line-through">
+                    ${price.toFixed(2)}
+                  </span>
+                )}
               </div>
+            </div>
           </div>
 
         </div>
       </Link>
+
+      {/* Share button outside Link so clicks work properly */}
+      <div className="absolute bottom-3 right-3 z-10">
+        <ShareButtons title={title} bookId={id} compact />
+      </div>
 
     </div>
   )
