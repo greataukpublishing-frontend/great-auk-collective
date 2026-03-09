@@ -147,7 +147,7 @@ export default function BringBookBackPage() {
             Bring a Book Back to Life
           </h1>
           <p className="text-primary-foreground/80 max-w-xl mx-auto text-lg">
-            Know a forgotten masterpiece that deserves to be read again? Tell us about it and help us rediscover it for a new generation.
+            Know a forgotten masterpiece that deserves to be read again? Tell us about it and help us restore it for a new generation.
           </p>
         </div>
       </section>
@@ -158,7 +158,7 @@ export default function BringBookBackPage() {
           {[
             { icon: Send, title: "Submit", desc: "Tell us about a book that's been lost, forgotten, or out of print." },
              { icon: Sparkles, title: "We Review", desc: "Our editors assess its potential using AI and expert review." },
-             { icon: BookOpen, title: "It Lives Again", desc: "The book is rediscovered, formatted, and published for modern readers." },
+             { icon: BookOpen, title: "It Lives Again", desc: "The book is restored, formatted, and published for modern readers." },
           ].map((step) => (
             <div key={step.title}>
               <step.icon className="w-8 h-8 text-accent mx-auto mb-3" />
@@ -173,7 +173,7 @@ export default function BringBookBackPage() {
       <section className="container mx-auto px-4 pb-20">
         <div className="max-w-2xl mx-auto">
           <div className="bg-card rounded-2xl p-8 md:p-10 border border-border shadow-sm">
-            <h2 className="font-display text-2xl font-bold text-card-foreground mb-6">Suggest a Rare Book to Rediscover</h2>
+            <h2 className="font-display text-2xl font-bold text-card-foreground mb-6">Suggest a Rare Book to Restore</h2>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -241,11 +241,11 @@ export default function BringBookBackPage() {
               </div>
 
               <div>
-                <label className={labelClass}>Why should this book be rediscovered? *</label>
+                <label className={labelClass}>Why should this book be restored? *</label>
                 <textarea
                   value={form.whyRestore}
                   onChange={(e) => update("whyRestore", e.target.value)}
-                  placeholder="Tell us why this book matters, its historical significance, or why readers would benefit from its rediscovery..."
+                  placeholder="Tell us why this book matters, its historical significance, or why readers would benefit from its restoration..."
                   rows={4}
                   className={`${inputClass} resize-none ${errors.whyRestore ? errorInputClass : "border-input"}`}
                   maxLength={1000}
@@ -300,7 +300,7 @@ export default function BringBookBackPage() {
               </div>
 
               <Button type="submit" variant="hero" size="lg" className="w-full mt-2" disabled={submitting}>
-                <Heart className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit for Rediscovery"}
+                <Heart className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit for Restoration"}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">
