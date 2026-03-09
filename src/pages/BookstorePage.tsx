@@ -59,7 +59,7 @@ export default function BookstorePage() {
       b.author_name.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchLanguage =
-      selectedLanguages.length === 0 || selectedLanguages.includes(b.language || "English");
+      selectedLanguage === "All Languages" || (b.language || "English") === selectedLanguage;
 
     return matchCategory && matchSearch && matchLanguage;
 
