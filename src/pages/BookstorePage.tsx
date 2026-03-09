@@ -119,6 +119,7 @@ export default function BookstorePage() {
             onChange={(e) => setSortBy(e.target.value)}
             className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
           >
+            <option value="" disabled hidden>Sort</option>
             <option value="featured">Featured</option>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
@@ -129,7 +130,8 @@ export default function BookstorePage() {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
           >
-            {categories.map((cat) => (
+            <option value="All">Category</option>
+            {categories.filter(c => c !== "All").map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
@@ -139,7 +141,8 @@ export default function BookstorePage() {
             onChange={(e) => setSelectedLanguage(e.target.value)}
             className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
           >
-            {LANGUAGES.map((lang) => (
+            <option value="All Languages">Language</option>
+            {LANGUAGES.filter(l => l !== "All Languages").map((lang) => (
               <option key={lang} value={lang}>{lang}</option>
             ))}
           </select>
