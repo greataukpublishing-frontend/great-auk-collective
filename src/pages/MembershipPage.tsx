@@ -15,7 +15,7 @@ const plans = [
     name: "Reader Membership",
     price: "$9.99/mo",
     icon: Star,
-    perks: ["10% off all purchases", "Early access to new releases", "Free rediscovered classics library", "Priority support"],
+    perks: ["10% off all purchases", "Early access to new releases", "Free restored classics library", "Priority support"],
     featured: false,
   },
   {
