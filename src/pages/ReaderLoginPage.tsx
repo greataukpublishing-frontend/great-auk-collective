@@ -60,8 +60,26 @@ export default function ReaderLoginPage() {
       if (error) {
         toast({ title: "Login failed", description: error.message, variant: "destructive" });
       } else {
-        toast({ title: "Welcome back!", description: "You're now signed in." });
-        navigate("/bookstore");
+        const { data: { user } } = await supabase.auth.getUser();
+
+const { data: roleData } = await supabase
+  .from("user_roles")
+  .select("role")
+  .eq("user_id", user.id)
+  .single();
+
+if (roleData?.role === "author") {
+  toast({
+    title: "Wrong login page",
+    description: "You are already an author. Please sign in from the Author login page or use another email to be a reader.",
+    variant: "destructive"
+  });
+  await supabase.auth.signOut();
+  return;
+}
+
+toast({ title: "Welcome back!", description: "You're now signed in." });
+navigate("/bookstore");
       }
     }
     setLoading(false);
