@@ -14,7 +14,6 @@ const navLinks = [
   { label: "Self Publishing", to: "/publish" },
   { label: "Membership", to: "/membership" },
   { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
 ];
 
 export default function Navbar() {
