@@ -157,31 +157,6 @@ export default function BookstorePage() {
 
         </div>
 
-        {/* Language Filter */}
-        <div className="flex flex-wrap items-center gap-2 mb-10">
-          <span className="text-sm font-medium text-muted-foreground mr-1">Language:</span>
-          {LANGUAGES.map((lang) => (
-            <button
-              key={lang}
-              onClick={() => toggleLanguage(lang)}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                selectedLanguages.includes(lang)
-                  ? "bg-accent text-accent-foreground border-accent"
-                  : "bg-card text-card-foreground border-input hover:bg-secondary"
-              }`}
-            >
-              {lang}
-            </button>
-          ))}
-          {selectedLanguages.length > 0 && (
-            <button
-              onClick={() => setSelectedLanguages([])}
-              className="px-3 py-1 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Clear
-            </button>
-          )}
-        </div>
 
         {/* Books Grid */}
 
