@@ -125,6 +125,16 @@ export default function BookstorePage() {
           </select>
 
           <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+
+          <select
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
             className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
@@ -133,27 +143,6 @@ export default function BookstorePage() {
               <option key={lang} value={lang}>{lang}</option>
             ))}
           </select>
-
-        </div>
-
-        {/* Categories */}
-        <div className="flex flex-wrap gap-2 mb-6">
-
-          {categories.map((cat) => (
-
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                selectedCategory === cat
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-              }`}
-            >
-              {cat}
-            </button>
-
-          ))}
 
         </div>
 
