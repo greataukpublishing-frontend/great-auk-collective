@@ -137,7 +137,6 @@ export default function FavoritesPage() {
             const book = fav.books
 
             const price =
-              book.price ||
               book.ebook_price ||
               book.print_price ||
               0
