@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
 
-const LANGUAGES = ["English", "Hindi", "Tamil", "Bengali", "Malayalam"];
+const LANGUAGES = ["All Languages", "English", "Hindi", "Tamil", "Bengali", "Malayalam"];
 
 export default function BookstorePage() {
 
