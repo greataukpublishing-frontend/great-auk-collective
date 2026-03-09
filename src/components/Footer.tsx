@@ -15,7 +15,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-4">
               <img src={greatAukLogo} alt="Great Auk" className={`h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? 'auk-playing' : ''}`} onClick={() => toggleAukCall()} title="Click to hear the Great Auk" />
               <span className="font-display text-lg font-bold">
-                Great Auk <span className="text-gold">Books</span>
+                Great Auk <span className="text-gold">Publishing</span>
               </span>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
