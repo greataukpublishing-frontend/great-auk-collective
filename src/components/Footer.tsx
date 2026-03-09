@@ -19,7 +19,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              Rediscovering forgotten books and empowering authors to publish globally.
+              Restoring forgotten books and empowering authors to publish globally.
             </p>
             <div className="flex items-center gap-3 mt-5">
               {[
