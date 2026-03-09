@@ -69,7 +69,7 @@ export default function AdminSubmissions({ submissions, onRefresh }: Props) {
                           
                           <div className="mt-3 space-y-2">
                             <div>
-                              <p className="text-xs font-medium text-foreground">Why rediscover this book:</p>
+                              <p className="text-xs font-medium text-foreground">Why restore this book:</p>
                               <p className="text-sm text-muted-foreground mt-1">{sub.why_restore}</p>
                             </div>
                             

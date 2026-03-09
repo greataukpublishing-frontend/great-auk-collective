@@ -300,7 +300,7 @@ export default function BringBookBackPage() {
               </div>
 
               <Button type="submit" variant="hero" size="lg" className="w-full mt-2" disabled={submitting}>
-                <Heart className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit for Rediscovery"}
+                <Heart className="w-4 h-4 mr-2" /> {submitting ? "Submitting..." : "Submit for Restoration"}
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">

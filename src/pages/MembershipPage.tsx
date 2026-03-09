@@ -38,7 +38,7 @@ export default function MembershipPage() {
             Read More, Pay Less
           </h1>
           <p className="text-primary-foreground/80 text-lg max-w-md mx-auto">
-            Subscribe to Great Auk Membership for exclusive discounts and unlimited access to rediscovered classics.
+            Subscribe to Great Auk Membership for exclusive discounts and unlimited access to restored classics.
           </p>
         </div>
       </section>

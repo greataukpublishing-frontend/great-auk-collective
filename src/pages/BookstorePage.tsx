@@ -92,7 +92,7 @@ export default function BookstorePage() {
             Bookstore
           </h1>
           <p className="text-primary-foreground/70 mt-2">
-            Discover new releases, bestsellers, and rediscovered classics
+            Discover new releases, bestsellers, and restored classics
           </p>
         </div>
       </div>
