@@ -32,7 +32,7 @@ export default function BookCard({
 }: BookCardProps) {
 
   const [favorited, setFavorited] = useState(false)
-
+  const [imageLoaded, setImageLoaded] = useState(false)
   useEffect(() => {
     checkFavorite()
   }, [])
