@@ -109,25 +109,32 @@ export default function Navbar() {
                 {isAuthor && (
                   <DropdownMenuItem asChild>
                     <Link to="/author-dashboard" className="flex items-center gap-2 cursor-pointer">
-                      <BookOpen className="w-4 h-4" /> Author Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                )}
+  <BookOpen className="w-4 h-4" /> Author Dashboard
+</Link>
+</DropdownMenuItem>
+)}
 
-                <DropdownMenuItem asChild>
-                  <Link to="/bookstore" className="flex items-center gap-2 cursor-pointer">
-                    <ShoppingCart className="w-4 h-4" /> Bookstore
-                  </Link>
-                </DropdownMenuItem>
+<DropdownMenuItem asChild>
+  <Link to="/bookstore" className="flex items-center gap-2 cursor-pointer">
+    <ShoppingCart className="w-4 h-4" /> Bookstore
+  </Link>
+</DropdownMenuItem>
 
-                <DropdownMenuSeparator />
+<DropdownMenuItem asChild>
+  <Link to="/favorites" className="flex items-center gap-2 cursor-pointer">
+    <Heart className="w-4 h-4" /> My Favorites
+  </Link>
+</DropdownMenuItem>
 
-                <DropdownMenuItem
-                  onClick={signOut}
-                  className="flex items-center gap-2 cursor-pointer text-destructive"
-                >
-                  <LogOut className="w-4 h-4" /> Sign Out
-                </DropdownMenuItem>
+<DropdownMenuSeparator />
+
+<DropdownMenuItem
+  onClick={signOut}
+  className="flex items-center gap-2 cursor-pointer text-destructive"
+>
+  <LogOut className="w-4 h-4" /> Sign Out
+</DropdownMenuItem>
+               
 
               </DropdownMenuContent>
             </DropdownMenu>
