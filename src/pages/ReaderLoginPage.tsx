@@ -20,11 +20,9 @@ export default function ReaderLoginPage() {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
 
-  useEffect(() => {
-    if (!authLoading && user) {
-      navigate("/bookstore", { replace: true });
-    }
-  }, [user, authLoading, navigate]);
+
+
+
 
 
 
