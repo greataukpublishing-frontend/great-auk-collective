@@ -14,6 +14,7 @@ import BookDetailPage from "./pages/BookDetailPage";
 import PublishPage from "./pages/PublishPage";
 import PublishBookPage from "./pages/PublishBookPage";
 import AuthorDashboardPage from "./pages/AuthorDashboardPage";
+import FavoritesPage from "./pages/FavoritesPage"
 import AuthorLoginPage from "./pages/AuthorLoginPage";
 import AuthorProfilePage from "./pages/AuthorProfilePage";
 import MembershipPage from "./pages/MembershipPage";
@@ -46,6 +47,7 @@ const App = () => (
 
             <Route path="/author-login" element={<AuthorLoginPage />} />
             <Route path="/reader-login" element={<ReaderLoginPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
 
             <Route
               path="/author-dashboard"
