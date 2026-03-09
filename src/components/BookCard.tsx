@@ -164,7 +164,10 @@ export default function BookCard({
       </Link>
 
       {/* Share button outside Link so clicks work properly */}
-      <div className="absolute bottom-3 right-3 z-10">
+      <div
+        className="absolute bottom-3 right-3 z-20"
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+      >
         <ShareButtons title={title} bookId={id} compact />
       </div>
 
