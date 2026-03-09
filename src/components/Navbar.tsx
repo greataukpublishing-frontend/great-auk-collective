@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Search, ShoppingCart, User, BookOpen, LogOut } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, User, BookOpen, LogOut, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import greatAukLogo from "@/assets/great-auk-hero.png";
@@ -18,13 +18,16 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const aukPlaying = useAukPlaying();
   const { user, isAuthor, loading, signOut } = useAuth();
 
   return (
+
     <nav className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary/80">
+
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
 
         {/* LOGO */}
@@ -32,8 +35,11 @@ export default function Navbar() {
           <img
             src={greatAukLogo}
             alt="Great Auk"
-            className={`h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
-            onClick={(e) => { e.preventDefault(); toggleAukCall(); }}
+            className={`h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? "auk-playing" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              toggleAukCall();
+            }}
             title="Click to hear the Great Auk"
           />
           <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
@@ -58,7 +64,6 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {/* ⭐ ADDED: AUTHOR DASHBOARD LINK */}
           {isAuthor && (
             <Link
               to="/author-dashboard"
@@ -77,15 +82,18 @@ export default function Navbar() {
         {/* RIGHT SIDE */}
         <div className="hidden md:flex items-center gap-3">
 
-          <button className="text-primary-foreground/80 hover:text-gold transition-colors">
-            <Search className="w-5 h-5" />
-          </button>
+          {/* SEARCH */}
+          <Link to="/bookstore">
+            <Search className="w-5 h-5 text-primary-foreground/80 hover:text-gold transition-colors" />
+          </Link>
 
-          <button className="text-primary-foreground/80 hover:text-gold transition-colors">
-            <ShoppingCart className="w-5 h-5" />
-          </button>
+          {/* CART */}
+          <Link to="/cart">
+            <ShoppingCart className="w-5 h-5 text-primary-foreground/80 hover:text-gold transition-colors" />
+          </Link>
 
           {!loading && user ? (
+
             <DropdownMenu>
 
               <DropdownMenuTrigger asChild>
@@ -109,34 +117,34 @@ export default function Navbar() {
                 {isAuthor && (
                   <DropdownMenuItem asChild>
                     <Link to="/author-dashboard" className="flex items-center gap-2 cursor-pointer">
-  <BookOpen className="w-4 h-4" /> Author Dashboard
-</Link>
-</DropdownMenuItem>
-)}
+                      <BookOpen className="w-4 h-4" /> Author Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
 
-<DropdownMenuItem asChild>
-  <Link to="/bookstore" className="flex items-center gap-2 cursor-pointer">
-    <ShoppingCart className="w-4 h-4" /> Bookstore
-  </Link>
-</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/bookstore" className="flex items-center gap-2 cursor-pointer">
+                    <ShoppingCart className="w-4 h-4" /> Bookstore
+                  </Link>
+                </DropdownMenuItem>
 
-<DropdownMenuItem asChild>
-  <Link to="/favorites" className="flex items-center gap-2 cursor-pointer">
-    <Heart className="w-4 h-4" /> My Favorites
-  </Link>
-</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/favorites" className="flex items-center gap-2 cursor-pointer">
+                    <Heart className="w-4 h-4" /> My Favorites
+                  </Link>
+                </DropdownMenuItem>
 
-<DropdownMenuSeparator />
+                <DropdownMenuSeparator />
 
-<DropdownMenuItem
-  onClick={signOut}
-  className="flex items-center gap-2 cursor-pointer text-destructive"
->
-  <LogOut className="w-4 h-4" /> Sign Out
-</DropdownMenuItem>
-               
+                <DropdownMenuItem
+                  onClick={signOut}
+                  className="flex items-center gap-2 cursor-pointer text-destructive"
+                >
+                  <LogOut className="w-4 h-4" /> Sign Out
+                </DropdownMenuItem>
 
               </DropdownMenuContent>
+
             </DropdownMenu>
 
           ) : (
@@ -162,7 +170,9 @@ export default function Navbar() {
                 </DropdownMenuItem>
 
               </DropdownMenuContent>
+
             </DropdownMenu>
+
           )}
 
         </div>
@@ -206,46 +216,10 @@ export default function Navbar() {
             </Link>
           )}
 
-          <div className="px-6 pt-2 space-y-2">
-
-            {!loading && user ? (
-              <>
-                <div className="text-primary-foreground/70 text-xs pb-1">
-                  Signed in as{" "}
-                  <span className="text-gold">
-                    {user.user_metadata?.display_name || user.email}
-                  </span>
-                </div>
-
-                <Button
-                  variant="heroOutline"
-                  size="sm"
-                  className="w-full flex items-center gap-2"
-                  onClick={() => { signOut(); setOpen(false); }}
-                >
-                  <LogOut className="w-4 h-4" /> Sign Out
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link to="/reader-login" onClick={() => setOpen(false)}>
-                  <Button variant="hero" size="sm" className="w-full flex items-center gap-2">
-                    <ShoppingCart className="w-4 h-4" /> Reader Login
-                  </Button>
-                </Link>
-
-                <Link to="/author-login" onClick={() => setOpen(false)}>
-                  <Button variant="heroOutline" size="sm" className="w-full flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" /> Author Login
-                  </Button>
-                </Link>
-              </>
-            )}
-
-          </div>
         </div>
       )}
 
     </nav>
   );
 }
+
