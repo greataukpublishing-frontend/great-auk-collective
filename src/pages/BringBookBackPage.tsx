@@ -173,7 +173,7 @@ export default function BringBookBackPage() {
       <section className="container mx-auto px-4 pb-20">
         <div className="max-w-2xl mx-auto">
           <div className="bg-card rounded-2xl p-8 md:p-10 border border-border shadow-sm">
-            <h2 className="font-display text-2xl font-bold text-card-foreground mb-6">Submit a Book for Restoration</h2>
+            <h2 className="font-display text-2xl font-bold text-card-foreground mb-6">Suggest a Rare Book to Rediscover</h2>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
