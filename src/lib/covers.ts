@@ -14,6 +14,22 @@ const coverMap: Record<string, string> = {
   "book-cover-6": bookCover6,
 };
 
-export function getBookCover(key: string): string {
-  return coverMap[key] ?? bookCover1;
+export function getBookCover(key: string, width = 400): string {
+  // Local asset key
+  if (coverMap[key]) return coverMap[key];
+
+  // Supabase storage URL — append transform for resizing
+  if (key && key.startsWith("http")) {
+    try {
+      const url = new URL(key);
+      url.searchParams.set("width", String(width));
+      url.searchParams.set("quality", "75");
+      return url.toString();
+    } catch {
+      return key;
+    }
+  }
+
+  // Fallback
+  return coverMap["book-cover-1"] ?? key;
 }

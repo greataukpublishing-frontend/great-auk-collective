@@ -111,7 +111,12 @@ export default function BookCard({
             <img
               src={getBookCover(cover)}
               alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+              className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+              onLoad={(e) => e.currentTarget.classList.add("opacity-100")}
+              style={{ opacity: 0, transition: "opacity 0.3s ease-in" }}
             />
 
             {tag && (
