@@ -131,7 +131,7 @@ export default function BookCard({
                     : "bg-accent text-accent-foreground"
                 }`}
               >
-                {tag === "restored" ? "Restored Classic" : "New Release"}
+                {tag === "restored" ? "Rediscovered Classic" : "New Release"}
               </span>
             )}
           </div>

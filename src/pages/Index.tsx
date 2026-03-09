@@ -207,7 +207,7 @@ export default function HomePage() {
               Unlimited Reading, One Price
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Subscribe to Great Auk Membership for exclusive discounts, early access to new releases, and unlimited access to our restored classics library.
+              Subscribe to Great Auk Membership for exclusive discounts, early access to new releases, and unlimited access to our rediscovered classics library.
             </p>
             <Link to="/membership">
               <Button size="lg">Explore Membership</Button>

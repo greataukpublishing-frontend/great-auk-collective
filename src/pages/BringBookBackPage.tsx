@@ -118,7 +118,7 @@ export default function BringBookBackPage() {
               We've received your submission for <strong className="text-foreground">"{form.bookTitle}"</strong> by {form.author}.
             </p>
             <p className="text-muted-foreground text-sm mb-8">
-              Our team will review this book and assess its restoration potential. We'll notify you at <strong>{form.submitterEmail}</strong> if we proceed.
+              Our team will review this book and assess its potential. We'll notify you at <strong>{form.submitterEmail}</strong> if we proceed.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button onClick={() => { setSubmitted(false); setForm(initialForm); }}>

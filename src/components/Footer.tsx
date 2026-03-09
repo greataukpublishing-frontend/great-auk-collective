@@ -48,7 +48,7 @@ export default function Footer() {
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">Bookstore</Link></li>
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">New Releases</Link></li>
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">Bestsellers</Link></li>
-              <li><Link to="/bookstore" className="hover:text-gold transition-colors">Restored Classics</Link></li>
+              <li><Link to="/bookstore" className="hover:text-gold transition-colors">Rediscovered Classics</Link></li>
             </ul>
           </div>
           <div>
