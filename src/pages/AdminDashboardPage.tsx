@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   LayoutDashboard, BookOpen, Users, ShoppingCart,
   Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText, ToggleRight,
-  LogOut, ChevronLeft, ChevronRight, Menu
+  LogOut, ChevronLeft, ChevronRight, Menu, Heart
 } from "lucide-react";
 
 import AdminOverview from "@/components/admin/AdminOverview";
@@ -19,6 +19,7 @@ import AdminSettings from "@/components/admin/AdminSettings";
 import AdminServices from "@/components/admin/AdminServices";
 import AdminContent from "@/components/admin/AdminContent";
 import AdminFeatureToggles from "@/components/admin/AdminFeatureToggles";
+import AdminSubmissions from "@/components/admin/AdminSubmissions";
 
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { id: "orders", label: "Orders & Sales", icon: ShoppingCart },
   { id: "categories", label: "Categories", icon: Tags },
   { id: "reviews", label: "Reviews", icon: MessageSquare },
+  { id: "submissions", label: "Book Submissions", icon: Heart },
   { id: "services", label: "Premium Services", icon: Briefcase },
   { id: "content", label: "Content & Homepage", icon: FileText },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -51,11 +53,12 @@ export default function AdminDashboardPage() {
   const [settings, setSettings] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [serviceOrders, setServiceOrders] = useState<any[]>([]);
+  const [submissions, setSubmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchAll = async () => {
     setLoading(true);
-    const [booksR, profilesR, ordersR, rolesR, catsR, reviewsR, settingsR, servicesR, soR] = await Promise.all([
+    const [booksR, profilesR, ordersR, rolesR, catsR, reviewsR, settingsR, servicesR, soR, subsR] = await Promise.all([
       supabase.from("books").select("*").order("created_at", { ascending: false }),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("orders").select("*").order("created_at", { ascending: false }),
@@ -65,6 +68,7 @@ export default function AdminDashboardPage() {
       supabase.from("platform_settings").select("*"),
       supabase.from("premium_services").select("*").order("created_at", { ascending: false }),
       supabase.from("service_orders").select("*").order("created_at", { ascending: false }),
+      supabase.from("book_submissions").select("*").order("created_at", { ascending: false }),
     ]);
     setBooks(booksR.data ?? []);
     setProfiles(profilesR.data ?? []);
@@ -75,6 +79,7 @@ export default function AdminDashboardPage() {
     setSettings(settingsR.data ?? []);
     setServices(servicesR.data ?? []);
     setServiceOrders(soR.data ?? []);
+    setSubmissions(subsR.data ?? []);
     setLoading(false);
   };
 
@@ -93,6 +98,7 @@ export default function AdminDashboardPage() {
 
   const pendingCount = books.filter(b => b.status === "pending").length;
   const flaggedCount = reviews.filter(r => r.flagged).length;
+  const submissionsCount = submissions.filter(s => s.status === "pending").length;
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -119,7 +125,10 @@ export default function AdminDashboardPage() {
         <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-1">
           {NAV_ITEMS.map((item) => {
             const isActive = tab === item.id;
-            const badge = item.id === "books" ? pendingCount : item.id === "reviews" ? flaggedCount : 0;
+            const badge = item.id === "books" ? pendingCount 
+              : item.id === "reviews" ? flaggedCount 
+              : item.id === "submissions" ? submissionsCount 
+              : 0;
             return (
               <button
                 key={item.id}
@@ -191,6 +200,7 @@ export default function AdminDashboardPage() {
               {tab === "orders" && <AdminOrders orders={orders} books={books} />}
               {tab === "categories" && <AdminCategories categories={categories} books={books} onRefresh={fetchAll} />}
               {tab === "reviews" && <AdminReviews reviews={reviews} books={books} onRefresh={fetchAll} />}
+              {tab === "submissions" && <AdminSubmissions submissions={submissions} onRefresh={fetchAll} />}
               {tab === "services" && <AdminServices services={services} serviceOrders={serviceOrders} onRefresh={fetchAll} />}
               {tab === "content" && <AdminContent books={books} onRefresh={fetchAll} />}
               {tab === "analytics" && <AdminAnalytics books={books} orders={orders} profiles={profiles} roles={roles} categories={categories} />}

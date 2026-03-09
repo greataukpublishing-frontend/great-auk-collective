@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_submissions: {
+        Row: {
+          author_name: string
+          book_title: string
+          category: string | null
+          created_at: string
+          id: string
+          language: string | null
+          source_link: string | null
+          status: string
+          submitter_email: string
+          submitter_name: string
+          why_restore: string
+          year_published: string | null
+        }
+        Insert: {
+          author_name: string
+          book_title: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          language?: string | null
+          source_link?: string | null
+          status?: string
+          submitter_email: string
+          submitter_name: string
+          why_restore: string
+          year_published?: string | null
+        }
+        Update: {
+          author_name?: string
+          book_title?: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          language?: string | null
+          source_link?: string | null
+          status?: string
+          submitter_email?: string
+          submitter_name?: string
+          why_restore?: string
+          year_published?: string | null
+        }
+        Relationships: []
+      }
       books: {
         Row: {
           author_id: string | null
