@@ -30,7 +30,6 @@ export default function FavoritesPage() {
           id,
           title,
           cover_url,
-          price,
           ebook_price,
           print_price
         )
