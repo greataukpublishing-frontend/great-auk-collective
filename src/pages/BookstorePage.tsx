@@ -5,9 +5,12 @@ import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
 
+const LANGUAGES = ["English", "Hindi", "Tamil", "Bengali", "Malayalam"];
+
 export default function BookstorePage() {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("featured");
 
@@ -22,14 +25,12 @@ export default function BookstorePage() {
   async function fetchData() {
     setLoading(true);
 
-    // fetch approved books
     const { data: booksData } = await supabase
       .from("books")
       .select("*")
       .eq("status", "approved")
       .order("featured", { ascending: false });
 
-    // fetch categories
     const { data: categoriesData } = await supabase
       .from("categories")
       .select("name")
@@ -45,6 +46,12 @@ export default function BookstorePage() {
     setLoading(false);
   }
 
+  function toggleLanguage(lang: string) {
+    setSelectedLanguages((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
+    );
+  }
+
   // filtering
   const filtered = books.filter((b) => {
 
@@ -55,7 +62,10 @@ export default function BookstorePage() {
       b.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       b.author_name.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchCategory && matchSearch;
+    const matchLanguage =
+      selectedLanguages.length === 0 || selectedLanguages.includes(b.language || "English");
+
+    return matchCategory && matchSearch && matchLanguage;
 
   });
 
@@ -121,7 +131,7 @@ export default function BookstorePage() {
         </div>
 
         {/* Categories */}
-        <div className="flex flex-wrap gap-2 mb-10">
+        <div className="flex flex-wrap gap-2 mb-6">
 
           {categories.map((cat) => (
 
@@ -139,6 +149,32 @@ export default function BookstorePage() {
 
           ))}
 
+        </div>
+
+        {/* Language Filter */}
+        <div className="flex flex-wrap items-center gap-2 mb-10">
+          <span className="text-sm font-medium text-muted-foreground mr-1">Language:</span>
+          {LANGUAGES.map((lang) => (
+            <button
+              key={lang}
+              onClick={() => toggleLanguage(lang)}
+              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                selectedLanguages.includes(lang)
+                  ? "bg-accent text-accent-foreground border-accent"
+                  : "bg-card text-card-foreground border-input hover:bg-secondary"
+              }`}
+            >
+              {lang}
+            </button>
+          ))}
+          {selectedLanguages.length > 0 && (
+            <button
+              onClick={() => setSelectedLanguages([])}
+              className="px-3 py-1 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Clear
+            </button>
+          )}
         </div>
 
         {/* Books Grid */}
