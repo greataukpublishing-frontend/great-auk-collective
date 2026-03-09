@@ -1,9 +1,9 @@
+```tsx
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, ShoppingCart, BookOpen, Book, ArrowLeft, Send, Heart } from "lucide-react";
+import { ShoppingCart, BookOpen, ArrowLeft, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import BookCard from "@/components/BookCard";
 import { Button } from "@/components/ui/button";
 import ShareButtons from "@/components/ShareButtons";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +27,8 @@ export default function BookDetailPage() {
   const [reviewRating, setReviewRating] = useState(5);
   const [submittingReview, setSubmittingReview] = useState(false);
 
+  const isAuthor = user?.id === book?.author_id;
+
   useEffect(() => {
     if (id) fetchBook(id);
   }, [id]);
@@ -42,6 +44,7 @@ export default function BookDetailPage() {
       .maybeSingle();
 
     if (!bookData) {
+      setBook(null);
       setLoading(false);
       return;
     }
@@ -124,6 +127,15 @@ export default function BookDetailPage() {
 
   const handlePurchase = async (format: "ebook" | "print") => {
 
+    if (isAuthor) {
+      toast({
+        title: "Authors cannot purchase their own book",
+        description: "If you need a copy, login with a reader account.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!user) {
       toast({
         title: "Please sign in",
@@ -192,73 +204,6 @@ export default function BookDetailPage() {
     }
 
     setPurchasing(false);
-  };
-
-  const handleReviewSubmit = async (e: React.FormEvent) => {
-
-    e.preventDefault();
-
-    if (!user) {
-      toast({
-        title: "Please sign in",
-        description: "Login to leave a review.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setSubmittingReview(true);
-
-    const { data: existingReview } = await supabase
-      .from("reviews")
-      .select("id")
-      .eq("book_id", id)
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (existingReview) {
-
-      toast({
-        title: "Review already exists",
-        description: "You already reviewed this book.",
-      });
-
-      setSubmittingReview(false);
-      return;
-    }
-
-    const { error } = await supabase
-      .from("reviews")
-      .insert([
-        {
-          book_id: id!,
-          user_id: user.id,
-          rating: reviewRating,
-          content: reviewText,
-        },
-      ]);
-
-    if (error) {
-
-      toast({
-        title: "Review failed",
-        description: error.message,
-        variant: "destructive",
-      });
-
-    } else {
-
-      toast({
-        title: "Review submitted!",
-      });
-
-      setReviewText("");
-      setReviewRating(5);
-
-      if (id) fetchBook(id);
-    }
-
-    setSubmittingReview(false);
   };
 
   if (loading) {
@@ -332,6 +277,16 @@ export default function BookDetailPage() {
               by {book.author_name}
             </Link>
 
+            {isAuthor && (
+              <Button
+                variant="outline"
+                className="mt-3"
+                onClick={() => navigate(`/edit-book/${book.id}`)}
+              >
+                Edit Book
+              </Button>
+            )}
+
             {avgRating > 0 && (
               <p className="mt-2">
                 ⭐ {avgRating.toFixed(1)} ({reviews.length} reviews)
@@ -342,7 +297,7 @@ export default function BookDetailPage() {
               {book.description || "No description available"}
             </p>
 
-            <div className="mt-8 flex gap-4 flex-wrap">
+            <div className="mt-8 flex flex-wrap items-center gap-4">
 
               <Button
                 disabled={purchasing}
@@ -390,3 +345,4 @@ export default function BookDetailPage() {
     </div>
   );
 }
+```
