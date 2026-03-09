@@ -1,4 +1,3 @@
-```tsx
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, BookOpen, ArrowLeft, Heart } from "lucide-react";
@@ -345,4 +344,4 @@ export default function BookDetailPage() {
     </div>
   );
 }
-```
+
