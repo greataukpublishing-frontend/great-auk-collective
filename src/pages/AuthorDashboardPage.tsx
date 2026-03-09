@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BookOpen, DollarSign, Eye, Plus, TrendingUp, Trash2 } from "lucide-react";
+import { BookOpen, DollarSign, Eye, Plus, TrendingUp, Trash2, Pencil } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -194,12 +194,30 @@ export default function AuthorDashboardPage() {
                       </p>
                     </div>
 
-                    <button
-                      onClick={() => handleDeleteBook(book.id)}
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex gap-2">
+
+                      <Link to={`/book/${book.id}`}>
+                        <Button size="sm" variant="outline">
+                          View
+                        </Button>
+                      </Link>
+
+                      <Link to={`/edit-book/${book.id}`}>
+                        <Button size="sm" variant="secondary">
+                          <Pencil className="w-4 h-4 mr-1" />
+                          Edit
+                        </Button>
+                      </Link>
+
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteBook(book.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+
+                    </div>
                   </div>
                 );
               })}
