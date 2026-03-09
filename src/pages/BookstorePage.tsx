@@ -5,12 +5,12 @@ import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
 
-const LANGUAGES = ["English", "Hindi", "Tamil", "Bengali", "Malayalam"];
+const LANGUAGES = ["All Languages", "English", "Hindi", "Tamil", "Bengali", "Malayalam"];
 
 export default function BookstorePage() {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState("All Languages");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("featured");
 
@@ -46,11 +46,7 @@ export default function BookstorePage() {
     setLoading(false);
   }
 
-  function toggleLanguage(lang: string) {
-    setSelectedLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
-    );
-  }
+  // (language dropdown handles selection directly)
 
   // filtering
   const filtered = books.filter((b) => {
@@ -63,7 +59,7 @@ export default function BookstorePage() {
       b.author_name.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchLanguage =
-      selectedLanguages.length === 0 || selectedLanguages.includes(b.language || "English");
+      selectedLanguage === "All Languages" || (b.language || "English") === selectedLanguage;
 
     return matchCategory && matchSearch && matchLanguage;
 
@@ -128,6 +124,16 @@ export default function BookstorePage() {
             <option value="price-high">Price: High to Low</option>
           </select>
 
+          <select
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+            className="px-4 py-2.5 rounded-lg border border-input bg-card text-card-foreground text-sm"
+          >
+            {LANGUAGES.map((lang) => (
+              <option key={lang} value={lang}>{lang}</option>
+            ))}
+          </select>
+
         </div>
 
         {/* Categories */}
@@ -151,31 +157,6 @@ export default function BookstorePage() {
 
         </div>
 
-        {/* Language Filter */}
-        <div className="flex flex-wrap items-center gap-2 mb-10">
-          <span className="text-sm font-medium text-muted-foreground mr-1">Language:</span>
-          {LANGUAGES.map((lang) => (
-            <button
-              key={lang}
-              onClick={() => toggleLanguage(lang)}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                selectedLanguages.includes(lang)
-                  ? "bg-accent text-accent-foreground border-accent"
-                  : "bg-card text-card-foreground border-input hover:bg-secondary"
-              }`}
-            >
-              {lang}
-            </button>
-          ))}
-          {selectedLanguages.length > 0 && (
-            <button
-              onClick={() => setSelectedLanguages([])}
-              className="px-3 py-1 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Clear
-            </button>
-          )}
-        </div>
 
         {/* Books Grid */}
 
