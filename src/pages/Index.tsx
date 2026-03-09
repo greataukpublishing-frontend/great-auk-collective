@@ -157,7 +157,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <h3 className="font-display font-semibold text-card-foreground">{author.display_name || "Anonymous"}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{author.bio || "Author at Great Auk Books"}</p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{author.bio || "Author at Great Auk Publishing"}</p>
                 </div>
               </Link>
             ))}
