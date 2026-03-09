@@ -118,4 +118,5 @@ const App = () => (
   </QueryClientProvider>
 
 );
+export default App;
 
