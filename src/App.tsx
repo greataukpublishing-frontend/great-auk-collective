@@ -28,6 +28,7 @@ import ReaderLoginPage from "./pages/ReaderLoginPage";
 import EditBookPage from "./pages/EditBookPage";
 import CartPage from "./pages/CartPage";
 import CheckoutOptionsPage from "./pages/CheckoutOptionsPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import MyOrdersPage from "./pages/MyOrdersPage";
 
 const queryClient = new QueryClient();
@@ -67,6 +68,7 @@ const App = () => (
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout-options" element={<CheckoutOptionsPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/orders" element={<MyOrdersPage />} />
 
             {/* AUTHOR DASHBOARD */}
