@@ -34,6 +34,7 @@ const initialData: BookData = {
   category: "Fiction",
   language: "English",
   keywords: "",
+  previewContent: "",
   manuscriptFile: null,
   coverFile: null,
   ebookPrice: "9.99",
