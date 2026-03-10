@@ -81,7 +81,7 @@ if (roleData?.role === "author") {
 }
 
 toast({ title: "Welcome back!", description: "You're now signed in." });
-navigate("/");
+navigate(redirectTo || "/");
       }
     }
     setLoading(false);

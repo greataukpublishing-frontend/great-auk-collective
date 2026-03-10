@@ -27,6 +27,7 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ReaderLoginPage from "./pages/ReaderLoginPage";
 import EditBookPage from "./pages/EditBookPage";
 import CartPage from "./pages/CartPage";
+import CheckoutOptionsPage from "./pages/CheckoutOptionsPage";
 import MyOrdersPage from "./pages/MyOrdersPage";
 
 const queryClient = new QueryClient();

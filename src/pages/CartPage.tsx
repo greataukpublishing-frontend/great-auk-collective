@@ -159,12 +159,7 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     if (!user) {
-      toast({
-        title: "Please sign in to checkout",
-        description: "You need an account to complete your purchase.",
-        variant: "destructive",
-      });
-      navigate("/reader-login");
+      navigate("/checkout-options");
       return;
     }
     // TODO: proceed with checkout
