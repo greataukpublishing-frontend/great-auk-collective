@@ -154,11 +154,21 @@ export default function BookCard({
 
             <p className="text-sm text-muted-foreground mt-1">{author}</p>
 
-            <div className="flex items-center gap-1 mt-2">
-              <Star className="w-3.5 h-3.5 fill-accent text-accent" />
-              <span className="text-xs font-medium text-card-foreground">
-                {rating}
-              </span>
+            <div className="flex items-center gap-2 mt-2">
+              {avgRating > 0 && (
+                <div className="flex items-center gap-1">
+                  <Star className="w-3.5 h-3.5 fill-accent text-accent" />
+                  <span className="text-xs font-medium text-card-foreground">
+                    {avgRating.toFixed(1)}
+                  </span>
+                  <span className="text-xs text-muted-foreground">({reviewCount})</span>
+                </div>
+              )}
+              {upvoteCount > 0 && (
+                <span className="text-xs text-muted-foreground">
+                  👍 {upvoteCount}
+                </span>
+              )}
             </div>
 
             <div className="flex items-center justify-between mt-2">
