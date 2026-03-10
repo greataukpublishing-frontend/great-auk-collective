@@ -108,7 +108,7 @@ export default function EditBookPage() {
       ebook_price:price,
       category,
       preview_content: previewContent || null,
-      status:"pending_review"
+      status:"pending"
     }
 
     if(manuscriptUrl){
