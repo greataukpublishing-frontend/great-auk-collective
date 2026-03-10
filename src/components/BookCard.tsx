@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { getBookCover } from "@/lib/covers";
-import { Star, Heart } from "lucide-react";
+import { Star, Heart, Plus, ShoppingCart } from "lucide-react";
 import ShareButtons from "@/components/ShareButtons";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface BookCardProps {
   id: string;
