@@ -33,6 +33,8 @@ export default function BookCard({
   category
 }: BookCardProps) {
 
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   const [favorited, setFavorited] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   useEffect(() => {
