@@ -200,9 +200,9 @@ export default function FavoritesPage() {
 
                       {/* Add to cart */}
                       <button
-                        onClick={() => addToCart(book)}
+                         onClick={() => handleAddToCart(book)}
                         className="flex items-center gap-1.5 text-xs font-medium text-primary bg-secondary hover:bg-primary hover:text-primary-foreground rounded-full px-3 py-1.5 transition-colors"
-                        aria-label="Add to cart"
+                        aria-label="Add to BookCart"
                       >
                         <Plus size={14} />
                         <ShoppingCart size={14} />
