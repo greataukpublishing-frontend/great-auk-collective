@@ -24,6 +24,7 @@ export default function BookDetailPage() {
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
