@@ -121,7 +121,7 @@ function OrderSummary({ subtotal, itemCount }: { subtotal: number; itemCount: nu
         </span>
       </div>
 
-      <Button size="lg" className="w-full rounded-xl text-base font-semibold h-12">
+      <Button size="lg" className="w-full rounded-xl text-base font-semibold h-12" onClick={onCheckout}>
         <Lock className="w-4 h-4 mr-2" />
         Secure Checkout
         <ArrowRight className="w-4 h-4 ml-2" />
