@@ -217,6 +217,20 @@ export default function EditBookPage() {
 
             <div>
               <label className="block text-sm font-medium mb-2">
+                Preview Content (Look Inside)
+              </label>
+              <textarea
+                rows={6}
+                value={previewContent}
+                onChange={(e)=>setPreviewContent(e.target.value)}
+                className="w-full border rounded-md px-3 py-2 bg-background"
+                placeholder="Paste the first few pages for readers to preview..."
+              />
+              <p className="text-xs text-muted-foreground mt-1">Optional — shown as a free sample on the book detail page.</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
                 Upload New Manuscript (PDF)
               </label>
 

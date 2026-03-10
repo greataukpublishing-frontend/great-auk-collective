@@ -204,6 +204,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
             <div><Label>Title</Label><Input value={editForm.title || ""} onChange={e => setEditForm({...editForm, title: e.target.value})} /></div>
             <div><Label>Author Name</Label><Input value={editForm.author_name || ""} onChange={e => setEditForm({...editForm, author_name: e.target.value})} /></div>
             <div><Label>Description</Label><Textarea value={editForm.description || ""} onChange={e => setEditForm({...editForm, description: e.target.value})} /></div>
+            <div><Label>Preview Content (Look Inside)</Label><Textarea value={editForm.preview_content || ""} onChange={e => setEditForm({...editForm, preview_content: e.target.value})} placeholder="Paste first few pages for reader preview..." /></div>
             <div><Label>Category</Label>
               <Select value={editForm.category || ""} onValueChange={v => setEditForm({...editForm, category: v})}>
                 <SelectTrigger><SelectValue /></SelectTrigger>

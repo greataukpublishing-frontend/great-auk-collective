@@ -94,6 +94,7 @@ export default function PublishBookPage() {
         print_price: parseFloat(data.printPrice) || 0,
         format: data.formats,
         cover_url: coverUrl,
+        preview_content: data.previewContent || null,
         status: "pending",
       });
 
