@@ -14,6 +14,7 @@ export default function EditBookPage() {
   const [description,setDescription] = useState("")
   const [price,setPrice] = useState("")
   const [category,setCategory] = useState("")
+  const [previewContent,setPreviewContent] = useState("")
   const [manuscript,setManuscript] = useState<File|null>(null)
   const [cover,setCover] = useState<File|null>(null)
 
@@ -41,6 +42,7 @@ export default function EditBookPage() {
     setDescription(data.description || "")
     setPrice(String(data.ebook_price || ""))
     setCategory(data.category || "")
+    setPreviewContent(data.preview_content || "")
     setLoading(false)
   }
 
@@ -105,6 +107,7 @@ export default function EditBookPage() {
       description,
       ebook_price:price,
       category,
+      preview_content: previewContent || null,
       status:"pending_review"
     }
 
@@ -210,6 +213,20 @@ export default function EditBookPage() {
                 onChange={(e)=>setCategory(e.target.value)}
                 className="w-full border rounded-md px-3 py-2 bg-background"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Preview Content (Look Inside)
+              </label>
+              <textarea
+                rows={6}
+                value={previewContent}
+                onChange={(e)=>setPreviewContent(e.target.value)}
+                className="w-full border rounded-md px-3 py-2 bg-background"
+                placeholder="Paste the first few pages for readers to preview..."
+              />
+              <p className="text-xs text-muted-foreground mt-1">Optional — shown as a free sample on the book detail page.</p>
             </div>
 
             <div>

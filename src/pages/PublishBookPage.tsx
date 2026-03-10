@@ -18,6 +18,7 @@ interface BookData {
   category: string;
   language: string;
   keywords: string;
+  previewContent: string;
   manuscriptFile: File | null;
   coverFile: File | null;
   ebookPrice: string;
@@ -33,6 +34,7 @@ const initialData: BookData = {
   category: "Fiction",
   language: "English",
   keywords: "",
+  previewContent: "",
   manuscriptFile: null,
   coverFile: null,
   ebookPrice: "9.99",
@@ -92,6 +94,7 @@ export default function PublishBookPage() {
         print_price: parseFloat(data.printPrice) || 0,
         format: data.formats,
         cover_url: coverUrl,
+        preview_content: data.previewContent || null,
         status: "pending",
       });
 
@@ -189,6 +192,16 @@ export default function PublishBookPage() {
                   placeholder="Brief description of your book..."
                   required
                 />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-card-foreground block mb-1">Preview Content (Look Inside)</label>
+                <textarea
+                  value={data.previewContent}
+                  onChange={(e) => update("previewContent", e.target.value)}
+                  className="w-full p-3 rounded-lg border border-input bg-background text-foreground text-sm resize-none h-32"
+                  placeholder="Paste the first few pages of your book here. This will be shown as a free preview to potential readers..."
+                />
+                <p className="text-xs text-muted-foreground mt-1">Optional — lets readers preview your book before purchasing.</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
