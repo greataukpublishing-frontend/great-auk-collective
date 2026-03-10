@@ -70,8 +70,17 @@ export default function FavoritesPage() {
     toast("Removed from favorites");
   }
 
-  function addToCart(book: any) {
-    toast.success(`"${book.title}" added to cart`);
+  function handleAddToCart(book: any) {
+    const price = book.ebook_price || book.print_price || 0;
+    addToCart({
+      id: book.id,
+      title: book.title,
+      author: book.author_name || "Unknown",
+      price,
+      cover: book.cover_url || "/placeholder.svg",
+      format: book.ebook_price ? "eBook" : "Paperback",
+    });
+    toast.success(`"${book.title}" added to BookCart`);
   }
 
   return (
