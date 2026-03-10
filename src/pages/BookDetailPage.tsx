@@ -262,8 +262,32 @@ export default function BookDetailPage() {
                 {isFavorite ? "Saved" : "Add to Favorites"}
               </Button>
 
+              {book.preview_content && (
+                <Button
+                  variant="secondary"
+                  onClick={() => setPreviewOpen(true)}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Look Inside
+                </Button>
+              )}
+
             </div>
 
+            {book.preview_content && (
+              <BookPreviewModal
+                open={previewOpen}
+                onOpenChange={setPreviewOpen}
+                title={book.title}
+                authorName={book.author_name}
+                previewContent={book.preview_content}
+                coverUrl={book.cover_url}
+                onAddToCart={() => {
+                  handleAddToCart("ebook");
+                  setPreviewOpen(false);
+                }}
+              />
+            )}
             <div className="mt-6">
               <ShareButtons title={book.title} bookId={book.id} />
             </div>
