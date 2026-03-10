@@ -42,7 +42,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   };
 
   const toggleFeatured = async (id: string, current: boolean) => {
-    await supabase.from("books").update({ featured: !current }).eq("id", id);
+    const { error } = await supabase.from("books").update({ featured: !current }).eq("id", id);
+    if (error) {
+      toast({ title: "Error toggling featured", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: current ? "Removed from featured" : "Added to featured" });
     onRefresh();
   };
