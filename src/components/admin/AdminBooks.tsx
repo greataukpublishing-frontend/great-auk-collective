@@ -52,7 +52,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 
   const openEdit = (book: any) => {
     setEditBook(book);
-    setEditForm({ title: book.title, author_name: book.author_name, description: book.description || "", category: book.category, ebook_price: book.ebook_price || 0, print_price: book.print_price || 0 });
+    setEditForm({ title: book.title, author_name: book.author_name, description: book.description || "", category: book.category, ebook_price: book.ebook_price || 0, print_price: book.print_price || 0, preview_content: book.preview_content || "" });
   };
 
   const saveEdit = async () => {
