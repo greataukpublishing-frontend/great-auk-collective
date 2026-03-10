@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-type OrderStatus = "processing" | "shipped" | "delivered" | "cancelled" | "refunded";
+
 
 interface OrderBook {
   id: string;
