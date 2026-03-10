@@ -69,7 +69,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 
   const saveEdit = async () => {
     if (!editBook) return;
-    await supabase.from("books").update(editForm).eq("id", editBook.id);
+    const { error } = await supabase.from("books").update(editForm).eq("id", editBook.id);
+    if (error) {
+      toast({ title: "Error saving changes", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: "Book updated" });
     setEditBook(null);
     onRefresh();
