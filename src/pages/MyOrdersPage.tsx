@@ -245,7 +245,7 @@ export default function MyOrdersPage() {
   const handleReorder = (order: Order) => {
     if (order.book) {
       addToCart({
-        id: order.book.id.hashCode?.() || Math.random(),
+        id: Date.now(),
         title: order.book.title,
         author: order.book.author_name,
         price: order.amount,
