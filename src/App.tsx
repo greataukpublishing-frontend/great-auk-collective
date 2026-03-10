@@ -68,6 +68,7 @@ const App = () => (
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout-options" element={<CheckoutOptionsPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/orders" element={<MyOrdersPage />} />
 
             {/* AUTHOR DASHBOARD */}
