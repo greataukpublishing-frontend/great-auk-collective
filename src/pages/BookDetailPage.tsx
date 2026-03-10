@@ -8,12 +8,14 @@ import ShareButtons from "@/components/ShareButtons";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/CartContext";
 
 export default function BookDetailPage() {
   const { id } = useParams();
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [book, setBook] = useState<any>(null);
   const [relatedBooks, setRelatedBooks] = useState<any[]>([]);
@@ -124,85 +126,23 @@ export default function BookDetailPage() {
     }
   };
 
-  const handlePurchase = async (format: "ebook" | "print") => {
+  const handleAddToCart = (format: "ebook" | "print") => {
+    const price = format === "ebook" ? (book.ebook_price || 0) : (book.print_price || 0);
+    const formatLabel = format === "ebook" ? "eBook" : "Paperback";
 
-    if (isAuthor) {
-      toast({
-        title: "Authors cannot purchase their own book",
-        description: "If you need a copy, login with a reader account.",
-        variant: "destructive",
-      });
-      return;
-    }
+    addToCart({
+      id: Date.now(),
+      title: book.title,
+      author: book.author_name,
+      price,
+      cover: book.cover_url || "",
+      format: formatLabel,
+    });
 
-    if (!user) {
-      toast({
-        title: "Please sign in",
-        description: "You need to be logged in to purchase.",
-        variant: "destructive",
-      });
-
-      navigate("/reader-login");
-      return;
-    }
-
-    setPurchasing(true);
-
-    const price =
-      format === "ebook"
-        ? book.ebook_price || 0
-        : book.print_price || 0;
-
-    const authorShare = price * 0.7;
-    const platformShare = price * 0.3;
-
-    const { data: existing } = await supabase
-      .from("orders")
-      .select("id")
-      .eq("book_id", book.id)
-      .eq("buyer_id", user.id)
-      .maybeSingle();
-
-    if (existing) {
-      toast({
-        title: "Already purchased",
-        description: "You already bought this book.",
-      });
-
-      setPurchasing(false);
-      return;
-    }
-
-    const { error } = await supabase
-      .from("orders")
-      .insert([
-        {
-          book_id: book.id,
-          buyer_id: user.id,
-          amount: price,
-          author_share: authorShare,
-          platform_share: platformShare,
-          status: "completed",
-        },
-      ]);
-
-    if (error) {
-
-      toast({
-        title: "Purchase failed",
-        description: error.message,
-        variant: "destructive",
-      });
-
-    } else {
-
-      toast({
-        title: "Purchase successful!",
-        description: `You purchased the ${format} of "${book.title}".`,
-      });
-    }
-
-    setPurchasing(false);
+    toast({
+      title: "Added to BookCart",
+      description: `"${book.title}" (${formatLabel}) added to your cart.`,
+    });
   };
 
   if (loading) {
@@ -298,21 +238,14 @@ export default function BookDetailPage() {
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
 
-              <Button
-                disabled={purchasing}
-                onClick={() => handlePurchase("ebook")}
-              >
+              <Button onClick={() => handleAddToCart("ebook")}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Buy Ebook ${book.ebook_price || 0}
+                Add eBook to Cart – ${book.ebook_price || 0}
               </Button>
 
-              <Button
-                variant="outline"
-                disabled={purchasing}
-                onClick={() => handlePurchase("print")}
-              >
+              <Button variant="outline" onClick={() => handleAddToCart("print")}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Buy Paperback ${book.print_price || 0}
+                Add Paperback to Cart – ${book.print_price || 0}
               </Button>
 
               <Button

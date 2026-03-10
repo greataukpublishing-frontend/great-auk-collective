@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { getBookCover } from "@/lib/covers";
-import { Star, Heart } from "lucide-react";
+import { Star, Heart, Plus, ShoppingCart } from "lucide-react";
 import ShareButtons from "@/components/ShareButtons";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface BookCardProps {
   id: string;
@@ -31,6 +33,8 @@ export default function BookCard({
   category
 }: BookCardProps) {
 
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   const [favorited, setFavorited] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   useEffect(() => {
@@ -172,9 +176,30 @@ export default function BookCard({
         </div>
       </Link>
 
-      {/* Share button outside Link so clicks work properly */}
+      {/* Add to Cart button */}
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          addToCart({
+            id: Date.now(),
+            title,
+            author,
+            price: ebookPrice ?? price,
+            cover: getBookCover(cover),
+            format: "eBook",
+          });
+          toast({ title: "Added to BookCart", description: `"${title}" added.` });
+        }}
+        className="absolute bottom-3 right-3 z-20 flex items-center gap-1 bg-primary text-primary-foreground rounded-full px-3 py-1.5 text-xs font-medium shadow hover:opacity-90 transition"
+      >
+        <Plus size={14} />
+        <ShoppingCart size={14} />
+      </button>
+
+      {/* Share button */}
       <div
-        className="absolute bottom-3 right-3 z-20"
+        className="absolute bottom-3 left-3 z-20"
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
         onMouseDown={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
