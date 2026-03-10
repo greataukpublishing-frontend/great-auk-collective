@@ -188,14 +188,24 @@ export default function BookCard({
 
           {/* Action bar - inside card flow */}
           <div className="flex items-center justify-between px-4 py-2 border-t border-border">
-            {/* Share */}
-            <div
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onMouseDown={(e) => e.stopPropagation()}
-              onPointerDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-            >
-              <ShareButtons title={title} bookId={id} compact />
+            {/* Share + Upvote */}
+            <div className="flex items-center gap-2">
+              <div
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+              >
+                <ShareButtons title={title} bookId={id} compact />
+              </div>
+              <div
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+              >
+                <BookVoting bookId={id} compact />
+              </div>
             </div>
 
             {/* Add to Cart */}

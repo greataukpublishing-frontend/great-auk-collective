@@ -236,6 +236,10 @@ export default function BookDetailPage() {
               </p>
             )}
 
+            <div className="mt-3">
+              <BookVoting bookId={book.id} />
+            </div>
+
             <p className="mt-6">
               {book.description || "No description available"}
             </p>
