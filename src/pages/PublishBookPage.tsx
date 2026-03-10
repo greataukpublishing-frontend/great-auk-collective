@@ -18,6 +18,7 @@ interface BookData {
   category: string;
   language: string;
   keywords: string;
+  previewContent: string;
   manuscriptFile: File | null;
   coverFile: File | null;
   ebookPrice: string;
