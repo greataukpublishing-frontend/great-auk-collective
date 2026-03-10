@@ -151,8 +151,25 @@ function OrderSummary({ subtotal, itemCount, onCheckout }: { subtotal: number; i
 
 export default function CartPage() {
   const { cartItems, itemCount, removeFromCart, updateQuantity } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCheckout = () => {
+    if (!user) {
+      toast({
+        title: "Please sign in to checkout",
+        description: "You need an account to complete your purchase.",
+        variant: "destructive",
+      });
+      navigate("/reader-login");
+      return;
+    }
+    // TODO: proceed with checkout
+    toast({ title: "Proceeding to checkout…" });
+  };
 
   return (
     <div className="min-h-screen bg-background">
