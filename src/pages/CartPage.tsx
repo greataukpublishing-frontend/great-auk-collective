@@ -232,7 +232,7 @@ export default function CartPage() {
             </div>
 
             <div className="lg:sticky lg:top-24">
-              <OrderSummary subtotal={subtotal} itemCount={itemCount} />
+              <OrderSummary subtotal={subtotal} itemCount={itemCount} onCheckout={handleCheckout} />
             </div>
           </div>
         )}
