@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getBookCover } from "@/lib/covers";
+import { useCart } from "@/contexts/CartContext";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<any[]>([]);
