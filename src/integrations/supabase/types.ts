@@ -72,6 +72,7 @@ export type Database = {
           format: string[] | null
           id: string
           language: string
+          preview_content: string | null
           print_price: number | null
           status: string
           title: string
@@ -89,6 +90,7 @@ export type Database = {
           format?: string[] | null
           id?: string
           language?: string
+          preview_content?: string | null
           print_price?: number | null
           status?: string
           title: string
@@ -106,6 +108,7 @@ export type Database = {
           format?: string[] | null
           id?: string
           language?: string
+          preview_content?: string | null
           print_price?: number | null
           status?: string
           title?: string
