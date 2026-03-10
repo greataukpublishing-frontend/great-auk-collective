@@ -66,6 +66,7 @@ const App = () => (
             {/* USER PAGES */}
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout-options" element={<CheckoutOptionsPage />} />
             <Route path="/orders" element={<MyOrdersPage />} />
 
             {/* AUTHOR DASHBOARD */}
