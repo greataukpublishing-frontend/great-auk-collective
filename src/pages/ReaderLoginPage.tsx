@@ -20,6 +20,10 @@ export default function ReaderLoginPage() {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
 
+  // Get redirect URL from query params
+  const searchParams = new URLSearchParams(window.location.search);
+  const redirectTo = searchParams.get("redirect");
+
 
 
 
@@ -77,7 +81,7 @@ if (roleData?.role === "author") {
 }
 
 toast({ title: "Welcome back!", description: "You're now signed in." });
-navigate("/");
+navigate(redirectTo || "/");
       }
     }
     setLoading(false);
