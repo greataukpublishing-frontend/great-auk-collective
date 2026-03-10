@@ -238,21 +238,14 @@ export default function BookDetailPage() {
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
 
-              <Button
-                disabled={purchasing}
-                onClick={() => handlePurchase("ebook")}
-              >
+              <Button onClick={() => handleAddToCart("ebook")}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Buy Ebook ${book.ebook_price || 0}
+                Add eBook to Cart – ${book.ebook_price || 0}
               </Button>
 
-              <Button
-                variant="outline"
-                disabled={purchasing}
-                onClick={() => handlePurchase("print")}
-              >
+              <Button variant="outline" onClick={() => handleAddToCart("print")}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Buy Paperback ${book.print_price || 0}
+                Add Paperback to Cart – ${book.print_price || 0}
               </Button>
 
               <Button
