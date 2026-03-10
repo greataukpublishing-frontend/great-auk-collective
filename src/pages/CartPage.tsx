@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Assuming you have react-router-dom for navigation
+import { Link } from "react-router-dom";
+import { Minus, Plus, X, ShoppingBag, ArrowRight } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([
@@ -8,132 +13,200 @@ export default function CartPage() {
       title: "The Silent Ocean",
       author: "Jane Rivers",
       price: 14.99,
-      cover: "https://via.placeholder.com/100x140",
-      quantity: 1, // Added quantity for cart functionality
+      cover: "https://via.placeholder.com/200x300",
+      quantity: 1,
+      format: "eBook",
     },
     {
       id: 2,
       title: "Whispers of the Ancient Forest",
       author: "Elara Green",
       price: 19.99,
-      cover: "https://via.placeholder.com/100x140",
+      cover: "https://via.placeholder.com/200x300",
       quantity: 2,
+      format: "Paperback",
     },
-  ] );
+  ]);
 
-  const removeItem = (id) => {
+  const removeItem = (id: number) => {
     setCartItems(cartItems.filter((item) => item.id !== id));
   };
 
-  const updateQuantity = (id, newQuantity) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
-    ));
+  const updateQuantity = (id: number, newQuantity: number) => {
+    setCartItems(
+      cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
+      )
+    );
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal > 0 ? 5.00 : 0; // Example shipping cost
-  const total = subtotal + shipping;
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="container mx-auto px-4 py-12 font-sans bg-gray-50 min-h-screen">
-      <h1 className="text-4xl font-semibold text-[#1E392A] mb-10 tracking-tight">
-        Your Shopping Cart
-      </h1>
+    <div className="min-h-screen bg-background">
+      <Navbar />
 
-      {cartItems.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-lg shadow-inner border border-gray-100">
-          <div className="text-6xl mb-6">🛒</div>
-          <h2 className="text-2xl font-medium text-[#1E392A] mb-3">
-            Your cart is empty
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Looks like you haven't added anything to your cart yet. Explore our bookstore to find your next read!
-          </p>
-          <Link
-            to="/bookstore"
-            className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-[#1E392A] hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EAB333] transition-colors duration-200"
-          >
-            Go to Bookstore
-          </Link>
+      <div className="container mx-auto px-4 py-16 max-w-4xl">
+        {/* Minimal header */}
+        <div className="mb-12">
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+            Your Bag
+          </h1>
+          {cartItems.length > 0 && (
+            <p className="text-muted-foreground mt-2 text-lg">
+              {itemCount} {itemCount === 1 ? "item" : "items"}
+            </p>
+          )}
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            {cartItems.map((book) => (
-              <div
-                key={book.id}
-                className="flex items-center gap-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100"
-              >
-                <Link to={`/book/${book.id}`}>
-                  <img
-                    src={book.cover}
-                    alt={book.title}
-                    className="w-24 h-36 object-cover rounded-lg shadow-md"
-                  />
-                </Link>
-                <div className="flex-1 flex flex-col justify-between h-36">
-                  <div>
-                    <Link to={`/book/${book.id}`} className="block">
-                      <h2 className="text-xl font-semibold text-[#1E392A] leading-tight hover:text-green-700 transition-colors duration-200">
-                        {book.title}
-                      </h2>
+
+        {cartItems.length === 0 ? (
+          /* Empty state */
+          <div className="text-center py-24">
+            <ShoppingBag className="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+            <h2 className="font-display text-2xl font-semibold text-foreground mb-3">
+              Your bag is empty
+            </h2>
+            <p className="text-muted-foreground max-w-sm mx-auto mb-10">
+              Explore our collection of restored classics and new voices waiting to be discovered.
+            </p>
+            <Button asChild size="lg" className="rounded-full px-10">
+              <Link to="/bookstore">
+                Browse Books
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-0">
+            {/* Cart items */}
+            <div>
+              {cartItems.map((book, index) => (
+                <div key={book.id}>
+                  {index > 0 && <Separator />}
+                  <div className="py-8 flex gap-6 md:gap-8 items-start">
+                    {/* Cover */}
+                    <Link to={`/book/${book.id}`} className="shrink-0">
+                      <div className="w-20 md:w-28 aspect-[2/3] rounded-lg overflow-hidden bg-muted shadow-sm hover:shadow-md transition-shadow">
+                        <img
+                          src={book.cover}
+                          alt={book.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     </Link>
-                    <p className="text-sm text-gray-500 mt-1">by {book.author}</p>
-                  </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => updateQuantity(book.id, book.quantity - 1)}
-                        className="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200"
-                      >
-                        -
-                      </button>
-                      <span className="text-lg font-medium text-[#1E392A]">{book.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(book.id, book.quantity + 1)}
-                        className="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200"
-                      >
-                        +
-                      </button>
+
+                    {/* Details */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <Link to={`/book/${book.id}`}>
+                            <h3 className="font-display text-lg md:text-xl font-semibold text-foreground leading-tight hover:text-accent transition-colors">
+                              {book.title}
+                            </h3>
+                          </Link>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {book.author}
+                          </p>
+                          <span className="inline-block text-xs text-muted-foreground mt-2 px-2.5 py-0.5 rounded-full bg-secondary">
+                            {book.format}
+                          </span>
+                        </div>
+
+                        {/* Remove button */}
+                        <button
+                          onClick={() => removeItem(book.id)}
+                          className="text-muted-foreground hover:text-destructive transition-colors p-1 -mt-1"
+                          aria-label="Remove item"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Quantity & Price row */}
+                      <div className="flex items-center justify-between mt-6">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() =>
+                              updateQuantity(book.id, book.quantity - 1)
+                            }
+                            className="w-8 h-8 rounded-full border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="text-sm font-medium text-foreground w-6 text-center">
+                            {book.quantity}
+                          </span>
+                          <button
+                            onClick={() =>
+                              updateQuantity(book.id, book.quantity + 1)
+                            }
+                            className="w-8 h-8 rounded-full border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+
+                        <p className="font-display text-lg font-semibold text-foreground">
+                          ${(book.price * book.quantity).toFixed(2)}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-xl font-bold text-[#EAB333]">
-                      ${(book.price * book.quantity).toFixed(2)}
-                    </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => removeItem(book.id)}
-                  className="text-red-500 hover:text-red-700 text-sm font-medium transition-colors duration-200 self-start mt-2"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border border-gray-100 h-fit">
-            <h2 className="text-2xl font-semibold text-[#1E392A] mb-6">Order Summary</h2>
-            <div className="space-y-3 text-gray-700">
-              <div className="flex justify-between">
-                <span>Subtotal:</span>
+            <Separator />
+
+            {/* Summary — clean, bottom-aligned */}
+            <div className="pt-8 pb-4 max-w-sm ml-auto space-y-4">
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Shipping:</span>
-                <span>${shipping.toFixed(2)}</span>
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Shipping</span>
+                <span className="text-accent font-medium">Free</span>
               </div>
-              <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between items-center text-xl font-bold text-[#1E392A]">
-                <span>Total:</span>
-                <span>${total.toFixed(2)}</span>
+              <Separator />
+              <div className="flex justify-between items-baseline">
+                <span className="text-foreground font-medium">Total</span>
+                <span className="font-display text-2xl font-bold text-foreground">
+                  ${subtotal.toFixed(2)}
+                </span>
               </div>
+
+              <Button
+                size="lg"
+                className="w-full rounded-full mt-4 text-base font-semibold"
+              >
+                Checkout
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+
+              <p className="text-center text-xs text-muted-foreground pt-2">
+                Secure checkout · 30-day return policy
+              </p>
             </div>
-            <button className="w-full mt-8 inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-[#1E392A] hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EAB333] transition-colors duration-200">
-              Proceed to Checkout
-            </button>
+
+            {/* Continue shopping link */}
+            <div className="text-center pt-8 pb-4">
+              <Link
+                to="/bookstore"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+              >
+                Continue browsing
+              </Link>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      <Footer />
     </div>
   );
 }
