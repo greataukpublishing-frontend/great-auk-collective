@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, BookOpen, ArrowLeft, Heart } from "lucide-react";
+import { ShoppingCart, BookOpen, ArrowLeft, Heart, Eye } from "lucide-react";
+import BookPreviewModal from "@/components/BookPreviewModal";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ export default function BookDetailPage() {
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
@@ -260,8 +262,32 @@ export default function BookDetailPage() {
                 {isFavorite ? "Saved" : "Add to Favorites"}
               </Button>
 
+              {book.preview_content && (
+                <Button
+                  variant="secondary"
+                  onClick={() => setPreviewOpen(true)}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Look Inside
+                </Button>
+              )}
+
             </div>
 
+            {book.preview_content && (
+              <BookPreviewModal
+                open={previewOpen}
+                onOpenChange={setPreviewOpen}
+                title={book.title}
+                authorName={book.author_name}
+                previewContent={book.preview_content}
+                coverUrl={book.cover_url}
+                onAddToCart={() => {
+                  handleAddToCart("ebook");
+                  setPreviewOpen(false);
+                }}
+              />
+            )}
             <div className="mt-6">
               <ShareButtons title={book.title} bookId={book.id} />
             </div>

@@ -1,0 +1,1 @@
+ALTER TABLE public.books ADD COLUMN preview_content text DEFAULT null;
