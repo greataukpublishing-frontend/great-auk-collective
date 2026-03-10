@@ -32,7 +32,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   });
 
   const updateStatus = async (id: string, status: string) => {
-    await supabase.from("books").update({ status }).eq("id", id);
+    const { error } = await supabase.from("books").update({ status }).eq("id", id);
+    if (error) {
+      toast({ title: "Error updating status", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: `Book ${status}` });
     onRefresh();
   };
