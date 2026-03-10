@@ -53,7 +53,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 
   const deleteBook = async (id: string) => {
     if (!confirm("Are you sure you want to delete this book?")) return;
-    await supabase.from("books").delete().eq("id", id);
+    const { error } = await supabase.from("books").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error deleting book", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: "Book deleted" });
     onRefresh();
   };
