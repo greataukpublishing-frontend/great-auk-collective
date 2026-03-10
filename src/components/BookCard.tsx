@@ -140,7 +140,7 @@ export default function BookCard({
             )}
           </div>
 
-          <div className="p-4">
+          <div className="p-4 pb-2">
             {category && (
               <p className="text-xs text-muted-foreground mb-1">{category}</p>
             )}
@@ -173,42 +173,42 @@ export default function BookCard({
             </div>
           </div>
 
+          {/* Action bar - inside card flow */}
+          <div className="flex items-center justify-between px-4 py-2 border-t border-border">
+            {/* Share */}
+            <div
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onMouseDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+            >
+              <ShareButtons title={title} bookId={id} compact />
+            </div>
+
+            {/* Add to Cart */}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                addToCart({
+                  id: Date.now(),
+                  title,
+                  author,
+                  price: ebookPrice ?? price,
+                  cover: getBookCover(cover),
+                  format: "eBook",
+                });
+                toast({ title: "Added to BookCart", description: `"${title}" added.` });
+              }}
+              className="flex items-center gap-1 bg-primary text-primary-foreground rounded-full px-3 py-1.5 text-xs font-medium shadow hover:opacity-90 transition"
+            >
+              <Plus size={14} />
+              <ShoppingCart size={14} />
+            </button>
+          </div>
+
         </div>
       </Link>
-
-      {/* Bottom action bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-3 py-2 bg-card/90 backdrop-blur-sm border-t border-border">
-        {/* Share */}
-        <div
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          onMouseDown={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-        >
-          <ShareButtons title={title} bookId={id} compact />
-        </div>
-
-        {/* Add to Cart */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            addToCart({
-              id: Date.now(),
-              title,
-              author,
-              price: ebookPrice ?? price,
-              cover: getBookCover(cover),
-              format: "eBook",
-            });
-            toast({ title: "Added to BookCart", description: `"${title}" added.` });
-          }}
-          className="flex items-center gap-1 bg-primary text-primary-foreground rounded-full px-3 py-1.5 text-xs font-medium shadow hover:opacity-90 transition"
-        >
-          <Plus size={14} />
-          <ShoppingCart size={14} />
-        </button>
-      </div>
 
     </div>
   )
