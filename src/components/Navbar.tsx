@@ -23,6 +23,7 @@ export default function Navbar() {
   const location = useLocation();
   const aukPlaying = useAukPlaying();
   const { user, isAuthor, loading, signOut } = useAuth();
+  const { itemCount } = useCart();
 
   return (
 
