@@ -7,10 +7,12 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getBookCover } from "@/lib/covers";
+import { useCart } from "@/contexts/CartContext";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     loadFavorites();
@@ -68,8 +70,17 @@ export default function FavoritesPage() {
     toast("Removed from favorites");
   }
 
-  function addToCart(book: any) {
-    toast.success(`"${book.title}" added to cart`);
+  function handleAddToCart(book: any) {
+    const price = book.ebook_price || book.print_price || 0;
+    addToCart({
+      id: book.id,
+      title: book.title,
+      author: book.author_name || "Unknown",
+      price,
+      cover: book.cover_url || "/placeholder.svg",
+      format: book.ebook_price ? "eBook" : "Paperback",
+    });
+    toast.success(`"${book.title}" added to BookCart`);
   }
 
   return (
@@ -189,9 +200,9 @@ export default function FavoritesPage() {
 
                       {/* Add to cart */}
                       <button
-                        onClick={() => addToCart(book)}
+                         onClick={() => handleAddToCart(book)}
                         className="flex items-center gap-1.5 text-xs font-medium text-primary bg-secondary hover:bg-primary hover:text-primary-foreground rounded-full px-3 py-1.5 transition-colors"
-                        aria-label="Add to cart"
+                        aria-label="Add to BookCart"
                       >
                         <Plus size={14} />
                         <ShoppingCart size={14} />

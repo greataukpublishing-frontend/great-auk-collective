@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Lock, RotateCcw, Truck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/contexts/CartContext";
 
 interface CartItem {
   id: number;
@@ -27,18 +27,12 @@ function CartItemCard({
 }) {
   return (
     <div className="py-8 flex gap-5 md:gap-8 items-start">
-      {/* Cover */}
       <Link to={`/book/${item.id}`} className="shrink-0">
         <div className="w-24 md:w-32 aspect-[2/3] rounded-xl overflow-hidden bg-muted shadow-md hover:shadow-lg transition-shadow">
-          <img
-            src={item.cover}
-            alt={item.title}
-            className="w-full h-full object-cover"
-          />
+          <img src={item.cover} alt={item.title} className="w-full h-full object-cover" />
         </div>
       </Link>
 
-      {/* Details */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start gap-3">
           <div>
@@ -47,32 +41,23 @@ function CartItemCard({
                 {item.title}
               </h3>
             </Link>
-            <p className="text-sm text-muted-foreground mt-1">
-              by {item.author}
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">by {item.author}</p>
             <span className="inline-block text-xs text-muted-foreground mt-2.5 px-3 py-1 rounded-full bg-secondary font-medium">
               {item.format}
             </span>
-            <p className="text-sm text-foreground font-medium mt-2">
-              ${item.price.toFixed(2)} each
-            </p>
+            <p className="text-sm text-foreground font-medium mt-2">${item.price.toFixed(2)} each</p>
           </div>
-
-          {/* Line total — desktop */}
           <p className="hidden md:block font-display text-xl font-bold text-foreground">
             ${(item.price * item.quantity).toFixed(2)}
           </p>
         </div>
 
-        {/* Quantity & actions row */}
         <div className="flex items-center justify-between mt-5 gap-4">
-          {/* Quantity */}
           <div className="flex items-center gap-1">
             <button
               onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
               disabled={item.quantity <= 1}
               className="w-9 h-9 rounded-lg border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              aria-label="Decrease quantity"
             >
               <Minus className="w-3.5 h-3.5" />
             </button>
@@ -82,23 +67,18 @@ function CartItemCard({
             <button
               onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
               className="w-9 h-9 rounded-lg border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
-              aria-label="Increase quantity"
             >
               <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Line total — mobile */}
             <p className="md:hidden font-display text-lg font-bold text-foreground">
               ${(item.price * item.quantity).toFixed(2)}
             </p>
-
-            {/* Remove */}
             <button
               onClick={() => onRemove(item.id)}
               className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-destructive transition-colors group"
-              aria-label="Remove item"
             >
               <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span className="hidden sm:inline">Remove</span>
@@ -110,18 +90,10 @@ function CartItemCard({
   );
 }
 
-function OrderSummary({
-  subtotal,
-  itemCount,
-}: {
-  subtotal: number;
-  itemCount: number;
-}) {
+function OrderSummary({ subtotal, itemCount }: { subtotal: number; itemCount: number }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
-      <h2 className="font-display text-xl font-semibold text-foreground mb-6">
-        Order Summary
-      </h2>
+      <h2 className="font-display text-xl font-semibold text-foreground mb-6">Order Summary</h2>
 
       <div className="space-y-3 text-sm">
         <div className="flex justify-between text-muted-foreground">
@@ -147,16 +119,12 @@ function OrderSummary({
         </span>
       </div>
 
-      <Button
-        size="lg"
-        className="w-full rounded-xl text-base font-semibold h-12"
-      >
+      <Button size="lg" className="w-full rounded-xl text-base font-semibold h-12">
         <Lock className="w-4 h-4 mr-2" />
         Secure Checkout
         <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
 
-      {/* Trust signals */}
       <div className="mt-6 grid grid-cols-2 gap-3">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Lock className="w-3.5 h-3.5 shrink-0" />
@@ -180,42 +148,9 @@ function OrderSummary({
 }
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      title: "The Silent Ocean",
-      author: "Jane Rivers",
-      price: 14.99,
-      cover: "https://via.placeholder.com/200x300",
-      quantity: 1,
-      format: "eBook",
-    },
-    {
-      id: 2,
-      title: "Whispers of the Ancient Forest",
-      author: "Elara Green",
-      price: 19.99,
-      cover: "https://via.placeholder.com/200x300",
-      quantity: 2,
-      format: "Paperback",
-    },
-  ]);
+  const { cartItems, itemCount, removeFromCart, updateQuantity } = useCart();
 
-  const removeItem = (id: number) =>
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-
-  const updateQuantity = (id: number, newQuantity: number) =>
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
-      )
-    );
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -227,26 +162,24 @@ export default function CartPage() {
           <div className="flex items-center gap-3">
             <ShoppingCart className="w-7 h-7 text-foreground" />
             <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground tracking-tight">
-              Shopping Cart
+              BookCart
             </h1>
           </div>
           {cartItems.length > 0 && (
             <p className="text-muted-foreground mt-2 text-base ml-10">
-              {itemCount} {itemCount === 1 ? "item" : "items"} in your cart
+              {itemCount} {itemCount === 1 ? "book" : "books"} in your cart
             </p>
           )}
         </div>
 
         {cartItems.length === 0 ? (
-          /* Empty state */
           <div className="text-center py-24">
             <ShoppingCart className="w-16 h-16 text-muted-foreground/20 mx-auto mb-6" />
             <h2 className="font-display text-2xl font-semibold text-foreground mb-3">
-              Your cart is empty
+              Your BookCart is empty
             </h2>
             <p className="text-muted-foreground max-w-sm mx-auto mb-10">
-              Explore our collection of restored classics and new voices waiting
-              to be discovered.
+              Explore our collection of restored classics and new voices waiting to be discovered.
             </p>
             <Button asChild size="lg" className="rounded-xl px-10">
               <Link to="/bookstore">
@@ -257,21 +190,18 @@ export default function CartPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
-            {/* Items column */}
             <div>
               {cartItems.map((item, index) => (
                 <div key={item.id}>
                   {index > 0 && <Separator />}
                   <CartItemCard
                     item={item}
-                    onRemove={removeItem}
+                    onRemove={removeFromCart}
                     onUpdateQuantity={updateQuantity}
                   />
                 </div>
               ))}
               <Separator />
-
-              {/* Continue shopping */}
               <div className="pt-6">
                 <Link
                   to="/bookstore"
@@ -282,7 +212,6 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* Sidebar summary */}
             <div className="lg:sticky lg:top-24">
               <OrderSummary subtotal={subtotal} itemCount={itemCount} />
             </div>
