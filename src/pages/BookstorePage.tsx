@@ -179,7 +179,6 @@ export default function BookstorePage() {
                 cover={book.cover_url || ""}
                 tag={book.featured ? "new" : undefined}
               />
-              />
 
             ))}
 
