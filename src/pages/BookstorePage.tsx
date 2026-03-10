@@ -77,6 +77,9 @@ export default function BookstorePage() {
     if (sortBy === "price-high")
       return (b.ebook_price || 0) - (a.ebook_price || 0);
 
+    if (sortBy === "newest")
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+
     return 0;
   });
 
@@ -121,6 +124,7 @@ export default function BookstorePage() {
           >
             <option value="" disabled hidden>Sort</option>
             <option value="featured">Featured</option>
+            <option value="newest">Newest</option>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
           </select>
@@ -171,8 +175,6 @@ export default function BookstorePage() {
                 author={book.author_name}
                 price={book.print_price || 0}
                 ebookPrice={book.ebook_price || 0}
-                rating={4.5}
-                reviews={0}
                 category={book.category}
                 cover={book.cover_url || ""}
                 tag={book.featured ? "new" : undefined}

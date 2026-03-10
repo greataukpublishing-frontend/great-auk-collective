@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { getBookCover } from "@/lib/covers";
 import { Star, Heart, Plus, ShoppingCart } from "lucide-react";
 import ShareButtons from "@/components/ShareButtons";
+import BookVoting from "@/components/BookVoting";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useBookStats } from "@/hooks/useBookStats";
 
 interface BookCardProps {
   id: string;
@@ -13,8 +15,6 @@ interface BookCardProps {
   author: string;
   price: number;
   ebookPrice?: number;
-  rating: number;
-  reviews: number;
   cover: string;
   tag?: string;
   category?: string;
@@ -26,8 +26,6 @@ export default function BookCard({
   author,
   price,
   ebookPrice,
-  rating,
-  reviews,
   cover,
   tag,
   category
@@ -35,8 +33,9 @@ export default function BookCard({
 
   const { addToCart } = useCart();
   const { toast } = useToast();
-  const [favorited, setFavorited] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const { avgRating, reviewCount, upvoteCount } = useBookStats(id);
+  const [favorited, setFavorited] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   useEffect(() => {
     checkFavorite()
   }, [])
@@ -151,11 +150,21 @@ export default function BookCard({
 
             <p className="text-sm text-muted-foreground mt-1">{author}</p>
 
-            <div className="flex items-center gap-1 mt-2">
-              <Star className="w-3.5 h-3.5 fill-accent text-accent" />
-              <span className="text-xs font-medium text-card-foreground">
-                {rating}
-              </span>
+            <div className="flex items-center gap-2 mt-2">
+              {avgRating > 0 && (
+                <div className="flex items-center gap-1">
+                  <Star className="w-3.5 h-3.5 fill-accent text-accent" />
+                  <span className="text-xs font-medium text-card-foreground">
+                    {avgRating.toFixed(1)}
+                  </span>
+                  <span className="text-xs text-muted-foreground">({reviewCount})</span>
+                </div>
+              )}
+              {upvoteCount > 0 && (
+                <span className="text-xs text-muted-foreground">
+                  👍 {upvoteCount}
+                </span>
+              )}
             </div>
 
             <div className="flex items-center justify-between mt-2">
@@ -175,14 +184,24 @@ export default function BookCard({
 
           {/* Action bar - inside card flow */}
           <div className="flex items-center justify-between px-4 py-2 border-t border-border">
-            {/* Share */}
-            <div
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onMouseDown={(e) => e.stopPropagation()}
-              onPointerDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-            >
-              <ShareButtons title={title} bookId={id} compact />
+            {/* Share + Upvote */}
+            <div className="flex items-center gap-2">
+              <div
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+              >
+                <ShareButtons title={title} bookId={id} compact />
+              </div>
+              <div
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+              >
+                <BookVoting bookId={id} compact />
+              </div>
             </div>
 
             {/* Add to Cart */}

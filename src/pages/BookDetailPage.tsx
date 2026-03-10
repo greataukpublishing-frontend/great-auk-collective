@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, BookOpen, ArrowLeft, Heart, Eye } from "lucide-react";
 import BookPreviewModal from "@/components/BookPreviewModal";
+import BookVoting from "@/components/BookVoting";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -233,6 +234,10 @@ export default function BookDetailPage() {
                 ⭐ {avgRating.toFixed(1)} ({reviews.length} reviews)
               </p>
             )}
+
+            <div className="mt-3">
+              <BookVoting bookId={book.id} />
+            </div>
 
             <p className="mt-6">
               {book.description || "No description available"}
