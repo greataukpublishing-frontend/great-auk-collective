@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Lock, RotateCcw, Truck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface CartItem {
   id: number;
@@ -90,7 +92,7 @@ function CartItemCard({
   );
 }
 
-function OrderSummary({ subtotal, itemCount }: { subtotal: number; itemCount: number }) {
+function OrderSummary({ subtotal, itemCount, onCheckout }: { subtotal: number; itemCount: number; onCheckout: () => void }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
       <h2 className="font-display text-xl font-semibold text-foreground mb-6">Order Summary</h2>
@@ -119,7 +121,7 @@ function OrderSummary({ subtotal, itemCount }: { subtotal: number; itemCount: nu
         </span>
       </div>
 
-      <Button size="lg" className="w-full rounded-xl text-base font-semibold h-12">
+      <Button size="lg" className="w-full rounded-xl text-base font-semibold h-12" onClick={onCheckout}>
         <Lock className="w-4 h-4 mr-2" />
         Secure Checkout
         <ArrowRight className="w-4 h-4 ml-2" />
@@ -149,8 +151,25 @@ function OrderSummary({ subtotal, itemCount }: { subtotal: number; itemCount: nu
 
 export default function CartPage() {
   const { cartItems, itemCount, removeFromCart, updateQuantity } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCheckout = () => {
+    if (!user) {
+      toast({
+        title: "Please sign in to checkout",
+        description: "You need an account to complete your purchase.",
+        variant: "destructive",
+      });
+      navigate("/reader-login");
+      return;
+    }
+    // TODO: proceed with checkout
+    toast({ title: "Proceeding to checkout…" });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -213,7 +232,7 @@ export default function CartPage() {
             </div>
 
             <div className="lg:sticky lg:top-24">
-              <OrderSummary subtotal={subtotal} itemCount={itemCount} />
+              <OrderSummary subtotal={subtotal} itemCount={itemCount} onCheckout={handleCheckout} />
             </div>
           </div>
         )}
