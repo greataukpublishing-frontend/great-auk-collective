@@ -107,6 +107,7 @@ export default function EditBookPage() {
       description,
       ebook_price:price,
       category,
+      preview_content: previewContent || null,
       status:"pending_review"
     }
 
