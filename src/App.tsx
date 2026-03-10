@@ -27,6 +27,7 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ReaderLoginPage from "./pages/ReaderLoginPage";
 import EditBookPage from "./pages/EditBookPage";
 import CartPage from "./pages/CartPage";
+import MyOrdersPage from "./pages/MyOrdersPage";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => (
             {/* USER PAGES */}
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/orders" element={<MyOrdersPage />} />
 
             {/* AUTHOR DASHBOARD */}
             <Route

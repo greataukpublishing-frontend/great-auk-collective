@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Search, ShoppingCart, User, BookOpen, LogOut, Heart } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, User, BookOpen, LogOut, Heart, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import greatAukLogo from "@/assets/great-auk-hero.png";
@@ -137,6 +137,12 @@ export default function Navbar() {
                 <DropdownMenuItem asChild>
                   <Link to="/favorites" className="flex items-center gap-2 cursor-pointer">
                     <Heart className="w-4 h-4" /> My Favorites
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild>
+                  <Link to="/orders" className="flex items-center gap-2 cursor-pointer">
+                    <Package className="w-4 h-4" /> My Orders
                   </Link>
                 </DropdownMenuItem>
 
