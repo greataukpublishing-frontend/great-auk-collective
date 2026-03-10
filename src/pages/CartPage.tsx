@@ -1,13 +1,186 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Minus, Plus, X, ShoppingBag, ArrowRight } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Lock, RotateCcw, Truck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
+interface CartItem {
+  id: number;
+  title: string;
+  author: string;
+  price: number;
+  cover: string;
+  quantity: number;
+  format: string;
+}
+
+function CartItemCard({
+  item,
+  onRemove,
+  onUpdateQuantity,
+}: {
+  item: CartItem;
+  onRemove: (id: number) => void;
+  onUpdateQuantity: (id: number, qty: number) => void;
+}) {
+  return (
+    <div className="py-8 flex gap-5 md:gap-8 items-start">
+      {/* Cover */}
+      <Link to={`/book/${item.id}`} className="shrink-0">
+        <div className="w-24 md:w-32 aspect-[2/3] rounded-xl overflow-hidden bg-muted shadow-md hover:shadow-lg transition-shadow">
+          <img
+            src={item.cover}
+            alt={item.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </Link>
+
+      {/* Details */}
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between items-start gap-3">
+          <div>
+            <Link to={`/book/${item.id}`}>
+              <h3 className="font-display text-lg md:text-xl font-semibold text-foreground leading-tight hover:text-accent transition-colors">
+                {item.title}
+              </h3>
+            </Link>
+            <p className="text-sm text-muted-foreground mt-1">
+              by {item.author}
+            </p>
+            <span className="inline-block text-xs text-muted-foreground mt-2.5 px-3 py-1 rounded-full bg-secondary font-medium">
+              {item.format}
+            </span>
+            <p className="text-sm text-foreground font-medium mt-2">
+              ${item.price.toFixed(2)} each
+            </p>
+          </div>
+
+          {/* Line total — desktop */}
+          <p className="hidden md:block font-display text-xl font-bold text-foreground">
+            ${(item.price * item.quantity).toFixed(2)}
+          </p>
+        </div>
+
+        {/* Quantity & actions row */}
+        <div className="flex items-center justify-between mt-5 gap-4">
+          {/* Quantity */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+              disabled={item.quantity <= 1}
+              className="w-9 h-9 rounded-lg border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Decrease quantity"
+            >
+              <Minus className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-sm font-semibold text-foreground w-10 text-center tabular-nums">
+              {item.quantity}
+            </span>
+            <button
+              onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+              className="w-9 h-9 rounded-lg border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
+              aria-label="Increase quantity"
+            >
+              <Plus className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Line total — mobile */}
+            <p className="md:hidden font-display text-lg font-bold text-foreground">
+              ${(item.price * item.quantity).toFixed(2)}
+            </p>
+
+            {/* Remove */}
+            <button
+              onClick={() => onRemove(item.id)}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-destructive transition-colors group"
+              aria-label="Remove item"
+            >
+              <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline">Remove</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OrderSummary({
+  subtotal,
+  itemCount,
+}: {
+  subtotal: number;
+  itemCount: number;
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
+      <h2 className="font-display text-xl font-semibold text-foreground mb-6">
+        Order Summary
+      </h2>
+
+      <div className="space-y-3 text-sm">
+        <div className="flex justify-between text-muted-foreground">
+          <span>Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})</span>
+          <span className="text-foreground font-medium">${subtotal.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between text-muted-foreground">
+          <span>Shipping</span>
+          <span className="text-accent font-semibold">Free</span>
+        </div>
+        <div className="flex justify-between text-muted-foreground">
+          <span>Tax</span>
+          <span>Calculated at checkout</span>
+        </div>
+      </div>
+
+      <Separator className="my-5" />
+
+      <div className="flex justify-between items-baseline mb-6">
+        <span className="text-foreground font-semibold text-base">Total</span>
+        <span className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          ${subtotal.toFixed(2)}
+        </span>
+      </div>
+
+      <Button
+        size="lg"
+        className="w-full rounded-xl text-base font-semibold h-12"
+      >
+        <Lock className="w-4 h-4 mr-2" />
+        Secure Checkout
+        <ArrowRight className="w-4 h-4 ml-2" />
+      </Button>
+
+      {/* Trust signals */}
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Lock className="w-3.5 h-3.5 shrink-0" />
+          <span>SSL encrypted</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+          <span>30-day returns</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Truck className="w-3.5 h-3.5 shrink-0" />
+          <span>Free shipping</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
+          <span>Secure payment</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([
+  const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
       title: "The Silent Ocean",
@@ -28,17 +201,15 @@ export default function CartPage() {
     },
   ]);
 
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
+  const removeItem = (id: number) =>
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
 
-  const updateQuantity = (id: number, newQuantity: number) => {
-    setCartItems(
-      cartItems.map((item) =>
+  const updateQuantity = (id: number, newQuantity: number) =>
+    setCartItems((prev) =>
+      prev.map((item) =>
         item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
       )
     );
-  };
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -50,15 +221,18 @@ export default function CartPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-16 max-w-4xl">
-        {/* Minimal header */}
-        <div className="mb-12">
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-            Your Bag
-          </h1>
+      <div className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
+        {/* Header */}
+        <div className="mb-10">
+          <div className="flex items-center gap-3">
+            <ShoppingCart className="w-7 h-7 text-foreground" />
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+              Shopping Cart
+            </h1>
+          </div>
           {cartItems.length > 0 && (
-            <p className="text-muted-foreground mt-2 text-lg">
-              {itemCount} {itemCount === 1 ? "item" : "items"}
+            <p className="text-muted-foreground mt-2 text-base ml-10">
+              {itemCount} {itemCount === 1 ? "item" : "items"} in your cart
             </p>
           )}
         </div>
@@ -66,14 +240,15 @@ export default function CartPage() {
         {cartItems.length === 0 ? (
           /* Empty state */
           <div className="text-center py-24">
-            <ShoppingBag className="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+            <ShoppingCart className="w-16 h-16 text-muted-foreground/20 mx-auto mb-6" />
             <h2 className="font-display text-2xl font-semibold text-foreground mb-3">
-              Your bag is empty
+              Your cart is empty
             </h2>
             <p className="text-muted-foreground max-w-sm mx-auto mb-10">
-              Explore our collection of restored classics and new voices waiting to be discovered.
+              Explore our collection of restored classics and new voices waiting
+              to be discovered.
             </p>
-            <Button asChild size="lg" className="rounded-full px-10">
+            <Button asChild size="lg" className="rounded-xl px-10">
               <Link to="/bookstore">
                 Browse Books
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -81,126 +256,35 @@ export default function CartPage() {
             </Button>
           </div>
         ) : (
-          <div className="space-y-0">
-            {/* Cart items */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-12 items-start">
+            {/* Items column */}
             <div>
-              {cartItems.map((book, index) => (
-                <div key={book.id}>
+              {cartItems.map((item, index) => (
+                <div key={item.id}>
                   {index > 0 && <Separator />}
-                  <div className="py-8 flex gap-6 md:gap-8 items-start">
-                    {/* Cover */}
-                    <Link to={`/book/${book.id}`} className="shrink-0">
-                      <div className="w-20 md:w-28 aspect-[2/3] rounded-lg overflow-hidden bg-muted shadow-sm hover:shadow-md transition-shadow">
-                        <img
-                          src={book.cover}
-                          alt={book.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </Link>
-
-                    {/* Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start gap-4">
-                        <div>
-                          <Link to={`/book/${book.id}`}>
-                            <h3 className="font-display text-lg md:text-xl font-semibold text-foreground leading-tight hover:text-accent transition-colors">
-                              {book.title}
-                            </h3>
-                          </Link>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {book.author}
-                          </p>
-                          <span className="inline-block text-xs text-muted-foreground mt-2 px-2.5 py-0.5 rounded-full bg-secondary">
-                            {book.format}
-                          </span>
-                        </div>
-
-                        {/* Remove button */}
-                        <button
-                          onClick={() => removeItem(book.id)}
-                          className="text-muted-foreground hover:text-destructive transition-colors p-1 -mt-1"
-                          aria-label="Remove item"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      {/* Quantity & Price row */}
-                      <div className="flex items-center justify-between mt-6">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() =>
-                              updateQuantity(book.id, book.quantity - 1)
-                            }
-                            className="w-8 h-8 rounded-full border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="text-sm font-medium text-foreground w-6 text-center">
-                            {book.quantity}
-                          </span>
-                          <button
-                            onClick={() =>
-                              updateQuantity(book.id, book.quantity + 1)
-                            }
-                            className="w-8 h-8 rounded-full border border-input flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
-
-                        <p className="font-display text-lg font-semibold text-foreground">
-                          ${(book.price * book.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <CartItemCard
+                    item={item}
+                    onRemove={removeItem}
+                    onUpdateQuantity={updateQuantity}
+                  />
                 </div>
               ))}
-            </div>
-
-            <Separator />
-
-            {/* Summary — clean, bottom-aligned */}
-            <div className="pt-8 pb-4 max-w-sm ml-auto space-y-4">
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Shipping</span>
-                <span className="text-accent font-medium">Free</span>
-              </div>
               <Separator />
-              <div className="flex justify-between items-baseline">
-                <span className="text-foreground font-medium">Total</span>
-                <span className="font-display text-2xl font-bold text-foreground">
-                  ${subtotal.toFixed(2)}
-                </span>
+
+              {/* Continue shopping */}
+              <div className="pt-6">
+                <Link
+                  to="/bookstore"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+                >
+                  ← Continue browsing
+                </Link>
               </div>
-
-              <Button
-                size="lg"
-                className="w-full rounded-full mt-4 text-base font-semibold"
-              >
-                Checkout
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-
-              <p className="text-center text-xs text-muted-foreground pt-2">
-                Secure checkout · 30-day return policy
-              </p>
             </div>
 
-            {/* Continue shopping link */}
-            <div className="text-center pt-8 pb-4">
-              <Link
-                to="/bookstore"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
-              >
-                Continue browsing
-              </Link>
+            {/* Sidebar summary */}
+            <div className="lg:sticky lg:top-24">
+              <OrderSummary subtotal={subtotal} itemCount={itemCount} />
             </div>
           </div>
         )}
