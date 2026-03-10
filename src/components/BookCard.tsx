@@ -26,8 +26,6 @@ export default function BookCard({
   author,
   price,
   ebookPrice,
-  rating,
-  reviews,
   cover,
   tag,
   category
