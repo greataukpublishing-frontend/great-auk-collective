@@ -115,6 +115,7 @@ const App = () => (
 
       </TooltipProvider>
 
+    </CartProvider>
     </AuthProvider>
 
   </QueryClientProvider>

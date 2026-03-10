@@ -89,8 +89,13 @@ export default function Navbar() {
           </Link>
 
           {/* CART */}
-          <Link to="/cart">
+          <Link to="/cart" className="relative">
             <ShoppingCart className="w-5 h-5 text-primary-foreground/80 hover:text-gold transition-colors" />
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                {itemCount}
+              </span>
+            )}
           </Link>
 
           {!loading && user ? (
