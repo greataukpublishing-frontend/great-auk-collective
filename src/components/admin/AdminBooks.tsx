@@ -32,20 +32,32 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   });
 
   const updateStatus = async (id: string, status: string) => {
-    await supabase.from("books").update({ status }).eq("id", id);
+    const { error } = await supabase.from("books").update({ status }).eq("id", id);
+    if (error) {
+      toast({ title: "Error updating status", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: `Book ${status}` });
     onRefresh();
   };
 
   const toggleFeatured = async (id: string, current: boolean) => {
-    await supabase.from("books").update({ featured: !current }).eq("id", id);
+    const { error } = await supabase.from("books").update({ featured: !current }).eq("id", id);
+    if (error) {
+      toast({ title: "Error toggling featured", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: current ? "Removed from featured" : "Added to featured" });
     onRefresh();
   };
 
   const deleteBook = async (id: string) => {
     if (!confirm("Are you sure you want to delete this book?")) return;
-    await supabase.from("books").delete().eq("id", id);
+    const { error } = await supabase.from("books").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error deleting book", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: "Book deleted" });
     onRefresh();
   };
@@ -57,7 +69,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 
   const saveEdit = async () => {
     if (!editBook) return;
-    await supabase.from("books").update(editForm).eq("id", editBook.id);
+    const { error } = await supabase.from("books").update(editForm).eq("id", editBook.id);
+    if (error) {
+      toast({ title: "Error saving changes", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: "Book updated" });
     setEditBook(null);
     onRefresh();
