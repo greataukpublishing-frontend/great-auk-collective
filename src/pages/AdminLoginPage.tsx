@@ -13,7 +13,6 @@ export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -21,51 +20,32 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
 
-    if (isSignUp) {
-      const { error } = await supabase.auth.signUp({ email, password });
-      if (error) {
-        toast({ title: "Sign up failed", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Account created!", description: "Please check your email to verify, then sign in." });
-        setIsSignUp(false);
-      }
-      setLoading(false);
-      return;
-    }
-
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      
+
       if (error) {
         toast({ title: "Login failed", description: error.message, variant: "destructive" });
         setLoading(false);
         return;
       }
 
-      // Use direct fetch to avoid auth lock issues
-      const token = data.session?.access_token;
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      
-      const res = await fetch(
-        `${supabaseUrl}/rest/v1/user_roles?user_id=eq.${data.user.id}&select=role`,
-        {
-          headers: {
-            "apikey": anonKey,
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const roles = await res.json();
-      console.log("Roles via fetch:", roles);
+      // Check admin role
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.user.id);
 
-      if (Array.isArray(roles) && roles.some((r: any) => r.role === "admin")) {
-        window.location.href = "/admin";
-        return;
+      const isAdmin = roles?.some((r) => r.role === "admin") ?? false;
+
+      if (isAdmin) {
+        navigate("/admin", { replace: true });
       } else {
         await supabase.auth.signOut();
-        toast({ title: "Access denied", description: "This account does not have admin privileges.", variant: "destructive" });
+        toast({
+          title: "Access denied",
+          description: "This account does not have admin privileges.",
+          variant: "destructive",
+        });
       }
     } catch (err: any) {
       console.error("Login error:", err);
@@ -97,14 +77,8 @@ export default function AdminLoginPage() {
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
             <Button type="submit" variant="hero" className="w-full" disabled={loading}>
-              {loading ? "Please wait..." : isSignUp ? "Sign Up" : "Sign In"}
+              {loading ? "Please wait..." : "Sign In"}
             </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              {isSignUp ? "Already have an account?" : "Need an account?"}{" "}
-              <button type="button" className="text-primary underline" onClick={() => setIsSignUp(!isSignUp)}>
-                {isSignUp ? "Sign In" : "Sign Up"}
-              </button>
-            </p>
           </form>
         </div>
       </div>

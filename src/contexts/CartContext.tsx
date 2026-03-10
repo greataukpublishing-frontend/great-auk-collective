@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CartItem {
   id: number;
@@ -33,24 +34,80 @@ function loadCart(): CartItem[] {
   return [];
 }
 
+function saveCart(items: CartItem[]) {
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+}
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>(loadCart);
+  const { user } = useAuth();
+  const prevUserRef = useRef<string | null>(null);
 
-  // Sync to localStorage on every change
+  // Persist cart to localStorage on every change
   useEffect(() => {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    saveCart(cartItems);
   }, [cartItems]);
+
+  // On login: merge guest cart with any previously saved user cart
+  // On logout: keep cart items in localStorage (don't clear)
+  useEffect(() => {
+    const currentUserId = user?.id ?? null;
+    const prevUserId = prevUserRef.current;
+
+    if (currentUserId && !prevUserId) {
+      // User just logged in - load any user-specific cart and merge with guest cart
+      const userCartKey = `${CART_STORAGE_KEY}-${currentUserId}`;
+      try {
+        const raw = localStorage.getItem(userCartKey);
+        if (raw) {
+          const userCart: CartItem[] = JSON.parse(raw);
+          if (Array.isArray(userCart) && userCart.length > 0) {
+            setCartItems((guestItems) => {
+              const merged = [...userCart];
+              for (const guestItem of guestItems) {
+                const existing = merged.find((i) => i.id === guestItem.id && i.format === guestItem.format);
+                if (existing) {
+                  existing.quantity += guestItem.quantity;
+                } else {
+                  merged.push(guestItem);
+                }
+              }
+              return merged;
+            });
+          }
+        }
+      } catch {}
+    }
+
+    if (!currentUserId && prevUserId) {
+      // User just logged out - save current cart as user's cart for future merge
+      const userCartKey = `${CART_STORAGE_KEY}-${prevUserId}`;
+      saveCart(cartItems);
+      localStorage.setItem(userCartKey, JSON.stringify(cartItems));
+      // Don't clear - keep items visible as guest cart
+    }
+
+    prevUserRef.current = currentUserId;
+  }, [user?.id]);
+
+  // Also save user-specific cart periodically when logged in
+  useEffect(() => {
+    if (user?.id) {
+      const userCartKey = `${CART_STORAGE_KEY}-${user.id}`;
+      localStorage.setItem(userCartKey, JSON.stringify(cartItems));
+    }
+  }, [cartItems, user?.id]);
 
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {
     setCartItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
+      const existing = prev.find((i) => i.id === item.id && i.format === item.format);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i.id === item.id && i.format === item.format ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
       return [...prev, { ...item, quantity: 1 }];
@@ -67,7 +124,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       )
     );
 
-  const clearCart = () => setCartItems([]);
+  const clearCart = () => {
+    setCartItems([]);
+    // Also clear user-specific cart on checkout
+    if (user?.id) {
+      localStorage.removeItem(`${CART_STORAGE_KEY}-${user.id}`);
+    }
+  };
 
   return (
     <CartContext.Provider
