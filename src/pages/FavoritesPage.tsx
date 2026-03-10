@@ -12,6 +12,7 @@ import { useCart } from "@/contexts/CartContext";
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     loadFavorites();
