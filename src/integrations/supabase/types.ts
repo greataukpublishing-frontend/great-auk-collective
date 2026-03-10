@@ -59,6 +59,38 @@ export type Database = {
         }
         Relationships: []
       }
+      book_votes: {
+        Row: {
+          book_id: string
+          created_at: string
+          id: string
+          user_id: string
+          vote_type: string
+        }
+        Insert: {
+          book_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+          vote_type: string
+        }
+        Update: {
+          book_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_votes_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           author_id: string | null
@@ -405,6 +437,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_book_rankings: {
+        Args: never
+        Returns: {
+          avg_rating: number
+          book_id: string
+          community_score: number
+          downvote_count: number
+          upvote_count: number
+        }[]
+      }
+      get_book_vote_stats: {
+        Args: { p_book_id: string }
+        Returns: {
+          community_score: number
+          downvote_count: number
+          upvote_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
