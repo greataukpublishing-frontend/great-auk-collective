@@ -77,6 +77,9 @@ export default function BookstorePage() {
     if (sortBy === "price-high")
       return (b.ebook_price || 0) - (a.ebook_price || 0);
 
+    if (sortBy === "newest")
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+
     return 0;
   });
 
