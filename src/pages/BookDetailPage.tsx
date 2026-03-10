@@ -15,6 +15,7 @@ export default function BookDetailPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [book, setBook] = useState<any>(null);
   const [relatedBooks, setRelatedBooks] = useState<any[]>([]);
