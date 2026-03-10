@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -18,18 +17,9 @@ export default function ReaderLoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, loading: authLoading } = useAuth();
 
-  // Get redirect URL from query params
   const searchParams = new URLSearchParams(window.location.search);
   const redirectTo = searchParams.get("redirect");
-
-
-
-
-
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,33 +47,50 @@ export default function ReaderLoginPage() {
         });
         setIsSignUp(false);
       }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        toast({ title: "Login failed", description: error.message, variant: "destructive" });
-      } else {
-        const { data: { user } } = await supabase.auth.getUser();
-
-const { data: roleData } = await supabase
-  .from("user_roles")
-  .select("role")
-  .eq("user_id", user.id)
-  .single();
-
-if (roleData?.role === "author") {
-  toast({
-    title: "Wrong login page",
-    description: "You are already an author. Please sign in from the Author login page or use another email to be a reader.",
-    variant: "destructive"
-  });
-  await supabase.auth.signOut();
-  return;
-}
-
-toast({ title: "Welcome back!", description: "You're now signed in." });
-navigate(redirectTo || "/");
-      }
+      setLoading(false);
+      return;
     }
+
+    // Sign in flow
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      setLoading(false);
+      return;
+    }
+
+    // Check roles - block admins from using reader login
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id);
+
+    const roleList = roles?.map((r) => r.role) ?? [];
+
+    if (roleList.includes("admin")) {
+      await supabase.auth.signOut();
+      toast({
+        title: "Access denied",
+        description: "Please use the admin login portal.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (roleList.includes("author") && !roleList.includes("reader")) {
+      await supabase.auth.signOut();
+      toast({
+        title: "Wrong login page",
+        description: "You are registered as an author. Please sign in from the Author login page.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    toast({ title: "Welcome back!", description: "You're now signed in." });
+    navigate(redirectTo || "/");
     setLoading(false);
   };
 

@@ -26,9 +26,6 @@ export default function AuthorLoginPage() {
     }
   }, [user, authLoading, navigate]);
 
-
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -51,14 +48,49 @@ export default function AuthorLoginPage() {
       } else {
         toast({ title: "Check your email", description: "We sent you a confirmation link. Please verify your email before signing in." });
       }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        toast({ title: "Login failed", description: error.message, variant: "destructive" });
-      } else {
-        navigate("/");
-      }
+      setLoading(false);
+      return;
     }
+
+    // Sign in flow
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      setLoading(false);
+      return;
+    }
+
+    // Check roles - block admins
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id);
+
+    const roleList = roles?.map((r) => r.role) ?? [];
+
+    if (roleList.includes("admin")) {
+      await supabase.auth.signOut();
+      toast({
+        title: "Access denied",
+        description: "Please use the admin login portal.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (!roleList.includes("author")) {
+      await supabase.auth.signOut();
+      toast({
+        title: "Not an author account",
+        description: "This account is not registered as an author. Please use the reader login or sign up as an author.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    navigate("/");
     setLoading(false);
   };
 
