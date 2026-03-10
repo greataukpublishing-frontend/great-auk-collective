@@ -15,8 +15,6 @@ interface BookCardProps {
   author: string;
   price: number;
   ebookPrice?: number;
-  rating: number;
-  reviews: number;
   cover: string;
   tag?: string;
   category?: string;
