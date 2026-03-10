@@ -124,6 +124,7 @@ export default function BookstorePage() {
           >
             <option value="" disabled hidden>Sort</option>
             <option value="featured">Featured</option>
+            <option value="newest">Newest</option>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
           </select>
