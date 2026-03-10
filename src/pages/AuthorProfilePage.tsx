@@ -92,8 +92,6 @@ export default function AuthorProfilePage() {
                 author={book.author_name}
                 price={book.print_price || 0}
                 ebookPrice={book.ebook_price || 0}
-                rating={4.5}
-                reviews={0}
                 category={book.category}
                 cover={book.cover_url || ""}
               />
