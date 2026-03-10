@@ -22,26 +22,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      title: "The Silent Ocean",
-      author: "Jane Rivers",
-      price: 14.99,
-      cover: "https://via.placeholder.com/200x300",
-      quantity: 1,
-      format: "eBook",
-    },
-    {
-      id: 2,
-      title: "Whispers of the Ancient Forest",
-      author: "Elara Green",
-      price: 19.99,
-      cover: "https://via.placeholder.com/200x300",
-      quantity: 2,
-      format: "Paperback",
-    },
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
