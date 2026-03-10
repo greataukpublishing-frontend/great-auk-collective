@@ -162,8 +162,7 @@ export default function CartPage() {
       navigate("/checkout-options");
       return;
     }
-    // TODO: proceed with checkout
-    toast({ title: "Proceeding to checkout…" });
+    navigate("/checkout");
   };
 
   return (
