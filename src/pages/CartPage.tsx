@@ -92,7 +92,7 @@ function CartItemCard({
   );
 }
 
-function OrderSummary({ subtotal, itemCount }: { subtotal: number; itemCount: number }) {
+function OrderSummary({ subtotal, itemCount, onCheckout }: { subtotal: number; itemCount: number; onCheckout: () => void }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
       <h2 className="font-display text-xl font-semibold text-foreground mb-6">Order Summary</h2>
