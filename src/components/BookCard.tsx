@@ -37,8 +37,9 @@ export default function BookCard({
 
   const { addToCart } = useCart();
   const { toast } = useToast();
-  const [favorited, setFavorited] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const { avgRating, reviewCount, upvoteCount } = useBookStats(id);
+  const [favorited, setFavorited] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   useEffect(() => {
     checkFavorite()
   }, [])
