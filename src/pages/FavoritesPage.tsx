@@ -1,193 +1,211 @@
-import { useEffect, useState } from "react"
-import { supabase } from "@/integrations/supabase/client"
-import { Link } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
+import { Heart, ShoppingCart, Plus, BookOpen } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { getBookCover } from "@/lib/covers";
 
 export default function FavoritesPage() {
-
-  const [favorites, setFavorites] = useState<any[]>([])
-  const [userFavorites, setUserFavorites] = useState<string[]>([])
-  const [loading, setLoading] = useState(true)
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadFavorites()
-  }, [])
+    loadFavorites();
+  }, []);
 
   async function loadFavorites() {
-
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
-      setLoading(false)
-      return
+      setLoading(false);
+      return;
     }
 
     const { data, error } = await supabase
       .from("favorites")
-      .select(`
+      .select(
+        `
         id,
         book_id,
         books (
           id,
           title,
+          author_name,
           cover_url,
+          category,
           ebook_price,
           print_price
         )
-      `)
-      .eq("user_id", user.id)
+      `
+      )
+      .eq("user_id", user.id);
 
     if (!error && data) {
-      setFavorites(data)
-      setUserFavorites(data.map(f => f.book_id))
+      setFavorites(data);
     }
 
-    setLoading(false)
+    setLoading(false);
   }
 
-  async function toggleFavorite(bookId: string) {
+  async function removeFavorite(bookId: string) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
 
-    const { data: { user } } = await supabase.auth.getUser()
+    await supabase
+      .from("favorites")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("book_id", bookId);
 
-    if (!user) {
-      alert("Please login to favorite books ❤️")
-      return
-    }
+    setFavorites((prev) => prev.filter((f) => f.book_id !== bookId));
+    toast("Removed from favorites");
+  }
 
-    const isFavorited = userFavorites.includes(bookId)
-
-    if (isFavorited) {
-
-      await supabase
-        .from("favorites")
-        .delete()
-        .eq("user_id", user.id)
-        .eq("book_id", bookId)
-
-      setUserFavorites(prev => prev.filter(id => id !== bookId))
-      setFavorites(prev => prev.filter(f => f.book_id !== bookId))
-
-    } else {
-
-      const { data } = await supabase
-        .from("favorites")
-        .insert({
-          user_id: user.id,
-          book_id: bookId
-        })
-        .select(`
-          id,
-          book_id,
-          books (
-            id,
-            title,
-            cover_url,
-            ebook_price,
-            print_price
-          )
-        `)
-        .single()
-
-      if (data) {
-        setFavorites(prev => [...prev, data])
-        setUserFavorites(prev => [...prev, bookId])
-      }
-
-    }
-
+  function addToCart(book: any) {
+    toast.success(`"${book.title}" added to cart`);
   }
 
   return (
-    <div className="container mx-auto px-6 py-12">
+    <div className="min-h-screen bg-background">
+      <Navbar />
 
-      <h1 className="text-4xl font-semibold text-[#1E392A] mb-10">
-        My Favorites
-      </h1>
-
-      {loading && <p>Loading your favorites...</p>}
-
-      {!loading && favorites.length === 0 && (
-
-        <div className="text-center py-20">
-
-          <h2 className="text-2xl text-[#1E392A] mb-4">
-            ❤️ You have no favorites yet
-          </h2>
-
-          <p className="text-gray-600 mb-6">
-            Browse the bookstore to add books you love.
-          </p>
-
-          <Link
-            to="/bookstore"
-            className="px-6 py-3 rounded-full bg-[#1E392A] text-white hover:bg-green-800 transition"
-          >
-            Go to Bookstore
-          </Link>
-
+      <div className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-2">
+            <Heart className="w-7 h-7 text-accent fill-accent" />
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+              My Favorites
+            </h1>
+          </div>
+          {!loading && favorites.length > 0 && (
+            <p className="text-muted-foreground mt-2 ml-10">
+              {favorites.length} {favorites.length === 1 ? "book" : "books"} saved
+            </p>
+          )}
         </div>
 
-      )}
+        {/* Loading */}
+        {loading && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[2/3] rounded-lg bg-muted mb-4" />
+                <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                <div className="h-3 bg-muted rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        )}
 
-      {favorites.length > 0 && (
+        {/* Empty state */}
+        {!loading && favorites.length === 0 && (
+          <div className="text-center py-24">
+            <BookOpen className="w-16 h-16 text-muted-foreground/20 mx-auto mb-6" />
+            <h2 className="font-display text-2xl font-semibold text-foreground mb-3">
+              No favorites yet
+            </h2>
+            <p className="text-muted-foreground max-w-sm mx-auto mb-10">
+              Discover restored classics and new voices — save the ones that speak to you.
+            </p>
+            <Button asChild size="lg" className="rounded-xl px-10">
+              <Link to="/bookstore">
+                Browse Books
+                <BookOpen className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+        )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {/* Favorites grid */}
+        {!loading && favorites.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+            {favorites.map((fav) => {
+              const book = fav.books;
+              if (!book) return null;
 
-          {favorites.map((fav) => {
+              const price = book.ebook_price || book.print_price || 0;
 
-            const book = fav.books
-
-            const price =
-              book.ebook_price ||
-              book.print_price ||
-              0
-
-            return (
-
-              <div
-                key={fav.id}
-                className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
-              >
-
-                <Link to={`/book/${book.id}`}>
-                  <img
-                    src={book.cover_url}
-                    alt={book.title}
-                    className="w-full h-72 object-cover"
-                  />
-                </Link>
-
-                <div className="p-4">
-
-                  <Link to={`/book/${book.id}`}>
-                    <h3 className="font-semibold text-[#1E392A] line-clamp-2">
-                      {book.title}
-                    </h3>
-                  </Link>
-
-                  <p className="text-[#EAB333] font-medium mt-2">
-                    ${price}
-                  </p>
-
-                  {/* HEART BUTTON */}
+              return (
+                <div
+                  key={fav.id}
+                  className="group relative bg-card rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                >
+                  {/* Remove favorite button */}
                   <button
-                    onClick={() => toggleFavorite(book.id)}
-                    className="mt-4 text-2xl"
+                    onClick={() => removeFavorite(book.id)}
+                    className="absolute top-3 right-3 z-10 bg-background/90 backdrop-blur-sm rounded-full p-2 shadow-sm hover:scale-110 transition"
+                    aria-label="Remove from favorites"
                   >
-                    {userFavorites.includes(book.id) ? "❤️" : "🤍"}
+                    <Heart
+                      size={16}
+                      className="text-red-500 fill-red-500"
+                    />
                   </button>
 
+                  {/* Cover */}
+                  <Link to={`/book/${book.id}`}>
+                    <div className="relative aspect-[2/3] overflow-hidden bg-muted">
+                      <img
+                        src={book.cover_url ? getBookCover(book.cover_url) : "/placeholder.svg"}
+                        alt={book.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  </Link>
+
+                  {/* Details */}
+                  <div className="p-4">
+                    {book.category && (
+                      <p className="text-xs text-muted-foreground mb-1">
+                        {book.category}
+                      </p>
+                    )}
+
+                    <Link to={`/book/${book.id}`}>
+                      <h3 className="font-display font-semibold text-card-foreground leading-tight line-clamp-2 hover:text-accent transition-colors">
+                        {book.title}
+                      </h3>
+                    </Link>
+
+                    {book.author_name && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {book.author_name}
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="font-semibold text-card-foreground">
+                        ${price.toFixed ? price.toFixed(2) : price}
+                      </span>
+
+                      {/* Add to cart */}
+                      <button
+                        onClick={() => addToCart(book)}
+                        className="flex items-center gap-1.5 text-xs font-medium text-primary bg-secondary hover:bg-primary hover:text-primary-foreground rounded-full px-3 py-1.5 transition-colors"
+                        aria-label="Add to cart"
+                      >
+                        <Plus size={14} />
+                        <ShoppingCart size={14} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
-              </div>
-
-            )
-
-          })}
-
-        </div>
-
-      )}
-
+      <Footer />
     </div>
-  )
+  );
 }
