@@ -33,7 +33,7 @@ export default function AdminOrders({ orders, books }: Props) {
           <CardContent className="pt-5 pb-4 text-center">
             <Users className="w-6 h-6 mx-auto text-emerald-600 mb-1" />
             <p className="text-xs text-muted-foreground">Authors Earned (70%)</p>
-            <p className="text-2xl font-bold text-emerald-700">${authorShare.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-emerald-700">₹{authorShare.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="bg-amber-50 border-amber-200">
