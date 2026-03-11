@@ -84,15 +84,15 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
 
           {/* SEARCH */}
-          <Link to="/bookstore">
-            <Search className="w-5 h-5 text-primary-foreground/80 hover:text-gold transition-colors" />
+          <Link to="/bookstore" className="p-2 rounded-full hover:bg-primary-foreground/10 transition-colors">
+            <Search className="w-6 h-6 text-primary-foreground/90 hover:text-gold transition-colors" />
           </Link>
 
           {/* CART */}
-          <Link to="/cart" className="relative">
-            <ShoppingCart className="w-5 h-5 text-primary-foreground/80 hover:text-gold transition-colors" />
+          <Link to="/cart" className="relative p-2 rounded-full hover:bg-primary-foreground/10 transition-colors">
+            <ShoppingCart className="w-6 h-6 text-primary-foreground/90 hover:text-gold transition-colors" />
             {itemCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+              <span className="absolute top-0 right-0 bg-accent text-accent-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none">
                 {itemCount}
               </span>
             )}
