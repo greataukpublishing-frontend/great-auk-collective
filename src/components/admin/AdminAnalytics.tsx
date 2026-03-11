@@ -64,7 +64,7 @@ export default function AdminAnalytics({ books, orders, profiles, roles, categor
         <Card><CardContent className="pt-5 pb-4 text-center"><p className="text-xs text-muted-foreground">Total Books</p><p className="text-2xl font-bold text-foreground">{books.length}</p></CardContent></Card>
         <Card><CardContent className="pt-5 pb-4 text-center"><p className="text-xs text-muted-foreground">Total Users</p><p className="text-2xl font-bold text-foreground">{profiles.length}</p></CardContent></Card>
         <Card><CardContent className="pt-5 pb-4 text-center"><p className="text-xs text-muted-foreground">Total Authors</p><p className="text-2xl font-bold text-foreground">{totalAuthors}</p></CardContent></Card>
-        <Card><CardContent className="pt-5 pb-4 text-center"><p className="text-xs text-muted-foreground">Total Revenue</p><p className="text-2xl font-bold text-foreground">${totalRevenue.toFixed(2)}</p></CardContent></Card>
+        <Card><CardContent className="pt-5 pb-4 text-center"><p className="text-xs text-muted-foreground">Total Revenue</p><p className="text-2xl font-bold text-foreground">₹{totalRevenue.toFixed(2)}</p></CardContent></Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
