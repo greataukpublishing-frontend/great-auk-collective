@@ -191,7 +191,7 @@ export default function CheckoutPage() {
                     <p className="text-sm font-medium text-foreground truncate">{item.title}</p>
                     <p className="text-xs text-muted-foreground">{item.format} × {item.quantity}</p>
                   </div>
-                  <p className="text-sm font-medium text-foreground">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-sm font-medium text-foreground">₹{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
