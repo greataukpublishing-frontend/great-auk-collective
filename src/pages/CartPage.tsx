@@ -50,7 +50,7 @@ function CartItemCard({
             <p className="text-sm text-foreground font-medium mt-2">₹{item.price.toFixed(2)} each</p>
           </div>
           <p className="hidden md:block font-display text-xl font-bold text-foreground">
-            ${(item.price * item.quantity).toFixed(2)}
+            ₹{(item.price * item.quantity).toFixed(2)}
           </p>
         </div>
 
