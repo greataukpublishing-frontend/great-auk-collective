@@ -117,7 +117,7 @@ function OrderSummary({ subtotal, itemCount, onCheckout }: { subtotal: number; i
       <div className="flex justify-between items-baseline mb-6">
         <span className="text-foreground font-semibold text-base">Total</span>
         <span className="font-display text-2xl md:text-3xl font-bold text-foreground">
-          ${subtotal.toFixed(2)}
+          ₹{subtotal.toFixed(2)}
         </span>
       </div>
 

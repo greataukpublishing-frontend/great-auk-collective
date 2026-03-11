@@ -40,7 +40,7 @@ export default function AdminOrders({ orders, books }: Props) {
           <CardContent className="pt-5 pb-4 text-center">
             <TrendingUp className="w-6 h-6 mx-auto text-amber-600 mb-1" />
             <p className="text-xs text-muted-foreground">Platform Earned (30%)</p>
-            <p className="text-2xl font-bold text-amber-700">${platformShare.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-amber-700">₹{platformShare.toFixed(2)}</p>
           </CardContent>
         </Card>
       </div>

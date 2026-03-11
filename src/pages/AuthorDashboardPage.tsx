@@ -190,7 +190,7 @@ export default function AuthorDashboardPage() {
                     <div className="text-right">
                       <p className="text-sm">{bookOrders.length} sales</p>
                       <p className="text-xs text-muted-foreground">
-                        ${bookEarnings.toFixed(2)} earned
+                        ₹{bookEarnings.toFixed(2)} earned
                       </p>
                     </div>
 

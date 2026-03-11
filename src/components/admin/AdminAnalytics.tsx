@@ -111,7 +111,7 @@ export default function AdminAnalytics({ books, orders, profiles, roles, categor
                 <LineChart data={revenueData}>
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                   <YAxis />
-                  <Tooltip formatter={(v: any) => `$${Number(v).toFixed(2)}`} />
+                  <Tooltip formatter={(v: any) => `₹${Number(v).toFixed(2)}`} />
                   <Line type="monotone" dataKey="amount" stroke="hsl(42,80%,55%)" strokeWidth={2} dot={{ fill: "hsl(42,80%,55%)" }} />
                 </LineChart>
               </ResponsiveContainer>

@@ -20,7 +20,7 @@ const plans = [
   },
   {
     name: "Premium Membership",
-    price: "$19.99/mo",
+    price: "₹1,599/mo",
     icon: Crown,
     perks: ["30% off all purchases", "Unlimited restored classics", "Exclusive author events", "Free audiobook credits (2/mo)", "VIP support"],
     featured: true,

@@ -207,7 +207,7 @@ export default function CheckoutPage() {
             <Separator className="my-4" />
             <div className="flex justify-between">
               <span className="font-semibold text-foreground">Total</span>
-              <span className="font-display text-xl font-bold text-foreground">${subtotal.toFixed(2)}</span>
+              <span className="font-display text-xl font-bold text-foreground">₹{subtotal.toFixed(2)}</span>
             </div>
           </div>
         </div>

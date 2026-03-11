@@ -170,12 +170,12 @@ export default function BookCard({
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-baseline gap-2">
                 <span className="font-semibold text-card-foreground">
-                  ${ebookPrice?.toFixed(2) ?? price.toFixed(2)}
+                  ₹{ebookPrice?.toFixed(2) ?? price.toFixed(2)}
                 </span>
 
                 {ebookPrice && (
                   <span className="text-xs text-muted-foreground line-through">
-                    ${price.toFixed(2)}
+                    ₹{price.toFixed(2)}
                   </span>
                 )}
               </div>

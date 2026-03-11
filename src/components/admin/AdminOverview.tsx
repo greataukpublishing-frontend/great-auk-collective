@@ -81,7 +81,7 @@ export default function AdminOverview({ books, profiles, orders, roles, onApprov
         <Card className="bg-amber-50 border-amber-200">
           <CardContent className="pt-5 pb-4 text-center">
             <p className="text-xs text-muted-foreground font-medium">Platform Earned (30%)</p>
-            <p className="text-3xl font-bold text-amber-700 mt-1">${platformRevenue.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-amber-700 mt-1">₹{platformRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
       </div>
