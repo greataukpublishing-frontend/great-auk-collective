@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Star, ArrowRight, BookOpen, Feather, Crown, Sparkles, Heart } from "lucide-react";
+import { Star, ArrowRight, BookOpen, Crown, Sparkles, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
@@ -13,7 +13,7 @@ import { useAukPlaying } from "@/hooks/useAukPlaying";
 export default function HomePage() {
   const aukPlaying = useAukPlaying();
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
-  const [authors, setAuthors] = useState<any[]>([]);
+  
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,14 +31,7 @@ export default function HomePage() {
       .eq("featured", true)
       .limit(8);
 
-    // Fetch top authors (authors with books + profile info)
-    const { data: authorsData } = await supabase
-      .from("profiles")
-      .select("id, display_name, bio, avatar_url")
-      .limit(3);
-
     setFeaturedBooks(booksData || []);
-    setAuthors(authorsData || []);
     setLoading(false);
   };
 
@@ -136,32 +129,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Authors Spotlight */}
-      {authors.length > 0 && (
-        <section className="container mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Meet Our Authors</p>
-            <h2 className="font-display text-3xl font-bold text-foreground">Author Spotlight</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {authors.map((author) => (
-              <Link key={author.id} to={`/author/${author.id}`} className="group">
-                <div className="bg-card rounded-lg p-6 text-center shadow-sm hover:shadow-lg transition-all group-hover:-translate-y-1">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
-                    {author.avatar_url ? (
-                      <img src={author.avatar_url} alt={author.display_name} className="w-full h-full rounded-full object-cover" />
-                    ) : (
-                      <Feather className="w-8 h-8 text-primary" />
-                    )}
-                  </div>
-                  <h3 className="font-display font-semibold text-card-foreground">{author.display_name || "Anonymous"}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{author.bio || "Author at Great Auk Publishing"}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+
+
 
       {/* Become an Author CTA */}
       <section className="gradient-hero">
