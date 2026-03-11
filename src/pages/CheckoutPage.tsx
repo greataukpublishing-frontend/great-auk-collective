@@ -172,7 +172,7 @@ export default function CheckoutPage() {
               className="w-full rounded-xl text-base font-semibold h-12"
               disabled={loading}
             >
-              {loading ? "Processing…" : `Place Order · $${subtotal.toFixed(2)}`}
+              {loading ? "Processing…" : `Place Order · ₹${subtotal.toFixed(2)}`}
             </Button>
           </form>
 
