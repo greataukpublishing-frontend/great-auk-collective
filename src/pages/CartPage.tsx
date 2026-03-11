@@ -100,7 +100,7 @@ function OrderSummary({ subtotal, itemCount, onCheckout }: { subtotal: number; i
       <div className="space-y-3 text-sm">
         <div className="flex justify-between text-muted-foreground">
           <span>Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})</span>
-          <span className="text-foreground font-medium">${subtotal.toFixed(2)}</span>
+          <span className="text-foreground font-medium">₹{subtotal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
           <span>Shipping</span>
