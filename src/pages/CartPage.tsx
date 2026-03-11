@@ -76,7 +76,7 @@ function CartItemCard({
 
           <div className="flex items-center gap-4">
             <p className="md:hidden font-display text-lg font-bold text-foreground">
-              ${(item.price * item.quantity).toFixed(2)}
+              ₹{(item.price * item.quantity).toFixed(2)}
             </p>
             <button
               onClick={() => onRemove(item.id)}
