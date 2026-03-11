@@ -13,7 +13,7 @@ import { useAukPlaying } from "@/hooks/useAukPlaying";
 export default function HomePage() {
   const aukPlaying = useAukPlaying();
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
-  const [authors, setAuthors] = useState<any[]>([]);
+  
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
