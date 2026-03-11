@@ -64,9 +64,9 @@ export default function AdminOrders({ orders, books }: Props) {
                   <tr key={o.id} className="border-b border-border/50">
                     <td className="p-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
                     <td className="p-3 font-medium text-foreground">{getBookTitle(o.book_id)}</td>
-                    <td className="p-3 font-medium text-foreground">${Number(o.amount).toFixed(2)}</td>
-                    <td className="p-3 text-emerald-600">${Number(o.author_share).toFixed(2)}</td>
-                    <td className="p-3 text-amber-600">${Number(o.platform_share).toFixed(2)}</td>
+                    <td className="p-3 font-medium text-foreground">₹{Number(o.amount).toFixed(2)}</td>
+                    <td className="p-3 text-emerald-600">₹{Number(o.author_share).toFixed(2)}</td>
+                    <td className="p-3 text-amber-600">₹{Number(o.platform_share).toFixed(2)}</td>
                     <td className="p-3"><Badge variant="secondary">{o.status}</Badge></td>
                   </tr>
                 ))}
