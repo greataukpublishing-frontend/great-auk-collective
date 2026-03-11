@@ -198,7 +198,7 @@ export default function CheckoutPage() {
             <Separator className="my-4" />
             <div className="flex justify-between text-sm text-muted-foreground">
               <span>Subtotal ({itemCount} items)</span>
-              <span className="text-foreground font-medium">${subtotal.toFixed(2)}</span>
+              <span className="text-foreground font-medium">₹{subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm text-muted-foreground mt-2">
               <span>Shipping</span>
