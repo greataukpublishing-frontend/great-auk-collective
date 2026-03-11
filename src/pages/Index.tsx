@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Star, ArrowRight, BookOpen, Feather, Crown, Sparkles, Heart } from "lucide-react";
+import { Star, ArrowRight, BookOpen, Crown, Sparkles, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
