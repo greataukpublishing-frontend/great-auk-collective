@@ -47,7 +47,7 @@ function CartItemCard({
             <span className="inline-block text-xs text-muted-foreground mt-2.5 px-3 py-1 rounded-full bg-secondary font-medium">
               {item.format}
             </span>
-            <p className="text-sm text-foreground font-medium mt-2">${item.price.toFixed(2)} each</p>
+            <p className="text-sm text-foreground font-medium mt-2">₹{item.price.toFixed(2)} each</p>
           </div>
           <p className="hidden md:block font-display text-xl font-bold text-foreground">
             ${(item.price * item.quantity).toFixed(2)}
