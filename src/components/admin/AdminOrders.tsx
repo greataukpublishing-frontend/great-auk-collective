@@ -26,7 +26,7 @@ export default function AdminOrders({ orders, books }: Props) {
           <CardContent className="pt-5 pb-4 text-center">
             <DollarSign className="w-6 h-6 mx-auto text-primary mb-1" />
             <p className="text-xs text-muted-foreground">Total Revenue</p>
-            <p className="text-2xl font-bold text-foreground">${totalRevenue.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-foreground">₹{totalRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="bg-emerald-50 border-emerald-200">
