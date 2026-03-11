@@ -69,7 +69,7 @@ export default function AdminOverview({ books, profiles, orders, roles, onApprov
         <Card className="bg-primary/5 border-primary/20">
           <CardContent className="pt-5 pb-4 text-center">
             <p className="text-xs text-muted-foreground font-medium">Total Sales</p>
-            <p className="text-3xl font-bold text-foreground mt-1">${totalRevenue.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-foreground mt-1">₹{totalRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="bg-emerald-50 border-emerald-200">
