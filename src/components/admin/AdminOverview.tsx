@@ -30,8 +30,8 @@ export default function AdminOverview({ books, profiles, orders, roles, onApprov
     { label: "Total Users", value: totalUsers, icon: Users, color: "text-primary" },
     { label: "Authors", value: totalAuthors, icon: UserCheck, color: "text-primary" },
     { label: "Total Orders", value: orders.length, icon: ShoppingCart, color: "text-primary" },
-    { label: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600" },
-    { label: "Platform Share", value: `$${platformRevenue.toFixed(2)}`, icon: TrendingUp, color: "text-primary" },
+    { label: "Total Revenue", value: `₹${totalRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600" },
+    { label: "Platform Share", value: `₹${platformRevenue.toFixed(2)}`, icon: TrendingUp, color: "text-primary" },
   ];
 
   return (
