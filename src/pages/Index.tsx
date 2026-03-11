@@ -31,14 +31,7 @@ export default function HomePage() {
       .eq("featured", true)
       .limit(8);
 
-    // Fetch top authors (authors with books + profile info)
-    const { data: authorsData } = await supabase
-      .from("profiles")
-      .select("id, display_name, bio, avatar_url")
-      .limit(3);
-
     setFeaturedBooks(booksData || []);
-    setAuthors(authorsData || []);
     setLoading(false);
   };
 
