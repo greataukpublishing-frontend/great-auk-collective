@@ -1,0 +1,2 @@
+DELETE FROM orders WHERE id = '93b15ecd-2929-414d-b731-0f35f1661048';
+DELETE FROM books WHERE id = 'f2f65004-26b8-4d53-ba3f-aebdd42516b8';
