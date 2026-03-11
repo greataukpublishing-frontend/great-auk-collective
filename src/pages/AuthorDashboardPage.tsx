@@ -106,7 +106,7 @@ export default function AuthorDashboardPage() {
     { label: "Total Sales", value: totalSales.toString(), icon: TrendingUp },
     {
       label: "Royalties Earned",
-      value: `$${totalEarned.toFixed(2)}`,
+      value: `₹${totalEarned.toFixed(2)}`,
       icon: DollarSign,
     },
     { label: "Pending Approval", value: pendingBooks.toString(), icon: Eye },
