@@ -195,7 +195,7 @@ export default function FavoritesPage() {
 
                     <div className="flex items-center justify-between mt-3">
                       <span className="font-semibold text-card-foreground">
-                        ${price.toFixed ? price.toFixed(2) : price}
+                        ₹{price.toFixed ? price.toFixed(2) : price}
                       </span>
 
                       {/* Add to cart */}
