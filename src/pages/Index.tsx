@@ -182,8 +182,8 @@ export default function HomePage() {
           </div>
           <div className="flex gap-4">
             {[
-              { plan: "Reader", price: "$9.99/mo", perks: "10% off all books" },
-              { plan: "Premium", price: "$19.99/mo", perks: "30% off + free classics" },
+              { plan: "Reader", price: "₹799/mo", perks: "10% off all books" },
+              { plan: "Premium", price: "₹1,599/mo", perks: "30% off + free classics" },
             ].map((p) => (
               <div key={p.plan} className="bg-background rounded-xl p-6 border border-border text-center min-w-[160px]">
                 <p className="font-display font-semibold text-foreground">{p.plan}</p>

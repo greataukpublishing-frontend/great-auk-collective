@@ -30,8 +30,8 @@ export default function AdminOverview({ books, profiles, orders, roles, onApprov
     { label: "Total Users", value: totalUsers, icon: Users, color: "text-primary" },
     { label: "Authors", value: totalAuthors, icon: UserCheck, color: "text-primary" },
     { label: "Total Orders", value: orders.length, icon: ShoppingCart, color: "text-primary" },
-    { label: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600" },
-    { label: "Platform Share", value: `$${platformRevenue.toFixed(2)}`, icon: TrendingUp, color: "text-primary" },
+    { label: "Total Revenue", value: `₹${totalRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600" },
+    { label: "Platform Share", value: `₹${platformRevenue.toFixed(2)}`, icon: TrendingUp, color: "text-primary" },
   ];
 
   return (
@@ -69,19 +69,19 @@ export default function AdminOverview({ books, profiles, orders, roles, onApprov
         <Card className="bg-primary/5 border-primary/20">
           <CardContent className="pt-5 pb-4 text-center">
             <p className="text-xs text-muted-foreground font-medium">Total Sales</p>
-            <p className="text-3xl font-bold text-foreground mt-1">${totalRevenue.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-foreground mt-1">₹{totalRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="bg-emerald-50 border-emerald-200">
           <CardContent className="pt-5 pb-4 text-center">
             <p className="text-xs text-muted-foreground font-medium">Authors Earned (70%)</p>
-            <p className="text-3xl font-bold text-emerald-700 mt-1">${authorRevenue.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-emerald-700 mt-1">₹{authorRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="bg-amber-50 border-amber-200">
           <CardContent className="pt-5 pb-4 text-center">
             <p className="text-xs text-muted-foreground font-medium">Platform Earned (30%)</p>
-            <p className="text-3xl font-bold text-amber-700 mt-1">${platformRevenue.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-amber-700 mt-1">₹{platformRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
       </div>

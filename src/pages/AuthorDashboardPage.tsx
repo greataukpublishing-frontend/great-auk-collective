@@ -106,7 +106,7 @@ export default function AuthorDashboardPage() {
     { label: "Total Sales", value: totalSales.toString(), icon: TrendingUp },
     {
       label: "Royalties Earned",
-      value: `$${totalEarned.toFixed(2)}`,
+      value: `₹${totalEarned.toFixed(2)}`,
       icon: DollarSign,
     },
     { label: "Pending Approval", value: pendingBooks.toString(), icon: Eye },
@@ -190,7 +190,7 @@ export default function AuthorDashboardPage() {
                     <div className="text-right">
                       <p className="text-sm">{bookOrders.length} sales</p>
                       <p className="text-xs text-muted-foreground">
-                        ${bookEarnings.toFixed(2)} earned
+                        ₹{bookEarnings.toFixed(2)} earned
                       </p>
                     </div>
 

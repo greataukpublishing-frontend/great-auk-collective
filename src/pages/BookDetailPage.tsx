@@ -247,12 +247,12 @@ export default function BookDetailPage() {
 
               <Button onClick={() => handleAddToCart("ebook")}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Add eBook to Cart – ${book.ebook_price || 0}
+                Add eBook to Cart – ₹{book.ebook_price || 0}
               </Button>
 
               <Button variant="outline" onClick={() => handleAddToCart("print")}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                Add Paperback to Cart – ${book.print_price || 0}
+                Add Paperback to Cart – ₹{book.print_price || 0}
               </Button>
 
               <Button

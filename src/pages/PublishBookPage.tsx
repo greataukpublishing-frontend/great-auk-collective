@@ -372,12 +372,12 @@ export default function PublishBookPage() {
                 <p className="font-medium text-foreground">Estimated Earnings (70% royalty)</p>
                 {data.formats.includes("ebook") && (
                   <p className="text-muted-foreground mt-1">
-                    Ebook at ${data.ebookPrice} → You earn <span className="font-bold text-foreground">${(parseFloat(data.ebookPrice) * 0.7).toFixed(2)}</span>
+                    Ebook at ₹{data.ebookPrice} → You earn <span className="font-bold text-foreground">₹{(parseFloat(data.ebookPrice) * 0.7).toFixed(2)}</span>
                   </p>
                 )}
                 {data.formats.includes("paperback") && (
                   <p className="text-muted-foreground">
-                    Paperback at ${data.printPrice} → You earn <span className="font-bold text-foreground">${(parseFloat(data.printPrice) * 0.7).toFixed(2)}</span>
+                    Paperback at ₹{data.printPrice} → You earn <span className="font-bold text-foreground">₹{(parseFloat(data.printPrice) * 0.7).toFixed(2)}</span>
                   </p>
                 )}
               </div>

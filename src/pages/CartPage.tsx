@@ -47,10 +47,10 @@ function CartItemCard({
             <span className="inline-block text-xs text-muted-foreground mt-2.5 px-3 py-1 rounded-full bg-secondary font-medium">
               {item.format}
             </span>
-            <p className="text-sm text-foreground font-medium mt-2">${item.price.toFixed(2)} each</p>
+            <p className="text-sm text-foreground font-medium mt-2">₹{item.price.toFixed(2)} each</p>
           </div>
           <p className="hidden md:block font-display text-xl font-bold text-foreground">
-            ${(item.price * item.quantity).toFixed(2)}
+            ₹{(item.price * item.quantity).toFixed(2)}
           </p>
         </div>
 
@@ -76,7 +76,7 @@ function CartItemCard({
 
           <div className="flex items-center gap-4">
             <p className="md:hidden font-display text-lg font-bold text-foreground">
-              ${(item.price * item.quantity).toFixed(2)}
+              ₹{(item.price * item.quantity).toFixed(2)}
             </p>
             <button
               onClick={() => onRemove(item.id)}
@@ -100,7 +100,7 @@ function OrderSummary({ subtotal, itemCount, onCheckout }: { subtotal: number; i
       <div className="space-y-3 text-sm">
         <div className="flex justify-between text-muted-foreground">
           <span>Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})</span>
-          <span className="text-foreground font-medium">${subtotal.toFixed(2)}</span>
+          <span className="text-foreground font-medium">₹{subtotal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
           <span>Shipping</span>
@@ -117,7 +117,7 @@ function OrderSummary({ subtotal, itemCount, onCheckout }: { subtotal: number; i
       <div className="flex justify-between items-baseline mb-6">
         <span className="text-foreground font-semibold text-base">Total</span>
         <span className="font-display text-2xl md:text-3xl font-bold text-foreground">
-          ${subtotal.toFixed(2)}
+          ₹{subtotal.toFixed(2)}
         </span>
       </div>
 

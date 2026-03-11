@@ -13,14 +13,14 @@ const plans = [
   },
   {
     name: "Reader Membership",
-    price: "$9.99/mo",
+    price: "₹799/mo",
     icon: Star,
     perks: ["10% off all purchases", "Early access to new releases", "Free restored classics library", "Priority support"],
     featured: false,
   },
   {
     name: "Premium Membership",
-    price: "$19.99/mo",
+    price: "₹1,599/mo",
     icon: Crown,
     perks: ["30% off all purchases", "Unlimited restored classics", "Exclusive author events", "Free audiobook credits (2/mo)", "VIP support"],
     featured: true,

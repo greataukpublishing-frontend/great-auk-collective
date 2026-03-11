@@ -172,7 +172,7 @@ export default function CheckoutPage() {
               className="w-full rounded-xl text-base font-semibold h-12"
               disabled={loading}
             >
-              {loading ? "Processing…" : `Place Order · $${subtotal.toFixed(2)}`}
+              {loading ? "Processing…" : `Place Order · ₹${subtotal.toFixed(2)}`}
             </Button>
           </form>
 
@@ -191,14 +191,14 @@ export default function CheckoutPage() {
                     <p className="text-sm font-medium text-foreground truncate">{item.title}</p>
                     <p className="text-xs text-muted-foreground">{item.format} × {item.quantity}</p>
                   </div>
-                  <p className="text-sm font-medium text-foreground">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-sm font-medium text-foreground">₹{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
             <Separator className="my-4" />
             <div className="flex justify-between text-sm text-muted-foreground">
               <span>Subtotal ({itemCount} items)</span>
-              <span className="text-foreground font-medium">${subtotal.toFixed(2)}</span>
+              <span className="text-foreground font-medium">₹{subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm text-muted-foreground mt-2">
               <span>Shipping</span>
@@ -207,7 +207,7 @@ export default function CheckoutPage() {
             <Separator className="my-4" />
             <div className="flex justify-between">
               <span className="font-semibold text-foreground">Total</span>
-              <span className="font-display text-xl font-bold text-foreground">${subtotal.toFixed(2)}</span>
+              <span className="font-display text-xl font-bold text-foreground">₹{subtotal.toFixed(2)}</span>
             </div>
           </div>
         </div>

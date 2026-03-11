@@ -26,21 +26,21 @@ export default function AdminOrders({ orders, books }: Props) {
           <CardContent className="pt-5 pb-4 text-center">
             <DollarSign className="w-6 h-6 mx-auto text-primary mb-1" />
             <p className="text-xs text-muted-foreground">Total Revenue</p>
-            <p className="text-2xl font-bold text-foreground">${totalRevenue.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-foreground">₹{totalRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="bg-emerald-50 border-emerald-200">
           <CardContent className="pt-5 pb-4 text-center">
             <Users className="w-6 h-6 mx-auto text-emerald-600 mb-1" />
             <p className="text-xs text-muted-foreground">Authors Earned (70%)</p>
-            <p className="text-2xl font-bold text-emerald-700">${authorShare.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-emerald-700">₹{authorShare.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="bg-amber-50 border-amber-200">
           <CardContent className="pt-5 pb-4 text-center">
             <TrendingUp className="w-6 h-6 mx-auto text-amber-600 mb-1" />
             <p className="text-xs text-muted-foreground">Platform Earned (30%)</p>
-            <p className="text-2xl font-bold text-amber-700">${platformShare.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-amber-700">₹{platformShare.toFixed(2)}</p>
           </CardContent>
         </Card>
       </div>
@@ -64,9 +64,9 @@ export default function AdminOrders({ orders, books }: Props) {
                   <tr key={o.id} className="border-b border-border/50">
                     <td className="p-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
                     <td className="p-3 font-medium text-foreground">{getBookTitle(o.book_id)}</td>
-                    <td className="p-3 font-medium text-foreground">${Number(o.amount).toFixed(2)}</td>
-                    <td className="p-3 text-emerald-600">${Number(o.author_share).toFixed(2)}</td>
-                    <td className="p-3 text-amber-600">${Number(o.platform_share).toFixed(2)}</td>
+                    <td className="p-3 font-medium text-foreground">₹{Number(o.amount).toFixed(2)}</td>
+                    <td className="p-3 text-emerald-600">₹{Number(o.author_share).toFixed(2)}</td>
+                    <td className="p-3 text-amber-600">₹{Number(o.platform_share).toFixed(2)}</td>
                     <td className="p-3"><Badge variant="secondary">{o.status}</Badge></td>
                   </tr>
                 ))}
