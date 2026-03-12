@@ -206,6 +206,7 @@ export default function AdminDashboardPage() {
               {tab === "services" && <AdminServices services={services} serviceOrders={serviceOrders} onRefresh={fetchAll} />}
               {tab === "content" && <AdminContent books={books} onRefresh={fetchAll} />}
               {tab === "analytics" && <AdminAnalytics books={books} orders={orders} profiles={profiles} roles={roles} categories={categories} />}
+              {tab === "membership" && <AdminMembership onRefresh={fetchAll} />}
               {tab === "features" && <AdminFeatureToggles onRefresh={fetchAll} />}
               {tab === "settings" && <AdminSettings settings={settings} onRefresh={fetchAll} />}
             </>
