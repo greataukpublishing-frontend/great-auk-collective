@@ -3,10 +3,12 @@ import { Facebook, Twitter, Instagram, Youtube, Linkedin } from "lucide-react";
 import greatAukLogo from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
+import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
 
 export default function Footer() {
   const aukPlaying = useAukPlaying();
+  const { isEnabled } = useFeatureToggles();
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-16">
