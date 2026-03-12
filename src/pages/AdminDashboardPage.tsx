@@ -32,6 +32,7 @@ const NAV_ITEMS = [
   { id: "submissions", label: "Book Submissions", icon: Heart },
   { id: "services", label: "Premium Services", icon: Briefcase },
   { id: "content", label: "Content & Homepage", icon: FileText },
+  { id: "membership", label: "Membership Plans", icon: Crown },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "features", label: "Feature Toggles", icon: ToggleRight },
   { id: "settings", label: "Settings", icon: Settings },
