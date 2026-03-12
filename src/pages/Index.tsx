@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import greatAukHero from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
+import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
 export default function HomePage() {
   const aukPlaying = useAukPlaying();
