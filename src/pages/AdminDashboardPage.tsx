@@ -20,6 +20,7 @@ import AdminServices from "@/components/admin/AdminServices";
 import AdminContent from "@/components/admin/AdminContent";
 import AdminFeatureToggles from "@/components/admin/AdminFeatureToggles";
 import AdminSubmissions from "@/components/admin/AdminSubmissions";
+import AdminMembership from "@/components/admin/AdminMembership";
 
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
