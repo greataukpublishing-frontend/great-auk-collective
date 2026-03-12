@@ -50,6 +50,8 @@ const App = () => (
 
         <BrowserRouter>
 
+          <CookieConsent />
+
           <Routes>
 
             {/* HOME */}

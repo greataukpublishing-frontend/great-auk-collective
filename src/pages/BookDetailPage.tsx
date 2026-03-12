@@ -277,6 +277,17 @@ export default function BookDetailPage() {
                 </Button>
               )}
 
+              <a
+                href={`https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}&tag=greataukpub-21`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Find on Amazon
+                </Button>
+              </a>
+
             </div>
 
             {book.preview_content && (
