@@ -30,6 +30,9 @@ import CartPage from "./pages/CartPage";
 import CheckoutOptionsPage from "./pages/CheckoutOptionsPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import MyOrdersPage from "./pages/MyOrdersPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsPage from "./pages/TermsPage";
+import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +49,8 @@ const App = () => (
         <Sonner />
 
         <BrowserRouter>
+
+          <CookieConsent />
 
           <Routes>
 
@@ -99,6 +104,8 @@ const App = () => (
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/bring-book-back" element={<BringBookBackPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
             {/* ADMIN */}
             <Route path="/admin-login" element={<AdminLoginPage />} />

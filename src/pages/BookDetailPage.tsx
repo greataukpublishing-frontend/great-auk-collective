@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, BookOpen, ArrowLeft, Heart, Eye } from "lucide-react";
+import { ShoppingCart, BookOpen, ArrowLeft, Heart, Eye, ExternalLink } from "lucide-react";
 import BookPreviewModal from "@/components/BookPreviewModal";
 import BookVoting from "@/components/BookVoting";
 import Navbar from "@/components/Navbar";
@@ -276,6 +276,17 @@ export default function BookDetailPage() {
                   Look Inside
                 </Button>
               )}
+
+              <a
+                href={`https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}&tag=greataukpub-21`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Find on Amazon
+                </Button>
+              </a>
 
             </div>
 
