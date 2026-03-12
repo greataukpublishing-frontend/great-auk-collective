@@ -25,6 +25,9 @@ export default function Navbar() {
   const aukPlaying = useAukPlaying();
   const { user, isAuthor, loading, signOut } = useAuth();
   const { itemCount } = useCart();
+  const { isEnabled } = useFeatureToggles();
+
+  const navLinks = baseNavLinks.filter(l => !l.feature || isEnabled(l.feature));
 
   return (
 
