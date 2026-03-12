@@ -8,12 +8,13 @@ import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
-const navLinks = [
+const baseNavLinks = [
   { label: "Home", to: "/" },
   { label: "Bookstore", to: "/bookstore" },
   { label: "Self Publishing", to: "/publish" },
-  { label: "Membership", to: "/membership" },
+  { label: "Membership", to: "/membership", feature: "membership" },
   { label: "About", to: "/about" },
 ];
 
