@@ -13,6 +13,7 @@ import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
 export default function HomePage() {
   const aukPlaying = useAukPlaying();
+  const { isEnabled } = useFeatureToggles();
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
   
   const [loading, setLoading] = useState(true);
