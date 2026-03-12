@@ -67,12 +67,16 @@ export default function Footer() {
               <li><Link to="/contact" className="hover:text-gold transition-colors">Contact</Link></li>
               <li><Link to="/membership" className="hover:text-gold transition-colors">Membership</Link></li>
               <li><Link to="/bring-book-back" className="hover:text-gold transition-colors">Bring a Book Back</Link></li>
-              <li><a href="#" className="hover:text-gold transition-colors">Privacy Policy</a></li>
+              <li><Link to="/privacy-policy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-gold transition-colors">Terms & Conditions</Link></li>
             </ul>
           </div>
         </div>
         <div className="border-t border-primary-foreground/10 mt-12 pt-8 text-center text-sm text-primary-foreground/50">
           © 2026 Great Auk Publishing. All rights reserved. Bringing lost knowledge back to life.
+          <span className="block mt-1 text-xs text-primary-foreground/30">
+            Great Auk Publishing is a participant in the Amazon Services LLC Associates Programme, an affiliate advertising programme designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.in.
+          </span>
         </div>
       </div>
     </footer>
