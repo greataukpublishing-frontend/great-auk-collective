@@ -198,6 +198,39 @@ export type Database = {
           },
         ]
       }
+      membership_plans: {
+        Row: {
+          created_at: string
+          featured: boolean
+          id: string
+          name: string
+          perks: string[]
+          price: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          featured?: boolean
+          id?: string
+          name: string
+          perks?: string[]
+          price?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          featured?: boolean
+          id?: string
+          name?: string
+          perks?: string[]
+          price?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           amount: number

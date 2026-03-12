@@ -3,10 +3,12 @@ import { Facebook, Twitter, Instagram, Youtube, Linkedin } from "lucide-react";
 import greatAukLogo from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
+import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
 
 export default function Footer() {
   const aukPlaying = useAukPlaying();
+  const { isEnabled } = useFeatureToggles();
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-16">
@@ -65,7 +67,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-primary-foreground/70">
               <li><Link to="/about" className="hover:text-gold transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-gold transition-colors">Contact</Link></li>
-              <li><Link to="/membership" className="hover:text-gold transition-colors">Membership</Link></li>
+              {isEnabled("membership") && <li><Link to="/membership" className="hover:text-gold transition-colors">Membership</Link></li>}
               <li><Link to="/bring-book-back" className="hover:text-gold transition-colors">Bring a Book Back</Link></li>
               <li><Link to="/privacy-policy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-gold transition-colors">Terms & Conditions</Link></li>

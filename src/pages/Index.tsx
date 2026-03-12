@@ -9,9 +9,11 @@ import { supabase } from "@/integrations/supabase/client";
 import greatAukHero from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
+import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
 export default function HomePage() {
   const aukPlaying = useAukPlaying();
+  const { isEnabled } = useFeatureToggles();
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
   
   const [loading, setLoading] = useState(true);
@@ -166,6 +168,7 @@ export default function HomePage() {
       </section>
 
       {/* Membership Teaser */}
+      {isEnabled("membership") && (
       <section className="container mx-auto px-4 py-20">
         <div className="bg-card rounded-2xl p-10 md:p-16 border border-border shadow-sm flex flex-col md:flex-row items-center gap-10">
           <div className="flex-1">
@@ -194,6 +197,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       <Footer />
     </div>
