@@ -244,7 +244,6 @@ export default function EditBookPage() {
               />
               <p className="text-xs text-muted-foreground mt-1">Optional — direct Amazon product link. Falls back to search if empty.</p>
             </div>
-            </div>
 
             <div>
               <label className="block text-sm font-medium mb-2">
