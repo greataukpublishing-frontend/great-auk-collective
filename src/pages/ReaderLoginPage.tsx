@@ -168,12 +168,14 @@ export default function ReaderLoginPage() {
             </p>
           </div>
 
+          {isEnabled("self_publishing") && (
           <p className="text-center text-xs text-muted-foreground mt-6">
             Are you an author?{" "}
             <a href="/author-login" className="text-primary hover:underline">
               Sign in here
             </a>
           </p>
+          )}
         </div>
       </div>
       <Footer />
