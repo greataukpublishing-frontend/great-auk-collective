@@ -291,16 +291,14 @@ export default function BookDetailPage() {
         </div>
 
         {/* Editorial Overview */}
-        {book.editorial_description && (
-          <div className="mt-16 max-w-2xl">
-            <h2 className="font-display text-xl font-bold text-foreground mb-4">Editorial Overview</h2>
-            <div className="p-6 rounded-xl bg-card border border-border">
-              <p className="text-foreground/80 leading-relaxed whitespace-pre-line text-sm">
-                {book.editorial_description}
-              </p>
-            </div>
+        <div className="mt-16 max-w-2xl">
+          <h2 className="font-display text-xl font-bold text-foreground mb-4">Editorial Overview</h2>
+          <div className="p-6 rounded-xl bg-card border border-border">
+            <p className="text-foreground/80 leading-relaxed whitespace-pre-line text-sm">
+              {book.editorial_description || "No editorial overview available yet."}
+            </p>
           </div>
-        )}
+        </div>
 
         {/* Reviews Section */}
         <div className="mt-12 max-w-2xl">
