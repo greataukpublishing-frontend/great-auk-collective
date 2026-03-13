@@ -53,6 +53,7 @@ export default function Footer() {
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">Restored Classics</Link></li>
             </ul>
           </div>
+          {isEnabled("self_publishing") && (
           <div>
             <h4 className="font-display font-semibold mb-4 text-gold">For Authors</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/70">
@@ -62,6 +63,7 @@ export default function Footer() {
               <li><Link to="/publish" className="hover:text-gold transition-colors">Premium Services</Link></li>
             </ul>
           </div>
+          )}
           <div>
             <h4 className="font-display font-semibold mb-4 text-gold">Company</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/70">
