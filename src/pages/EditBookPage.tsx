@@ -234,6 +234,20 @@ export default function EditBookPage() {
 
             <div>
               <label className="block text-sm font-medium mb-2">
+                Amazon Link
+              </label>
+              <input
+                value={amazonLink}
+                onChange={(e)=>setAmazonLink(e.target.value)}
+                className="w-full border rounded-md px-3 py-2 bg-background"
+                placeholder="https://www.amazon.in/dp/..."
+              />
+              <p className="text-xs text-muted-foreground mt-1">Optional — direct Amazon product link. Falls back to search if empty.</p>
+            </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
                 Upload New Manuscript (PDF)
               </label>
 
