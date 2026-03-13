@@ -15,6 +15,7 @@ export default function EditBookPage() {
   const [price,setPrice] = useState("")
   const [category,setCategory] = useState("")
   const [previewContent,setPreviewContent] = useState("")
+  const [amazonLink,setAmazonLink] = useState("")
   const [manuscript,setManuscript] = useState<File|null>(null)
   const [cover,setCover] = useState<File|null>(null)
 
