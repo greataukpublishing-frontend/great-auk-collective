@@ -63,11 +63,13 @@ export default function HomePage() {
                     <ArrowRight className="w-4 h-4 ml-1" />
                   </Button>
                 </Link>
-                <Link to="/publish">
-                  <Button variant="heroOutline" size="lg">
-                    Start Publishing
-                  </Button>
-                </Link>
+                {isEnabled("self_publishing") && (
+                  <Link to="/publish">
+                    <Button variant="heroOutline" size="lg">
+                      Start Publishing
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
             <div className="hidden md:flex justify-center animate-fade-in">
