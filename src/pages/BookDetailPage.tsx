@@ -280,9 +280,13 @@ export default function BookDetailPage() {
               {reviews.length > 0 && <span className="text-muted-foreground font-normal text-base ml-2">({reviews.length})</span>}
             </h2>
             {!showReviewForm && (
-              <Button variant="outline" size="sm" onClick={() => setShowReviewForm(true)}>
+              <button
+                onClick={() => setShowReviewForm(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent/10 text-accent font-medium text-sm border border-accent/20 hover:bg-accent hover:text-accent-foreground hover:border-accent shadow-sm hover:shadow-md transition-all duration-200 active:scale-95"
+              >
+                <Star className="w-4 h-4" />
                 Write a Review
-              </Button>
+              </button>
             )}
           </div>
 
