@@ -48,10 +48,10 @@ export default function HomePage() {
             <div className="animate-fade-in-up">
               <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-[1.1] mb-6">
                 Discover Timeless<br />
-                <span className="text-gold">Books, Restored.</span>
+                <span className="text-gold">Books.</span>
               </h1>
               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
-                Great Auk brings rare and forgotten books back to life — curated classics and new discoveries, all in one place.
+                Great Auk curates exceptional books — classics and new discoveries, all in one place.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/bookstore">
