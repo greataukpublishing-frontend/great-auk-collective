@@ -79,7 +79,7 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {[
-            { icon: BookOpen, title: "Curated Classics", desc: "Hand-picked rare and forgotten books, restored for modern readers" },
+            { icon: BookOpen, title: "Curated Classics", desc: "Hand-picked exceptional books, carefully selected for modern readers" },
             { icon: Sparkles, title: "Quality Editions", desc: "Beautiful formatting with careful editorial attention to every detail" },
             { icon: Crown, title: "Trusted Selection", desc: "Every book reviewed and approved by our team of literary experts" },
           ].map((item) => (

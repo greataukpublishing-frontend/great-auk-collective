@@ -21,7 +21,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              Restoring forgotten books and making them accessible to readers worldwide.
+              {isEnabled("book_restoration") ? "Restoring forgotten books and making them accessible to readers worldwide." : "Curating exceptional books and making them accessible to readers worldwide."}
             </p>
             <div className="flex items-center gap-3 mt-5">
               {[
