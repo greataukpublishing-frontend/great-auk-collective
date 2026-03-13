@@ -13,7 +13,7 @@ import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 const baseNavLinks = [
   { label: "Home", to: "/" },
   { label: "Bookstore", to: "/bookstore" },
-  { label: "Self Publishing", to: "/publish" },
+  { label: "Self Publishing", to: "/publish", feature: "self_publishing" },
   { label: "Membership", to: "/membership", feature: "membership" },
   { label: "About", to: "/about" },
 ];
