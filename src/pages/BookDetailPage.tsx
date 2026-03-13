@@ -228,17 +228,22 @@ export default function BookDetailPage() {
 
             {/* Primary CTA: Find on Amazon */}
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href={amazonUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-shrink-0"
+              <Button
+                size="lg"
+                className="text-base px-8 shadow-md hover:shadow-lg transition-shadow flex-shrink-0"
+                onClick={async () => {
+                  // Log the click before redirecting
+                  await supabase.from("amazon_clicks").insert({
+                    user_id: user?.id ?? null,
+                    book_id: book.id,
+                    book_title: book.title,
+                  });
+                  window.open(amazonUrl, "_blank", "noopener,noreferrer");
+                }}
               >
-                <Button size="lg" className="text-base px-8 shadow-md hover:shadow-lg transition-shadow">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Find on Amazon
-                </Button>
-              </a>
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Find on Amazon
+              </Button>
 
               <Button
                 variant="outline"
