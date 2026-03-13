@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   LayoutDashboard, BookOpen, Users, ShoppingCart,
   Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText, ToggleRight,
-  LogOut, ChevronLeft, ChevronRight, Menu, Heart, Crown
+  LogOut, ChevronLeft, ChevronRight, Menu, Heart, Crown, MousePointerClick
 } from "lucide-react";
 
 import AdminOverview from "@/components/admin/AdminOverview";
