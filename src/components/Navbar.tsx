@@ -93,14 +93,16 @@ export default function Navbar() {
           </Link>
 
           {/* CART */}
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-primary-foreground/10 transition-colors">
-            <ShoppingCart className="w-6 h-6 text-primary-foreground/90 hover:text-gold transition-colors" />
-            {itemCount > 0 && (
-              <span className="absolute top-0 right-0 bg-accent text-accent-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none">
-                {itemCount}
-              </span>
-            )}
-          </Link>
+          {isEnabled("cart") && (
+            <Link to="/cart" className="relative p-2 rounded-full hover:bg-primary-foreground/10 transition-colors">
+              <ShoppingCart className="w-6 h-6 text-primary-foreground/90 hover:text-gold transition-colors" />
+              {itemCount > 0 && (
+                <span className="absolute top-0 right-0 bg-accent text-accent-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+          )}
 
           {!loading && user ? (
 
