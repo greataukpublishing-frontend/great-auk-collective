@@ -18,6 +18,7 @@ export default function ReaderLoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnabled } = useFeatureToggles();
 
   const searchParams = new URLSearchParams(window.location.search);
   const redirectTo = searchParams.get("redirect");
