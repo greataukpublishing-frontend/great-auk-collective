@@ -21,7 +21,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              Restoring forgotten books and empowering authors to publish globally.
+              Restoring forgotten books and making them accessible to readers worldwide.
             </p>
             <div className="flex items-center gap-3 mt-5">
               {[
@@ -70,7 +70,7 @@ export default function Footer() {
               <li><Link to="/about" className="hover:text-gold transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-gold transition-colors">Contact</Link></li>
               {isEnabled("membership") && <li><Link to="/membership" className="hover:text-gold transition-colors">Membership</Link></li>}
-              <li><Link to="/bring-book-back" className="hover:text-gold transition-colors">Bring a Book Back</Link></li>
+              {isEnabled("bring_book_back") && <li><Link to="/bring-book-back" className="hover:text-gold transition-colors">Bring a Book Back</Link></li>}
               <li><Link to="/privacy-policy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-gold transition-colors">Terms & Conditions</Link></li>
             </ul>
