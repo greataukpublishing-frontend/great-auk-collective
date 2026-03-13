@@ -110,6 +110,7 @@ export default function EditBookPage() {
       ebook_price:price,
       category,
       preview_content: previewContent || null,
+      amazon_link: amazonLink.trim() || null,
       status:"pending"
     }
 
