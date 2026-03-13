@@ -63,6 +63,7 @@ export default function Footer() {
               <li><Link to="/publish" className="hover:text-gold transition-colors">Premium Services</Link></li>
             </ul>
           </div>
+          )}
           <div>
             <h4 className="font-display font-semibold mb-4 text-gold">Company</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/70">
