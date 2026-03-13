@@ -34,6 +34,7 @@ const NAV_ITEMS = [
   { id: "services", label: "Premium Services", icon: Briefcase },
   { id: "content", label: "Content & Homepage", icon: FileText },
   { id: "membership", label: "Membership Plans", icon: Crown },
+  { id: "amazon-clicks", label: "Amazon Clicks", icon: MousePointerClick },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "features", label: "Feature Toggles", icon: ToggleRight },
   { id: "settings", label: "Settings", icon: Settings },
