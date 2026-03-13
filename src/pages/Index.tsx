@@ -116,6 +116,7 @@ export default function HomePage() {
       )}
 
       {/* Bring a Book Back CTA */}
+      {isEnabled("bring_book_back") && (
       <section className="container mx-auto px-4 py-16">
         <div className="bg-accent/10 rounded-2xl p-10 md:p-14 border border-accent/20 text-center">
           <Heart className="w-10 h-10 text-accent mx-auto mb-4" />
@@ -132,6 +133,7 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+      )}
 
 
 
