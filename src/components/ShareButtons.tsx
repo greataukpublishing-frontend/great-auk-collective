@@ -30,11 +30,6 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
       url: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
     },
     {
-      name: "X (Twitter)",
-      icon: Twitter,
-      url: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-    },
-    {
       name: "Facebook",
       icon: Facebook,
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
