@@ -133,6 +133,7 @@ export type Database = {
           created_at: string
           description: string | null
           ebook_price: number | null
+          editorial_description: string | null
           featured: boolean | null
           format: string[] | null
           id: string
@@ -152,6 +153,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           ebook_price?: number | null
+          editorial_description?: string | null
           featured?: boolean | null
           format?: string[] | null
           id?: string
@@ -171,6 +173,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           ebook_price?: number | null
+          editorial_description?: string | null
           featured?: boolean | null
           format?: string[] | null
           id?: string

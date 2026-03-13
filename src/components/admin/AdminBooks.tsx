@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload } from "lucide-react";
+import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -23,6 +23,9 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [statusFilter, setStatusFilter] = useState("all");
   const [editBook, setEditBook] = useState<any>(null);
   const [editForm, setEditForm] = useState<any>({});
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [editorialDialog, setEditorialDialog] = useState<any>(null);
+  const [editorialText, setEditorialText] = useState("");
 
   const filtered = books.filter(b => {
     const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -76,6 +79,40 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     }
     toast({ title: "Book updated" });
     setEditBook(null);
+    onRefresh();
+  };
+
+  const generateEditorial = async (bookId: string) => {
+    setGeneratingId(bookId);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-editorial", {
+        body: { book_id: bookId },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({ title: "Editorial generated ✨" });
+      onRefresh();
+    } catch (e: any) {
+      toast({ title: "Generation failed", description: e.message, variant: "destructive" });
+    } finally {
+      setGeneratingId(null);
+    }
+  };
+
+  const openEditorialEdit = (book: any) => {
+    setEditorialDialog(book);
+    setEditorialText(book.editorial_description || "");
+  };
+
+  const saveEditorial = async () => {
+    if (!editorialDialog) return;
+    const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
+    if (error) {
+      toast({ title: "Error saving editorial", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Editorial updated" });
+    setEditorialDialog(null);
     onRefresh();
   };
 
@@ -161,7 +198,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                   <th className="p-3 font-medium">Category</th>
                   <th className="p-3 font-medium">Status</th>
                   <th className="p-3 font-medium">⭐</th>
-                  <th className="p-3 font-medium">Price</th>
+                  <th className="p-3 font-medium">Editorial</th>
                   <th className="p-3 font-medium">Actions</th>
                 </tr>
               </thead>
@@ -179,9 +216,24 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                         <Star className={`w-4 h-4 ${b.featured ? "text-gold fill-gold" : "text-muted-foreground"}`} />
                       </button>
                     </td>
-                    <td className="p-3 text-muted-foreground">
-                      <span className="text-xs">eBook:</span> ${Number(b.ebook_price ?? 0).toFixed(2)}<br/>
-                      <span className="text-xs">Print:</span> ${Number(b.print_price ?? 0).toFixed(2)}
+                    <td className="p-3">
+                      <div className="flex gap-1">
+                        {b.editorial_description ? (
+                          <>
+                            <Button size="sm" variant="ghost" onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Regenerate Editorial">
+                              <RefreshCw className={`w-4 h-4 text-muted-foreground ${generatingId === b.id ? "animate-spin" : ""}`} />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => openEditorialEdit(b)} title="Edit Editorial">
+                              <FileText className="w-4 h-4 text-muted-foreground" />
+                            </Button>
+                          </>
+                        ) : (
+                          <Button size="sm" variant="ghost" onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Generate Editorial Review" className="gap-1">
+                            <Sparkles className={`w-4 h-4 text-accent ${generatingId === b.id ? "animate-pulse" : ""}`} />
+                            {generatingId === b.id ? "" : ""}
+                          </Button>
+                        )}
+                      </div>
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1 flex-wrap">
@@ -212,7 +264,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
         </CardContent>
       </Card>
 
-      {/* Edit Dialog */}
+      {/* Edit Book Dialog */}
       <Dialog open={!!editBook} onOpenChange={(o) => !o && setEditBook(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Edit Book</DialogTitle></DialogHeader>
@@ -232,6 +284,28 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
               <div><Label>Print Price ($)</Label><Input type="number" step="0.01" value={editForm.print_price ?? 0} onChange={e => setEditForm({...editForm, print_price: parseFloat(e.target.value)})} /></div>
             </div>
             <Button onClick={saveEdit} className="w-full">Save Changes</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Editorial Dialog */}
+      <Dialog open={!!editorialDialog} onOpenChange={(o) => !o && setEditorialDialog(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit Editorial Review</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Edit the editorial description for <strong>{editorialDialog?.title}</strong></p>
+            <Textarea
+              value={editorialText}
+              onChange={(e) => setEditorialText(e.target.value)}
+              className="min-h-[200px] resize-none"
+              placeholder="Editorial description..."
+            />
+            <div className="flex gap-2">
+              <Button onClick={saveEditorial} className="flex-1">Save Editorial</Button>
+              <Button variant="outline" onClick={() => { generateEditorial(editorialDialog.id); setEditorialDialog(null); }}>
+                <RefreshCw className="w-4 h-4 mr-1.5" /> Regenerate
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
