@@ -26,10 +26,8 @@ export default function Footer() {
             <div className="flex items-center gap-3 mt-5">
               {[
                 { icon: Facebook, href: "https://facebook.com/greataukbooks", label: "Facebook" },
-                { icon: Twitter, href: "https://x.com/greataukbooks", label: "X (Twitter)" },
                 { icon: Instagram, href: "https://instagram.com/greataukbooks", label: "Instagram" },
                 { icon: Youtube, href: "https://youtube.com/@greataukbooks", label: "YouTube" },
-                { icon: Linkedin, href: "https://linkedin.com/company/greataukbooks", label: "LinkedIn" },
               ].map((social) => (
                 <a
                   key={social.label}
