@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,8 +93,19 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       if (data?.error) throw new Error(data.error);
       toast({ title: "Editorial generated ✨" });
       onRefresh();
-    } catch (e: any) {
-      toast({ title: "Generation failed", description: e.message, variant: "destructive" });
+    } catch (e: unknown) {
+      let message = e instanceof Error ? e.message : "Unknown error";
+
+      if (e instanceof FunctionsHttpError) {
+        try {
+          const payload = await e.context.json();
+          if (payload?.error) message = payload.error;
+        } catch {
+          // Keep fallback message when body cannot be parsed.
+        }
+      }
+
+      toast({ title: "Generation failed", description: message, variant: "destructive" });
     } finally {
       setGeneratingId(null);
     }
