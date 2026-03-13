@@ -182,15 +182,8 @@ export default function BookstorePage() {
           </div>
         ) : (
           <div className="text-center py-24">
-            <BookCard
-              id=""
-              title=""
-              author=""
-              price={0}
-              cover=""
-              category=""
-            />
-            <p className="text-muted-foreground text-lg mt-4">No books found matching your criteria.</p>
+            <Search className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+            <p className="text-muted-foreground text-lg">No books found matching your criteria.</p>
             <button
               onClick={() => { setSelectedCategory("All"); setSelectedLanguage("All Languages"); setSearchQuery(""); }}
               className="text-accent hover:text-accent/80 text-sm font-medium mt-2 underline underline-offset-2"
