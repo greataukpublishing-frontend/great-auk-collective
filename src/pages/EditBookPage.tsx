@@ -44,6 +44,7 @@ export default function EditBookPage() {
     setPrice(String(data.ebook_price || ""))
     setCategory(data.category || "")
     setPreviewContent(data.preview_content || "")
+    setAmazonLink((data as any).amazon_link || "")
     setLoading(false)
   }
 
