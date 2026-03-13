@@ -15,6 +15,7 @@ export default function HomePage() {
   const aukPlaying = useAukPlaying();
   const { isEnabled } = useFeatureToggles();
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
+  const [recentBooks, setRecentBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,14 +24,23 @@ export default function HomePage() {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: booksData } = await supabase
-      .from("books")
-      .select("*")
-      .eq("status", "approved")
-      .eq("featured", true)
-      .limit(8);
+    const [featuredRes, recentRes] = await Promise.all([
+      supabase
+        .from("books")
+        .select("*")
+        .eq("status", "approved")
+        .eq("featured", true)
+        .limit(8),
+      supabase
+        .from("books")
+        .select("*")
+        .eq("status", "approved")
+        .order("created_at", { ascending: false })
+        .limit(8),
+    ]);
 
-    setFeaturedBooks(booksData || []);
+    setFeaturedBooks(featuredRes.data || []);
+    setRecentBooks(recentRes.data || []);
     setLoading(false);
   };
 
@@ -94,13 +104,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Books */}
+      {/* Editor's Picks */}
       {featuredBooks.length > 0 && (
         <section className="container mx-auto px-4 py-16">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Curated Selection</p>
-              <h2 className="font-display text-3xl font-bold text-foreground">Featured Books</h2>
+              <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Hand-picked by our team</p>
+              <h2 className="font-display text-3xl font-bold text-foreground">Editor's Picks</h2>
             </div>
             <Link to="/bookstore" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
               View All <ArrowRight className="w-4 h-4" />
@@ -118,6 +128,35 @@ export default function HomePage() {
                 category={book.category}
                 cover={book.cover_url || ""}
                 tag="new"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recently Added */}
+      {recentBooks.length > 0 && (
+        <section className="container mx-auto px-4 py-16 border-t border-border">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">Fresh arrivals</p>
+              <h2 className="font-display text-3xl font-bold text-foreground">Recently Added</h2>
+            </div>
+            <Link to="/bookstore" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
+              Browse All <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {recentBooks.map((book) => (
+              <BookCard
+                key={book.id}
+                id={book.id}
+                title={book.title}
+                author={book.author_name}
+                price={book.print_price || 0}
+                ebookPrice={book.ebook_price || 0}
+                category={book.category}
+                cover={book.cover_url || ""}
               />
             ))}
           </div>
