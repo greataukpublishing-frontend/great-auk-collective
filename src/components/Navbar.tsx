@@ -177,7 +177,7 @@ export default function Navbar() {
 
                 <DropdownMenuItem asChild>
                   <Link to="/reader-login" className="flex items-center gap-2 cursor-pointer">
-                    <ShoppingCart className="w-4 h-4" /> Reader Login
+                    <User className="w-4 h-4" /> Reader Login
                   </Link>
                 </DropdownMenuItem>
 
