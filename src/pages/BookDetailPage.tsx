@@ -240,6 +240,19 @@ export default function BookDetailPage() {
                 </Button>
               </a>
 
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-11 w-11"
+                onClick={() => {
+                  navigator.clipboard.writeText(amazonUrl);
+                  toast({ title: "Link copied! 🔗" });
+                }}
+                title="Copy Amazon link"
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
+
               <Button variant="outline" size="lg" onClick={toggleFavorite}>
                 <Heart className={`w-4 h-4 mr-2 ${isFavorite ? "fill-destructive text-destructive" : ""}`} />
                 {isFavorite ? "Saved" : "Favorite"}
