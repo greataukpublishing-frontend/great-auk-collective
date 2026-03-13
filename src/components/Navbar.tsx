@@ -181,11 +181,13 @@ export default function Navbar() {
                   </Link>
                 </DropdownMenuItem>
 
+                {isEnabled("self_publishing") && (
                 <DropdownMenuItem asChild>
                   <Link to="/author-login" className="flex items-center gap-2 cursor-pointer">
                     <BookOpen className="w-4 h-4" /> Author Login
                   </Link>
                 </DropdownMenuItem>
+                )}
 
               </DropdownMenuContent>
 

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "lucide-react";
+import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 
 export default function ReaderLoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -17,6 +18,7 @@ export default function ReaderLoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isEnabled } = useFeatureToggles();
 
   const searchParams = new URLSearchParams(window.location.search);
   const redirectTo = searchParams.get("redirect");
@@ -167,12 +169,14 @@ export default function ReaderLoginPage() {
             </p>
           </div>
 
+          {isEnabled("self_publishing") && (
           <p className="text-center text-xs text-muted-foreground mt-6">
             Are you an author?{" "}
             <a href="/author-login" className="text-primary hover:underline">
               Sign in here
             </a>
           </p>
+          )}
         </div>
       </div>
       <Footer />
