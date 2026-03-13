@@ -15,6 +15,7 @@ export default function HomePage() {
   const aukPlaying = useAukPlaying();
   const { isEnabled } = useFeatureToggles();
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
+  const [recentBooks, setRecentBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,14 +24,23 @@ export default function HomePage() {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: booksData } = await supabase
-      .from("books")
-      .select("*")
-      .eq("status", "approved")
-      .eq("featured", true)
-      .limit(8);
+    const [featuredRes, recentRes] = await Promise.all([
+      supabase
+        .from("books")
+        .select("*")
+        .eq("status", "approved")
+        .eq("featured", true)
+        .limit(8),
+      supabase
+        .from("books")
+        .select("*")
+        .eq("status", "approved")
+        .order("created_at", { ascending: false })
+        .limit(8),
+    ]);
 
-    setFeaturedBooks(booksData || []);
+    setFeaturedBooks(featuredRes.data || []);
+    setRecentBooks(recentRes.data || []);
     setLoading(false);
   };
 
