@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { BookOpen, ArrowLeft, Heart, Eye, ExternalLink, Star, Send } from "lucide-react";
+import { BookOpen, ArrowLeft, Heart, Eye, ExternalLink, Star, Send, Share2 } from "lucide-react";
 import BookPreviewModal from "@/components/BookPreviewModal";
 import BookVoting from "@/components/BookVoting";
 import Navbar from "@/components/Navbar";
