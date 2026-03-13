@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Instagram, Youtube, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Youtube } from "lucide-react";
 import greatAukLogo from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
 import { useAukPlaying } from "@/hooks/useAukPlaying";
@@ -26,10 +26,8 @@ export default function Footer() {
             <div className="flex items-center gap-3 mt-5">
               {[
                 { icon: Facebook, href: "https://facebook.com/greataukbooks", label: "Facebook" },
-                { icon: Twitter, href: "https://x.com/greataukbooks", label: "X (Twitter)" },
                 { icon: Instagram, href: "https://instagram.com/greataukbooks", label: "Instagram" },
                 { icon: Youtube, href: "https://youtube.com/@greataukbooks", label: "YouTube" },
-                { icon: Linkedin, href: "https://linkedin.com/company/greataukbooks", label: "LinkedIn" },
               ].map((social) => (
                 <a
                   key={social.label}
@@ -50,7 +48,7 @@ export default function Footer() {
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">Bookstore</Link></li>
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">New Releases</Link></li>
               <li><Link to="/bookstore" className="hover:text-gold transition-colors">Bestsellers</Link></li>
-              <li><Link to="/bookstore" className="hover:text-gold transition-colors">Restored Classics</Link></li>
+              
             </ul>
           </div>
           {isEnabled("self_publishing") && (

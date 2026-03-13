@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Facebook, Twitter, Link2, MessageCircle, Share2 } from "lucide-react";
+import { Facebook, Link2, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackShare } from "@/lib/shareAnalytics";
 
@@ -28,11 +28,6 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
       name: "WhatsApp",
       icon: MessageCircle,
       url: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
-    },
-    {
-      name: "X (Twitter)",
-      icon: Twitter,
-      url: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
     },
     {
       name: "Facebook",
