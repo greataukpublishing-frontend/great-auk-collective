@@ -48,10 +48,10 @@ export default function HomePage() {
             <div className="animate-fade-in-up">
               <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-[1.1] mb-6">
                 Discover Timeless<br />
-                <span className="text-gold">Books, Restored.</span>
+                <span className="text-gold">Books.</span>
               </h1>
               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 max-w-md">
-                Great Auk brings rare and forgotten books back to life — curated classics and new discoveries, all in one place.
+                Great Auk curates exceptional books — classics and new discoveries, all in one place.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/bookstore">
@@ -79,7 +79,7 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {[
-            { icon: BookOpen, title: "Curated Classics", desc: "Hand-picked rare and forgotten books, restored for modern readers" },
+            { icon: BookOpen, title: "Curated Classics", desc: "Hand-picked exceptional books, carefully selected for modern readers" },
             { icon: Sparkles, title: "Quality Editions", desc: "Beautiful formatting with careful editorial attention to every detail" },
             { icon: Crown, title: "Trusted Selection", desc: "Every book reviewed and approved by our team of literary experts" },
           ].map((item) => (
