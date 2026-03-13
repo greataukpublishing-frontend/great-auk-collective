@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { BookOpen, ArrowLeft, Heart, Eye, ExternalLink, Star, Send } from "lucide-react";
+import { BookOpen, ArrowLeft, Heart, Eye, ExternalLink, Star, Send, Share2 } from "lucide-react";
 import BookPreviewModal from "@/components/BookPreviewModal";
 import BookVoting from "@/components/BookVoting";
 import Navbar from "@/components/Navbar";
@@ -156,7 +156,7 @@ export default function BookDetailPage() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  const amazonUrl = `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}&tag=greataukpub-21`;
+  const amazonUrl = book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}`;
 
   return (
     <div className="min-h-screen bg-background">
@@ -239,6 +239,19 @@ export default function BookDetailPage() {
                   Find on Amazon
                 </Button>
               </a>
+
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-11 w-11"
+                onClick={() => {
+                  navigator.clipboard.writeText(amazonUrl);
+                  toast({ title: "Link copied! 🔗" });
+                }}
+                title="Copy Amazon link"
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
 
               <Button variant="outline" size="lg" onClick={toggleFavorite}>
                 <Heart className={`w-4 h-4 mr-2 ${isFavorite ? "fill-destructive text-destructive" : ""}`} />

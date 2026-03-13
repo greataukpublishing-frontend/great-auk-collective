@@ -93,6 +93,7 @@ export type Database = {
       }
       books: {
         Row: {
+          amazon_link: string | null
           author_id: string | null
           author_name: string
           category: string
@@ -111,6 +112,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          amazon_link?: string | null
           author_id?: string | null
           author_name: string
           category?: string
@@ -129,6 +131,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          amazon_link?: string | null
           author_id?: string | null
           author_name?: string
           category?: string

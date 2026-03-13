@@ -15,6 +15,7 @@ export default function EditBookPage() {
   const [price,setPrice] = useState("")
   const [category,setCategory] = useState("")
   const [previewContent,setPreviewContent] = useState("")
+  const [amazonLink,setAmazonLink] = useState("")
   const [manuscript,setManuscript] = useState<File|null>(null)
   const [cover,setCover] = useState<File|null>(null)
 
@@ -43,6 +44,7 @@ export default function EditBookPage() {
     setPrice(String(data.ebook_price || ""))
     setCategory(data.category || "")
     setPreviewContent(data.preview_content || "")
+    setAmazonLink((data as any).amazon_link || "")
     setLoading(false)
   }
 
@@ -108,6 +110,7 @@ export default function EditBookPage() {
       ebook_price:price,
       category,
       preview_content: previewContent || null,
+      amazon_link: amazonLink.trim() || null,
       status:"pending"
     }
 
@@ -227,6 +230,19 @@ export default function EditBookPage() {
                 placeholder="Paste the first few pages for readers to preview..."
               />
               <p className="text-xs text-muted-foreground mt-1">Optional — shown as a free sample on the book detail page.</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Amazon Link
+              </label>
+              <input
+                value={amazonLink}
+                onChange={(e)=>setAmazonLink(e.target.value)}
+                className="w-full border rounded-md px-3 py-2 bg-background"
+                placeholder="https://www.amazon.in/dp/..."
+              />
+              <p className="text-xs text-muted-foreground mt-1">Optional — direct Amazon product link. Falls back to search if empty.</p>
             </div>
 
             <div>
