@@ -139,6 +139,7 @@ export default function HomePage() {
 
 
       {/* Become an Author CTA */}
+      {isEnabled("self_publishing") && (
       <section className="gradient-hero">
         <div className="container mx-auto px-4 py-24 text-center">
           <BookOpen className="w-12 h-12 text-gold mx-auto mb-6" />
@@ -170,6 +171,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Membership Teaser */}
       {isEnabled("membership") && (
