@@ -187,26 +187,33 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
           <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
           <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
         </div>
-        <Button
-          onClick={generateAllEditorials}
-          disabled={bulkGenerating || missingEditorialCount === 0}
-          className="gap-2 shrink-0"
-        >
-          {bulkGenerating ? (
-            <>
-              <Wand2 className="w-4 h-4 animate-pulse" />
-              Generating {bulkProgress.current}/{bulkProgress.total}…
-            </>
-          ) : (
-            <>
-              <Wand2 className="w-4 h-4" />
-              Generate Editorials for All Books
-              {missingEditorialCount > 0 && (
-                <Badge variant="secondary" className="ml-1">{missingEditorialCount}</Badge>
-              )}
-            </>
+        <div className="flex gap-2 shrink-0">
+          {bulkGenerating && (
+            <Button variant="destructive" onClick={cancelBulkGeneration} className="gap-2">
+              <XCircle className="w-4 h-4" /> Stop
+            </Button>
           )}
-        </Button>
+          <Button
+            onClick={generateAllEditorials}
+            disabled={bulkGenerating || missingEditorialCount === 0}
+            className="gap-2"
+          >
+            {bulkGenerating ? (
+              <>
+                <Wand2 className="w-4 h-4 animate-pulse" />
+                Generating {bulkProgress.current}/{bulkProgress.total}…
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-4 h-4" />
+                Generate Editorials for All Books
+                {missingEditorialCount > 0 && (
+                  <Badge variant="secondary" className="ml-1">{missingEditorialCount}</Badge>
+                )}
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {bulkGenerating && (
