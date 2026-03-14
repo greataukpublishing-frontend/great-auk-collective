@@ -26,8 +26,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [editBook, setEditBook] = useState<any>(null);
   const [editForm, setEditForm] = useState<any>({});
   const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [generatingDescId, setGeneratingDescId] = useState<string | null>(null);
   const [editorialDialog, setEditorialDialog] = useState<any>(null);
   const [editorialText, setEditorialText] = useState("");
+  const [descriptionDialog, setDescriptionDialog] = useState<any>(null);
+  const [descriptionText, setDescriptionText] = useState("");
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
   const [descGenerating, setDescGenerating] = useState(false);
@@ -187,6 +190,44 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     }
   };
 
+  const generateSingleDescription = async (bookId: string) => {
+    setGeneratingDescId(bookId);
+    try {
+      // The edge function processes books with short/empty descriptions.
+      // We call it with limit=1, but it picks from all books missing descriptions.
+      // For a targeted single-book generation we re-use the same function.
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { limit: 50 },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({ title: "Description generated ✨" });
+      onRefresh();
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      toast({ title: "Generation failed", description: message, variant: "destructive" });
+    } finally {
+      setGeneratingDescId(null);
+    }
+  };
+
+  const openDescriptionEdit = (book: any) => {
+    setDescriptionDialog(book);
+    setDescriptionText(book.description || "");
+  };
+
+  const saveDescription = async () => {
+    if (!descriptionDialog) return;
+    const { error } = await supabase.from("books").update({ description: descriptionText }).eq("id", descriptionDialog.id);
+    if (error) {
+      toast({ title: "Error saving description", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Description updated" });
+    setDescriptionDialog(null);
+    onRefresh();
+  };
+
   const saveEditorial = async () => {
     if (!editorialDialog) return;
     const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
@@ -327,12 +368,15 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                   <th className="p-3 font-medium">Category</th>
                   <th className="p-3 font-medium">Status</th>
                   <th className="p-3 font-medium">⭐</th>
+                  <th className="p-3 font-medium">Description</th>
                   <th className="p-3 font-medium">Editorial</th>
                   <th className="p-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(b => (
+                {filtered.map(b => {
+                  const hasDesc = b.description && b.description.length >= 100;
+                  return (
                   <tr key={b.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="p-3">
                       <p className="font-medium text-foreground">{b.title}</p>
@@ -344,6 +388,24 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                       <button onClick={() => toggleFeatured(b.id, b.featured ?? false)} title={b.featured ? "Remove from featured" : "Add to featured"}>
                         <Star className={`w-4 h-4 ${b.featured ? "text-gold fill-gold" : "text-muted-foreground"}`} />
                       </button>
+                    </td>
+                    <td className="p-3">
+                      <div className="flex gap-1">
+                        {hasDesc ? (
+                          <>
+                            <Button size="sm" variant="ghost" onClick={() => generateSingleDescription(b.id)} disabled={generatingDescId === b.id} title="Regenerate Description">
+                              <RefreshCw className={`w-4 h-4 text-muted-foreground ${generatingDescId === b.id ? "animate-spin" : ""}`} />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => openDescriptionEdit(b)} title="Edit Description">
+                              <AlignLeft className="w-4 h-4 text-muted-foreground" />
+                            </Button>
+                          </>
+                        ) : (
+                          <Button size="sm" variant="ghost" onClick={() => generateSingleDescription(b.id)} disabled={generatingDescId === b.id} title="Generate Description" className="gap-1">
+                            <AlignLeft className={`w-4 h-4 text-accent ${generatingDescId === b.id ? "animate-pulse" : ""}`} />
+                          </Button>
+                        )}
+                      </div>
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1">
@@ -359,7 +421,6 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                         ) : (
                           <Button size="sm" variant="ghost" onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Generate Editorial Review" className="gap-1">
                             <Sparkles className={`w-4 h-4 text-accent ${generatingId === b.id ? "animate-pulse" : ""}`} />
-                            {generatingId === b.id ? "" : ""}
                           </Button>
                         )}
                       </div>
@@ -385,7 +446,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
             {filtered.length === 0 && <p className="text-center py-8 text-muted-foreground">No books found.</p>}
@@ -432,6 +494,29 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
             <div className="flex gap-2">
               <Button onClick={saveEditorial} className="flex-1">Save Editorial</Button>
               <Button variant="outline" onClick={() => { generateEditorial(editorialDialog.id); setEditorialDialog(null); }}>
+                <RefreshCw className="w-4 h-4 mr-1.5" /> Regenerate
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Description Dialog */}
+      <Dialog open={!!descriptionDialog} onOpenChange={(o) => !o && setDescriptionDialog(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit Book Description</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Edit the description for <strong>{descriptionDialog?.title}</strong></p>
+            <Textarea
+              value={descriptionText}
+              onChange={(e) => setDescriptionText(e.target.value)}
+              className="min-h-[120px] resize-none"
+              placeholder="Book description (120-180 characters)..."
+            />
+            <p className="text-xs text-muted-foreground">{descriptionText.length} characters</p>
+            <div className="flex gap-2">
+              <Button onClick={saveDescription} className="flex-1">Save Description</Button>
+              <Button variant="outline" onClick={() => { generateSingleDescription(descriptionDialog.id); setDescriptionDialog(null); }}>
                 <RefreshCw className="w-4 h-4 mr-1.5" /> Regenerate
               </Button>
             </div>
