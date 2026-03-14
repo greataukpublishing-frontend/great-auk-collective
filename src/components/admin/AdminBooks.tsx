@@ -154,6 +154,18 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 
   const missingEditorialCount = books.filter(b => !b.editorial_description).length;
 
+  const saveEditorial = async () => {
+    if (!editorialDialog) return;
+    const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
+    if (error) {
+      toast({ title: "Error saving editorial", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Editorial updated" });
+    setEditorialDialog(null);
+    onRefresh();
+  };
+
   const statusColor = (s: string) => s === "approved" ? "default" : s === "pending" ? "secondary" : "destructive";
   const pending = books.filter(b => b.status === "pending").length;
   const approved = books.filter(b => b.status === "approved").length;
@@ -161,10 +173,36 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
-        <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
+          <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
+        </div>
+        <Button
+          onClick={generateAllEditorials}
+          disabled={bulkGenerating || missingEditorialCount === 0}
+          className="gap-2 shrink-0"
+        >
+          {bulkGenerating ? (
+            <>
+              <Wand2 className="w-4 h-4 animate-pulse" />
+              Generating {bulkProgress.current}/{bulkProgress.total}…
+            </>
+          ) : (
+            <>
+              <Wand2 className="w-4 h-4" />
+              Generate Editorials for All Books
+              {missingEditorialCount > 0 && (
+                <Badge variant="secondary" className="ml-1">{missingEditorialCount}</Badge>
+              )}
+            </>
+          )}
+        </Button>
       </div>
+
+      {bulkGenerating && (
+        <Progress value={(bulkProgress.current / bulkProgress.total) * 100} className="h-2" />
+      )}
 
       {/* Quick stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
