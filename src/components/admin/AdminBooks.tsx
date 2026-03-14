@@ -500,6 +500,29 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Description Dialog */}
+      <Dialog open={!!descriptionDialog} onOpenChange={(o) => !o && setDescriptionDialog(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit Book Description</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Edit the description for <strong>{descriptionDialog?.title}</strong></p>
+            <Textarea
+              value={descriptionText}
+              onChange={(e) => setDescriptionText(e.target.value)}
+              className="min-h-[120px] resize-none"
+              placeholder="Book description (120-180 characters)..."
+            />
+            <p className="text-xs text-muted-foreground">{descriptionText.length} characters</p>
+            <div className="flex gap-2">
+              <Button onClick={saveDescription} className="flex-1">Save Description</Button>
+              <Button variant="outline" onClick={() => { generateSingleDescription(descriptionDialog.id); setDescriptionDialog(null); }}>
+                <RefreshCw className="w-4 h-4 mr-1.5" /> Regenerate
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
