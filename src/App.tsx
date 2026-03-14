@@ -18,6 +18,7 @@ import AuthorDashboardPage from "./pages/AuthorDashboardPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import AuthorLoginPage from "./pages/AuthorLoginPage";
 import AuthorProfilePage from "./pages/AuthorProfilePage";
+import DisclosurePage from "./pages/DisclosurePage";
 import MembershipPage from "./pages/MembershipPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -106,6 +107,7 @@ const App = () => (
             <Route path="/bring-book-back" element={<BringBookBackPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="/disclosure" element={<DisclosurePage />} />
 
             {/* ADMIN */}
             <Route path="/admin-login" element={<AdminLoginPage />} />

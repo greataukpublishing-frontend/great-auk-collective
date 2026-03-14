@@ -41,7 +41,7 @@ export default function TermsPage() {
           <p>We reserve the right to update these Terms at any time. Continued use of the Site constitutes acceptance of any changes.</p>
 
           <h2 className="font-display text-xl font-semibold text-foreground !mt-8">11. Contact</h2>
-          <p>For questions regarding these Terms, please contact us at legal@greataukpublishing.com or visit our <a href="/contact" className="text-accent hover:underline">Contact page</a>.</p>
+          <p>For questions regarding these Terms, please contact us at greataukpublishing@gmail.com or visit our <a href="/contact" className="text-accent hover:underline">Contact page</a>.</p>
         </div>
       </div>
       <Footer />

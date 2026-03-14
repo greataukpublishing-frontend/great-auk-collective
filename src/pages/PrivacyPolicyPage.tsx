@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
           <p>We implement appropriate technical and organisational measures to protect your personal data against unauthorised access, alteration, disclosure, or destruction.</p>
 
           <h2 className="font-display text-xl font-semibold text-foreground !mt-8">7. Your Rights</h2>
-          <p>Depending on your jurisdiction, you may have the right to access, correct, delete, or restrict the processing of your personal data. To exercise these rights, please contact us at privacy@greataukpublishing.com.</p>
+          <p>Depending on your jurisdiction, you may have the right to access, correct, delete, or restrict the processing of your personal data. To exercise these rights, please contact us at greataukpublishing@gmail.com.</p>
 
           <h2 className="font-display text-xl font-semibold text-foreground !mt-8">8. Children's Privacy</h2>
           <p>Our services are not directed at individuals under the age of 13. We do not knowingly collect personal information from children.</p>
@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
           <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date.</p>
 
           <h2 className="font-display text-xl font-semibold text-foreground !mt-8">10. Contact Us</h2>
-          <p>If you have questions about this Privacy Policy, please contact us at privacy@greataukpublishing.com or through our <a href="/contact" className="text-accent hover:underline">Contact page</a>.</p>
+          <p>If you have questions about this Privacy Policy, please contact us at greataukpublishing@gmail.com or through our <a href="/contact" className="text-accent hover:underline">Contact page</a>.</p>
         </div>
       </div>
       <Footer />
