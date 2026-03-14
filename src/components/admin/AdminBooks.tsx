@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -27,6 +28,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [editorialDialog, setEditorialDialog] = useState<any>(null);
   const [editorialText, setEditorialText] = useState("");
+  const [bulkGenerating, setBulkGenerating] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
 
   const filtered = books.filter(b => {
     const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -116,6 +119,41 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     setEditorialText(book.editorial_description || "");
   };
 
+  const generateAllEditorials = async () => {
+    const booksWithout = books.filter(b => !b.editorial_description);
+    if (booksWithout.length === 0) {
+      toast({ title: "All books already have editorials" });
+      return;
+    }
+    setBulkGenerating(true);
+    setBulkProgress({ current: 0, total: booksWithout.length });
+    let successCount = 0;
+    let failCount = 0;
+
+    for (let i = 0; i < booksWithout.length; i++) {
+      setBulkProgress({ current: i + 1, total: booksWithout.length });
+      try {
+        const { data, error } = await supabase.functions.invoke("generate-editorial", {
+          body: { book_id: booksWithout[i].id },
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        successCount++;
+      } catch {
+        failCount++;
+      }
+    }
+
+    setBulkGenerating(false);
+    toast({
+      title: `Bulk generation complete`,
+      description: `${successCount} succeeded, ${failCount} failed out of ${booksWithout.length} books.`,
+    });
+    onRefresh();
+  };
+
+  const missingEditorialCount = books.filter(b => !b.editorial_description).length;
+
   const saveEditorial = async () => {
     if (!editorialDialog) return;
     const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
@@ -135,10 +173,36 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
-        <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
+          <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
+        </div>
+        <Button
+          onClick={generateAllEditorials}
+          disabled={bulkGenerating || missingEditorialCount === 0}
+          className="gap-2 shrink-0"
+        >
+          {bulkGenerating ? (
+            <>
+              <Wand2 className="w-4 h-4 animate-pulse" />
+              Generating {bulkProgress.current}/{bulkProgress.total}…
+            </>
+          ) : (
+            <>
+              <Wand2 className="w-4 h-4" />
+              Generate Editorials for All Books
+              {missingEditorialCount > 0 && (
+                <Badge variant="secondary" className="ml-1">{missingEditorialCount}</Badge>
+              )}
+            </>
+          )}
+        </Button>
       </div>
+
+      {bulkGenerating && (
+        <Progress value={(bulkProgress.current / bulkProgress.total) * 100} className="h-2" />
+      )}
 
       {/* Quick stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
