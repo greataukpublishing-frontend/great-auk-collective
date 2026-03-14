@@ -65,8 +65,7 @@ export default function BookCard({
       setFavorited(true);
     }
   }
-
-  const cartEnabled = isEnabled("cart");
+  const amazonUrl = amazonLink || `https://www.amazon.in/s?k=${encodeURIComponent(title + " " + author)}`;
 
   return (
     <div className="relative group block">
