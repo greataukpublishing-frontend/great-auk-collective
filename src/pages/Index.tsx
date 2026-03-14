@@ -128,8 +128,6 @@ export default function HomePage() {
                   amazonLink={book.amazon_link || undefined}
                   tag={book.featured ? "new" : undefined}
                 />
-                tag="new"
-              />
             ))}
           </div>
         </section>
