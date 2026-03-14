@@ -19,7 +19,12 @@ export function useFeatureToggles() {
 
   useEffect(() => { fetch(); }, []);
 
-  const isEnabled = (key: string) => features.find(f => f.key === key)?.enabled ?? true;
+  const isEnabled = (key: string) => {
+    if (loading) return false;
+    const feature = features.find(f => f.key === key);
+    if (!feature) return false;
+    return feature.enabled;
+  };
 
   return { features, loading, isEnabled, refetch: fetch };
 }
