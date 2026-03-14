@@ -26,8 +26,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [editBook, setEditBook] = useState<any>(null);
   const [editForm, setEditForm] = useState<any>({});
   const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [generatingDescId, setGeneratingDescId] = useState<string | null>(null);
   const [editorialDialog, setEditorialDialog] = useState<any>(null);
   const [editorialText, setEditorialText] = useState("");
+  const [descriptionDialog, setDescriptionDialog] = useState<any>(null);
+  const [descriptionText, setDescriptionText] = useState("");
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
   const [descGenerating, setDescGenerating] = useState(false);
