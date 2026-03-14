@@ -17,6 +17,7 @@ interface BookCardProps {
   tag?: string;
   category?: string;
   amazonLink?: string;
+  amazonAffiliateUrl?: string;
 }
 
 export default function BookCard({
@@ -26,7 +27,8 @@ export default function BookCard({
   cover,
   tag,
   category,
-  amazonLink
+  amazonLink,
+  amazonAffiliateUrl
 }: BookCardProps) {
 
   const { toast } = useToast();
@@ -65,7 +67,7 @@ export default function BookCard({
       setFavorited(true);
     }
   }
-  const amazonUrl = amazonLink || `https://www.amazon.in/s?k=${encodeURIComponent(title + " " + author)}`;
+  const amazonUrl = amazonAffiliateUrl || amazonLink || `https://www.amazon.in/s?k=${encodeURIComponent(title + " " + author)}&tag=greakaukpubli-21`;
 
   return (
     <div className="relative group block">

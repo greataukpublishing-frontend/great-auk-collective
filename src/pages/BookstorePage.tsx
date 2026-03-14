@@ -177,6 +177,7 @@ export default function BookstorePage() {
                 category={book.category}
                 cover={book.cover_url || ""}
                 amazonLink={book.amazon_link || undefined}
+                amazonAffiliateUrl={book.amazon_affiliate_url || undefined}
                 tag={book.featured ? "new" : undefined}
               />
             ))}

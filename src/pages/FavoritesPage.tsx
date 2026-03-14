@@ -38,7 +38,8 @@ export default function FavoritesPage() {
           author_name,
           cover_url,
           category,
-          amazon_link
+          amazon_link,
+          amazon_affiliate_url
         )
       `
       )
@@ -125,7 +126,7 @@ export default function FavoritesPage() {
             {favorites.map((fav) => {
               const book = fav.books;
               if (!book) return null;
-              const amazonUrl = book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + (book.author_name || ""))}`;
+              const amazonUrl = book.amazon_affiliate_url || book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + (book.author_name || ""))}&tag=greakaukpubli-21`;
 
               return (
                 <div

@@ -93,6 +93,7 @@ export default function AuthorProfilePage() {
                 category={book.category}
                 cover={book.cover_url || ""}
                 amazonLink={book.amazon_link || undefined}
+                amazonAffiliateUrl={book.amazon_affiliate_url || undefined}
               />
             ))}
           </div>
