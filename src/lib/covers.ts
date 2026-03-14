@@ -18,12 +18,24 @@ export function getBookCover(key: string, width = 400): string {
   // Local asset key
   if (coverMap[key]) return coverMap[key];
 
-  // Supabase storage URL — append transform for resizing
   if (key && key.startsWith("http")) {
     try {
       const url = new URL(key);
-      url.searchParams.set("width", String(width));
-      url.searchParams.set("quality", "75");
+
+      // For Open Library ISBN URLs, prefer Google Books cover endpoint
+      // to get the exact retail-style original cover artwork.
+      const isbnMatch = url.pathname.match(/\/b\/isbn\/([0-9Xx-]+)-[SML]\.jpg$/i);
+      if (isbnMatch?.[1]) {
+        const isbn = isbnMatch[1].replace(/-/g, "");
+        return `https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1&source=gbs_api`;
+      }
+
+      // Only apply image transform params to backend storage objects.
+      if (url.pathname.includes("/storage/v1/object/")) {
+        url.searchParams.set("width", String(width));
+        url.searchParams.set("quality", "75");
+      }
+
       return url.toString();
     } catch {
       return key;
