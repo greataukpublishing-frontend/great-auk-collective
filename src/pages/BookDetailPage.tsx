@@ -161,7 +161,11 @@ export default function BookDetailPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-
+      <div className="bg-muted border-b border-border">
+        <div className="container mx-auto px-4 py-2 text-center text-xs text-muted-foreground">
+          As an Amazon Associate, I earn from qualifying purchases.
+        </div>
+      </div>
       <div className="container mx-auto px-4 py-10 max-w-5xl">
         {/* Back link */}
         <Link to="/bookstore" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
