@@ -47,12 +47,10 @@ export default function BookActions({ bookId, initialUpvotes = 0, initialDownvot
       if (type === "up") setUpvotes((v) => v + 1);
       else setDownvotes((v) => v + 1);
     }
-    console.log(`[BookActions] Vote: ${type}, Book: ${bookId}`);
   };
 
   const handleReport = () => {
     if (!reportReason) return;
-    console.log(`[BookActions] Report: ${reportReason}, Details: ${reportDetails}, Book: ${bookId}`);
     setReported(true);
     setReportOpen(false);
     setReportReason("");
