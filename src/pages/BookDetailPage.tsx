@@ -156,7 +156,7 @@ export default function BookDetailPage() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  const amazonUrl = book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}`;
+  const amazonUrl = book.amazon_affiliate_url;
 
   return (
     <div className="min-h-screen bg-background">
@@ -231,36 +231,39 @@ export default function BookDetailPage() {
             </p>
 
             {/* Primary CTA: Find on Amazon */}
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button
-                size="lg"
-                className="text-base px-8 shadow-md hover:shadow-lg transition-shadow flex-shrink-0"
-                onClick={async () => {
-                  // Log the click before redirecting
-                  await supabase.from("amazon_clicks").insert({
-                    user_id: user?.id ?? null,
-                    book_id: book.id,
-                    book_title: book.title,
-                  });
-                  window.open(amazonUrl, "_blank", "noopener,noreferrer");
-                }}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Find on Amazon
-              </Button>
+            {amazonUrl && (
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button
+                  size="lg"
+                  className="text-base px-8 shadow-md hover:shadow-lg transition-shadow flex-shrink-0"
+                  onClick={async () => {
+                    // Log the click before redirecting
+                    await supabase.from("amazon_clicks").insert({
+                      user_id: user?.id ?? null,
+                      book_id: book.id,
+                      book_title: book.title,
+                    });
+                    window.open(amazonUrl, "_blank", "noopener,noreferrer");
+                  }}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Buy on Amazon
+                </Button>
 
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-11 w-11"
-                onClick={() => {
-                  navigator.clipboard.writeText(amazonUrl);
-                  toast({ title: "Link copied! 🔗" });
-                }}
-                title="Copy Amazon link"
-              >
-                <Share2 className="w-4 h-4" />
-              </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-11 w-11"
+                  onClick={() => {
+                    navigator.clipboard.writeText(amazonUrl);
+                    toast({ title: "Link copied! 🔗" });
+                  }}
+                  title="Copy Amazon link"
+                >
+                  <Share2 className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
 
               <Button variant="outline" size="lg" onClick={toggleFavorite}>
                 <Heart className={`w-4 h-4 mr-2 ${isFavorite ? "fill-destructive text-destructive" : ""}`} />
