@@ -23,17 +23,14 @@ export default function BookCard({
   id,
   title,
   author,
-  price,
-  ebookPrice,
   cover,
   tag,
-  category
+  category,
+  amazonLink
 }: BookCardProps) {
 
-  const { addToCart } = useCart();
   const { toast } = useToast();
   const { avgRating, reviewCount, upvoteCount } = useBookStats(id);
-  const { isEnabled } = useFeatureToggles();
   const [favorited, setFavorited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
