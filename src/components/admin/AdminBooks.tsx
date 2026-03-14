@@ -126,12 +126,14 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       toast({ title: "All books already have editorials" });
       return;
     }
+    cancelRef.current = false;
     setBulkGenerating(true);
     setBulkProgress({ current: 0, total: booksWithout.length });
     let successCount = 0;
     let failCount = 0;
 
     for (let i = 0; i < booksWithout.length; i++) {
+      if (cancelRef.current) break;
       setBulkProgress({ current: i + 1, total: booksWithout.length });
       try {
         const { data, error } = await supabase.functions.invoke("generate-editorial", {
@@ -145,12 +147,18 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       }
     }
 
+    const wasCancelled = cancelRef.current;
     setBulkGenerating(false);
+    cancelRef.current = false;
     toast({
-      title: `Bulk generation complete`,
-      description: `${successCount} succeeded, ${failCount} failed out of ${booksWithout.length} books.`,
+      title: wasCancelled ? "Generation cancelled" : "Bulk generation complete",
+      description: `${successCount} succeeded, ${failCount} failed${wasCancelled ? " (cancelled)" : ""}.`,
     });
     onRefresh();
+  };
+
+  const cancelBulkGeneration = () => {
+    cancelRef.current = true;
   };
 
   const missingEditorialCount = books.filter(b => !b.editorial_description).length;
