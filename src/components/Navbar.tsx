@@ -26,6 +26,7 @@ export default function Navbar() {
   const { user, isAuthor, loading, signOut } = useAuth();
   const { itemCount } = useCart();
   const { isEnabled } = useFeatureToggles();
+  const selfPublishingEnabled = isEnabled("self_publishing");
 
   const navLinks = baseNavLinks.filter(l => !l.feature || isEnabled(l.feature));
 
