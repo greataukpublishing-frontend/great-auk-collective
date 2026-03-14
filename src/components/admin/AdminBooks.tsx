@@ -172,8 +172,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const generateDescriptions = async () => {
     setDescGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-description", {
-        body: { limit: 50 },
+      const { data, error } = await supabase.functions.invoke("generate-book-descriptions", {
+        body: {},
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
@@ -196,8 +196,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       // The edge function processes books with short/empty descriptions.
       // We call it with limit=1, but it picks from all books missing descriptions.
       // For a targeted single-book generation we re-use the same function.
-      const { data, error } = await supabase.functions.invoke("generate-description", {
-        body: { limit: 50 },
+      const { data, error } = await supabase.functions.invoke("generate-book-descriptions", {
+        body: {},
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
