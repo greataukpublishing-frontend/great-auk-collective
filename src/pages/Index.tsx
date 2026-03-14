@@ -154,9 +154,7 @@ export default function HomePage() {
                   author={book.author_name}
                   category={book.category}
                   cover={book.cover_url || ""}
-                  amazonLink={book.amazon_link || undefined}
                 />
-              />
             ))}
           </div>
         </section>
