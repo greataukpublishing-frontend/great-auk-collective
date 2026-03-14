@@ -67,8 +67,6 @@ export default function FavoritesPage() {
     toast("Removed from favorites");
   }
 
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
