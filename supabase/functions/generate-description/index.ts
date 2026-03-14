@@ -21,10 +21,10 @@ serve(async (req) => {
       });
     }
 
-    // Auth: accept either service-role key or admin user
+    // Auth: accept service-role via apikey header (internal calls) or admin user via Authorization
+    const apikeyHeader = req.headers.get("apikey") || "";
     const authHeader = req.headers.get("Authorization");
-    const token = authHeader?.replace("Bearer ", "") || "";
-    const isServiceRole = token === serviceRoleKey;
+    const isServiceRole = apikeyHeader === serviceRoleKey || authHeader === `Bearer ${serviceRoleKey}`;
 
     if (!isServiceRole) {
       if (!authHeader) {
