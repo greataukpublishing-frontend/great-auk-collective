@@ -172,8 +172,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const generateDescriptions = async () => {
     setDescGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-description", {
-        body: { limit: 50 },
+      const { data, error } = await supabase.functions.invoke("generate-book-descriptions", {
+        body: {},
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
