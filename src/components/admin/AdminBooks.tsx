@@ -145,6 +145,10 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       } catch {
         failCount++;
       }
+      // 1-second delay between requests to avoid API rate limits
+      if (i < booksWithout.length - 1 && !cancelRef.current) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
     }
 
     const wasCancelled = cancelRef.current;
