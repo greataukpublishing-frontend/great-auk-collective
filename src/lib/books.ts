@@ -45,6 +45,7 @@ export async function fetchAllBooks(options: FetchAllBooksOptions = {}): Promise
       .from("books")
       .select("*")
       .order(orderBy, { ascending })
+      .order("id", { ascending: true })
       .range(offset, offset + PAGE_SIZE - 1);
 
     if (status) pageQuery = pageQuery.eq("status", status);
