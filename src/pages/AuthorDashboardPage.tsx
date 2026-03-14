@@ -184,7 +184,7 @@ export default function AuthorDashboardPage() {
                   >
                     {book.cover_url ? (
                       <img
-                        src={book.cover_url}
+                        src={getBookCover(book.cover_url)}
                         alt={book.title}
                         className="w-12 h-16 object-cover rounded"
                       />
