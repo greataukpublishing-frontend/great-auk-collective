@@ -166,7 +166,26 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     cancelRef.current = true;
   };
 
-  const missingEditorialCount = books.filter(b => !b.editorial_description).length;
+  const generateDescriptions = async () => {
+    setDescGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { limit: 50 },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({
+        title: "Book descriptions generated successfully.",
+        description: `${data?.results?.length ?? 0} book(s) processed.`,
+      });
+      onRefresh();
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      toast({ title: "Description generation failed", description: message, variant: "destructive" });
+    } finally {
+      setDescGenerating(false);
+    }
+  };
 
   const saveEditorial = async () => {
     if (!editorialDialog) return;
