@@ -139,20 +139,28 @@ export default function BookCard({
               )}
             </div>
 
-            {(ebookPrice ?? price) > 0 ? (
-              <div className="flex items-baseline gap-2 mt-2">
-                <span className="font-bold text-card-foreground">
-                  ₹{ebookPrice?.toFixed(2) ?? price.toFixed(2)}
-                </span>
-                {ebookPrice && ebookPrice < price && (
-                  <span className="text-xs text-muted-foreground line-through">
-                    ₹{price.toFixed(2)}
-                  </span>
-                )}
-              </div>
-            ) : (
-              <span className="inline-block mt-2 text-xs font-medium text-primary">View Details →</span>
-            )}
+            <div
+              className="mt-2"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            >
+              <a
+                href={amazonUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground rounded-full px-3 py-1.5 text-xs font-medium shadow-sm hover:opacity-90 transition-all hover:shadow-md"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  await supabase.from("amazon_clicks").insert({
+                    user_id: null,
+                    book_id: id,
+                    book_title: title,
+                  });
+                }}
+              >
+                <ExternalLink size={12} />
+                Check Price on Amazon
+              </a>
+            </div>
           </div>
 
           {/* Action bar */}
@@ -175,28 +183,6 @@ export default function BookCard({
                 <BookVoting bookId={id} compact />
               </div>
             </div>
-
-            {cartEnabled && (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  addToCart({
-                    id: Date.now(),
-                    title,
-                    author,
-                    price: ebookPrice ?? price,
-                    cover: getBookCover(cover),
-                    format: "eBook",
-                  });
-                  toast({ title: "Added to BookCart", description: `"${title}" added.` });
-                }}
-                className="flex items-center gap-1 bg-primary text-primary-foreground rounded-full px-3 py-1.5 text-xs font-medium shadow-sm hover:opacity-90 transition-all hover:shadow-md"
-              >
-                <Plus size={14} />
-                <ShoppingCart size={14} />
-              </button>
-            )}
           </div>
 
         </div>

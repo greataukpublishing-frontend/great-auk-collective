@@ -149,15 +149,15 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {recentBooks.map((book) => (
-              <BookCard
-                key={book.id}
-                id={book.id}
-                title={book.title}
-                author={book.author_name}
-                price={book.print_price || 0}
-                ebookPrice={book.ebook_price || 0}
-                category={book.category}
-                cover={book.cover_url || ""}
+                <BookCard
+                  key={book.id}
+                  id={book.id}
+                  title={book.title}
+                  author={book.author_name}
+                  category={book.category}
+                  cover={book.cover_url || ""}
+                  amazonLink={book.amazon_link || undefined}
+                />
               />
             ))}
           </div>
