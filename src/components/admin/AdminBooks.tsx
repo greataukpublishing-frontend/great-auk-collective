@@ -190,6 +190,44 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     }
   };
 
+  const generateSingleDescription = async (bookId: string) => {
+    setGeneratingDescId(bookId);
+    try {
+      // The edge function processes books with short/empty descriptions.
+      // We call it with limit=1, but it picks from all books missing descriptions.
+      // For a targeted single-book generation we re-use the same function.
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { limit: 50 },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({ title: "Description generated ✨" });
+      onRefresh();
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      toast({ title: "Generation failed", description: message, variant: "destructive" });
+    } finally {
+      setGeneratingDescId(null);
+    }
+  };
+
+  const openDescriptionEdit = (book: any) => {
+    setDescriptionDialog(book);
+    setDescriptionText(book.description || "");
+  };
+
+  const saveDescription = async () => {
+    if (!descriptionDialog) return;
+    const { error } = await supabase.from("books").update({ description: descriptionText }).eq("id", descriptionDialog.id);
+    if (error) {
+      toast({ title: "Error saving description", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Description updated" });
+    setDescriptionDialog(null);
+    onRefresh();
+  };
+
   const saveEditorial = async () => {
     if (!editorialDialog) return;
     const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
