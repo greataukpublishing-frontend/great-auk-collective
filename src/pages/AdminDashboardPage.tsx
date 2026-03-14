@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"; // admin dashboard v2
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { fetchAllBooks } from "@/lib/books";
 import {
   LayoutDashboard, BookOpen, Users, ShoppingCart,
   Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText, ToggleRight,
@@ -63,7 +64,7 @@ export default function AdminDashboardPage() {
   const fetchAll = async () => {
     setLoading(true);
     const [booksR, profilesR, ordersR, rolesR, catsR, reviewsR, settingsR, servicesR, soR, subsR] = await Promise.all([
-      supabase.from("books").select("*").order("created_at", { ascending: false }),
+      fetchAllBooks({ orderBy: "created_at", ascending: false }),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("orders").select("*").order("created_at", { ascending: false }),
       supabase.from("user_roles").select("*"),
@@ -74,6 +75,15 @@ export default function AdminDashboardPage() {
       supabase.from("service_orders").select("*").order("created_at", { ascending: false }),
       supabase.from("book_submissions").select("*").order("created_at", { ascending: false }),
     ]);
+
+    if (booksR.error) {
+      toast({
+        title: "Error loading books",
+        description: booksR.error.message,
+        variant: "destructive",
+      });
+    }
+
     setBooks(booksR.data ?? []);
     setProfiles(profilesR.data ?? []);
     setOrders(ordersR.data ?? []);
@@ -129,9 +139,9 @@ export default function AdminDashboardPage() {
         <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-1">
           {NAV_ITEMS.map((item) => {
             const isActive = tab === item.id;
-            const badge = item.id === "books" ? pendingCount 
-              : item.id === "reviews" ? flaggedCount 
-              : item.id === "submissions" ? submissionsCount 
+            const badge = item.id === "books" ? pendingCount
+              : item.id === "reviews" ? flaggedCount
+              : item.id === "submissions" ? submissionsCount
               : 0;
             return (
               <button

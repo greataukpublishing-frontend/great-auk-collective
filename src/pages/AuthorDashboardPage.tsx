@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { fetchAllBooks } from "@/lib/books";
+import { getBookCover } from "@/lib/covers";
 
 type Book = {
   id: string;
@@ -40,11 +42,21 @@ export default function AuthorDashboardPage() {
   const fetchData = async () => {
     setLoading(true);
 
-    const { data: booksData } = await supabase
-      .from("books")
-      .select("*")
-      .eq("author_id", user!.id)
-      .order("created_at", { ascending: false });
+    const booksRes = await fetchAllBooks({
+      authorId: user!.id,
+      orderBy: "created_at",
+      ascending: false,
+    });
+
+    const booksData = booksRes.data ?? [];
+
+    if (booksRes.error) {
+      toast({
+        title: "Failed to load books",
+        description: booksRes.error.message,
+        variant: "destructive",
+      });
+    }
 
     const bookIds = booksData?.map((b) => b.id) || [];
 
@@ -172,7 +184,7 @@ export default function AuthorDashboardPage() {
                   >
                     {book.cover_url ? (
                       <img
-                        src={book.cover_url}
+                        src={getBookCover(book.cover_url)}
                         alt={book.title}
                         className="w-12 h-16 object-cover rounded"
                       />

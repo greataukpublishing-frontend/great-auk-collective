@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BookCard from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchAllBooks } from "@/lib/books";
 
 const LANGUAGES = ["All Languages", "English", "Hindi", "Tamil", "Bengali", "Malayalam"];
 
@@ -22,21 +23,17 @@ export default function BookstorePage() {
 
   async function fetchData() {
     setLoading(true);
-    const { data: booksData } = await supabase
-      .from("books")
-      .select("*")
-      .eq("status", "approved")
-      .order("featured", { ascending: false });
 
-    const { data: categoriesData } = await supabase
-      .from("categories")
-      .select("name")
-      .order("name");
+    const [booksRes, categoriesRes] = await Promise.all([
+      fetchAllBooks({ status: "approved", orderBy: "featured", ascending: false }),
+      supabase.from("categories").select("name").order("name"),
+    ]);
 
-    if (booksData) setBooks(booksData);
-    if (categoriesData) {
-      setCategories(["All", ...categoriesData.map(c => c.name)]);
+    if (booksRes.data) setBooks(booksRes.data);
+    if (categoriesRes.data) {
+      setCategories(["All", ...categoriesRes.data.map((c) => c.name)]);
     }
+
     setLoading(false);
   }
 

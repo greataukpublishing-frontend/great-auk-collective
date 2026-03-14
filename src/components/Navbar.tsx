@@ -26,6 +26,7 @@ export default function Navbar() {
   const { user, isAuthor, loading, signOut } = useAuth();
   const { itemCount } = useCart();
   const { isEnabled } = useFeatureToggles();
+  const selfPublishingEnabled = isEnabled("self_publishing");
 
   const navLinks = baseNavLinks.filter(l => !l.feature || isEnabled(l.feature));
 
@@ -69,7 +70,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {isAuthor && (
+          {isAuthor && selfPublishingEnabled && (
             <Link
               to="/author-dashboard"
               className={`text-sm font-medium transition-colors ${
@@ -126,7 +127,7 @@ export default function Navbar() {
 
                 <DropdownMenuSeparator />
 
-                {isAuthor && (
+                {isAuthor && selfPublishingEnabled && (
                   <DropdownMenuItem asChild>
                     <Link to="/author-dashboard" className="flex items-center gap-2 cursor-pointer">
                       <BookOpen className="w-4 h-4" /> Author Dashboard
@@ -226,7 +227,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {isAuthor && (
+          {isAuthor && selfPublishingEnabled && (
             <Link
               to="/author-dashboard"
               onClick={() => setOpen(false)}
