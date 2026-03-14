@@ -368,12 +368,15 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                   <th className="p-3 font-medium">Category</th>
                   <th className="p-3 font-medium">Status</th>
                   <th className="p-3 font-medium">⭐</th>
+                  <th className="p-3 font-medium">Description</th>
                   <th className="p-3 font-medium">Editorial</th>
                   <th className="p-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(b => (
+                {filtered.map(b => {
+                  const hasDesc = b.description && b.description.length >= 100;
+                  return (
                   <tr key={b.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="p-3">
                       <p className="font-medium text-foreground">{b.title}</p>
@@ -385,6 +388,24 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                       <button onClick={() => toggleFeatured(b.id, b.featured ?? false)} title={b.featured ? "Remove from featured" : "Add to featured"}>
                         <Star className={`w-4 h-4 ${b.featured ? "text-gold fill-gold" : "text-muted-foreground"}`} />
                       </button>
+                    </td>
+                    <td className="p-3">
+                      <div className="flex gap-1">
+                        {hasDesc ? (
+                          <>
+                            <Button size="sm" variant="ghost" onClick={() => generateSingleDescription(b.id)} disabled={generatingDescId === b.id} title="Regenerate Description">
+                              <RefreshCw className={`w-4 h-4 text-muted-foreground ${generatingDescId === b.id ? "animate-spin" : ""}`} />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => openDescriptionEdit(b)} title="Edit Description">
+                              <AlignLeft className="w-4 h-4 text-muted-foreground" />
+                            </Button>
+                          </>
+                        ) : (
+                          <Button size="sm" variant="ghost" onClick={() => generateSingleDescription(b.id)} disabled={generatingDescId === b.id} title="Generate Description" className="gap-1">
+                            <AlignLeft className={`w-4 h-4 text-accent ${generatingDescId === b.id ? "animate-pulse" : ""}`} />
+                          </Button>
+                        )}
+                      </div>
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1">
@@ -400,7 +421,6 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                         ) : (
                           <Button size="sm" variant="ghost" onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Generate Editorial Review" className="gap-1">
                             <Sparkles className={`w-4 h-4 text-accent ${generatingId === b.id ? "animate-pulse" : ""}`} />
-                            {generatingId === b.id ? "" : ""}
                           </Button>
                         )}
                       </div>
