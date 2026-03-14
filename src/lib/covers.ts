@@ -42,6 +42,6 @@ export function getBookCover(key: string, width = 400): string {
     }
   }
 
-  // Fallback
-  return coverMap["book-cover-1"] ?? key;
+  // No cover available — return the key as-is (may be empty)
+  return key || "";
 }
