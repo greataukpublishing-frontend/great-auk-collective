@@ -13,11 +13,10 @@ interface BookCardProps {
   id: string;
   title: string;
   author: string;
-  price: number;
-  ebookPrice?: number;
   cover: string;
   tag?: string;
   category?: string;
+  amazonLink?: string;
 }
 
 export default function BookCard({
