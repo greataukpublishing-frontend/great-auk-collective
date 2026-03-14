@@ -70,7 +70,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {isAuthor && (
+          {isAuthor && selfPublishingEnabled && (
             <Link
               to="/author-dashboard"
               className={`text-sm font-medium transition-colors ${
