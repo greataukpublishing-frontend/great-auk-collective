@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText, Wand2 } from "lucide-react";
+import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText, Wand2, AlignLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -30,6 +30,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [editorialText, setEditorialText] = useState("");
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
+  const [descGenerating, setDescGenerating] = useState(false);
   const cancelRef = useRef(false);
 
   const filtered = books.filter(b => {
@@ -165,7 +166,26 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     cancelRef.current = true;
   };
 
-  const missingEditorialCount = books.filter(b => !b.editorial_description).length;
+  const generateDescriptions = async () => {
+    setDescGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { limit: 50 },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({
+        title: "Book descriptions generated successfully.",
+        description: `${data?.results?.length ?? 0} book(s) processed.`,
+      });
+      onRefresh();
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      toast({ title: "Description generation failed", description: message, variant: "destructive" });
+    } finally {
+      setDescGenerating(false);
+    }
+  };
 
   const saveEditorial = async () => {
     if (!editorialDialog) return;
@@ -183,6 +203,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const pending = books.filter(b => b.status === "pending").length;
   const approved = books.filter(b => b.status === "approved").length;
   const featured = books.filter(b => b.featured).length;
+  const missingEditorialCount = books.filter(b => !b.editorial_description).length;
+  const missingDescriptionCount = books.filter(b => !b.description || b.description.length < 100).length;
 
   return (
     <div className="space-y-6">
@@ -191,12 +213,23 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
           <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
           <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2 shrink-0 flex-wrap">
           {bulkGenerating && (
             <Button variant="destructive" onClick={cancelBulkGeneration} className="gap-2">
               <XCircle className="w-4 h-4" /> Stop
             </Button>
           )}
+          <Button
+            onClick={generateDescriptions}
+            disabled={descGenerating || missingDescriptionCount === 0}
+            className="gap-2"
+          >
+            <AlignLeft className={`w-4 h-4 ${descGenerating ? "animate-pulse" : ""}`} />
+            {descGenerating ? "Generating Descriptions…" : "Generate Book Descriptions"}
+            {!descGenerating && missingDescriptionCount > 0 && (
+              <Badge variant="secondary" className="ml-1">{missingDescriptionCount}</Badge>
+            )}
+          </Button>
           <Button
             onClick={generateAllEditorials}
             disabled={bulkGenerating || missingEditorialCount === 0}
