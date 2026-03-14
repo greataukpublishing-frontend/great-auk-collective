@@ -127,7 +127,7 @@ export default function Navbar() {
 
                 <DropdownMenuSeparator />
 
-                {isAuthor && (
+                {isAuthor && selfPublishingEnabled && (
                   <DropdownMenuItem asChild>
                     <Link to="/author-dashboard" className="flex items-center gap-2 cursor-pointer">
                       <BookOpen className="w-4 h-4" /> Author Dashboard
