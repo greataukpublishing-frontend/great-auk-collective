@@ -38,8 +38,7 @@ export default function FavoritesPage() {
           author_name,
           cover_url,
           category,
-          ebook_price,
-          print_price
+          amazon_link
         )
       `
       )
