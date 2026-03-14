@@ -22,13 +22,7 @@ export function getBookCover(key: string, width = 400): string {
     try {
       const url = new URL(key);
 
-      // For Open Library ISBN URLs, prefer Google Books cover endpoint
-      // to get the exact retail-style original cover artwork.
-      const isbnMatch = url.pathname.match(/\/b\/isbn\/([0-9Xx-]+)-[SML]\.jpg$/i);
-      if (isbnMatch?.[1]) {
-        const isbn = isbnMatch[1].replace(/-/g, "");
-        return `https://books.google.com/books/content?vid=ISBN${isbn}&printsec=frontcover&img=1&zoom=1&source=gbs_api`;
-      }
+      // Open Library ISBN URLs work reliably – use them directly.
 
       // Only apply image transform params to backend storage objects.
       if (url.pathname.includes("/storage/v1/object/")) {
