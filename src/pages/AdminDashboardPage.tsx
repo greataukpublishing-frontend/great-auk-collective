@@ -22,48 +22,14 @@ import AdminFeatureToggles from "@/components/admin/AdminFeatureToggles";
 import AdminSubmissions from "@/components/admin/AdminSubmissions";
 import AdminMembership from "@/components/admin/AdminMembership";
 import AdminAmazonClicks from "@/components/admin/AdminAmazonClicks";
+import { fetchAllBooks } from "@/lib/books";
 
 const NAV_ITEMS = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "books", label: "Books", icon: BookOpen },
-  { id: "users", label: "Users", icon: Users },
-  { id: "orders", label: "Orders & Sales", icon: ShoppingCart },
-  { id: "categories", label: "Categories", icon: Tags },
-  { id: "reviews", label: "Reviews", icon: MessageSquare },
-  { id: "submissions", label: "Book Submissions", icon: Heart },
-  { id: "services", label: "Premium Services", icon: Briefcase },
-  { id: "content", label: "Content & Homepage", icon: FileText },
-  { id: "membership", label: "Membership Plans", icon: Crown },
-  { id: "amazon-clicks", label: "Amazon Clicks", icon: MousePointerClick },
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
-  { id: "features", label: "Feature Toggles", icon: ToggleRight },
-  { id: "settings", label: "Settings", icon: Settings },
-];
-
-export default function AdminDashboardPage() {
-  const { signOut } = useAuth();
-  const { toast } = useToast();
-  const [tab, setTab] = useState("overview");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Data state
-  const [books, setBooks] = useState<any[]>([]);
-  const [profiles, setProfiles] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [roles, setRoles] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [settings, setSettings] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
-  const [serviceOrders, setServiceOrders] = useState<any[]>([]);
-  const [submissions, setSubmissions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
+...
   const fetchAll = async () => {
     setLoading(true);
     const [booksR, profilesR, ordersR, rolesR, catsR, reviewsR, settingsR, servicesR, soR, subsR] = await Promise.all([
-      supabase.from("books").select("*").order("created_at", { ascending: false }),
+      fetchAllBooks({ orderBy: "created_at", ascending: false }),
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("orders").select("*").order("created_at", { ascending: false }),
       supabase.from("user_roles").select("*"),
@@ -74,6 +40,15 @@ export default function AdminDashboardPage() {
       supabase.from("service_orders").select("*").order("created_at", { ascending: false }),
       supabase.from("book_submissions").select("*").order("created_at", { ascending: false }),
     ]);
+
+    if (booksR.error) {
+      toast({
+        title: "Failed to load books",
+        description: booksR.error.message,
+        variant: "destructive",
+      });
+    }
+
     setBooks(booksR.data ?? []);
     setProfiles(profilesR.data ?? []);
     setOrders(ordersR.data ?? []);
