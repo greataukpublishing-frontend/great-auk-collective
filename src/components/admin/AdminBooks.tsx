@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [editorialText, setEditorialText] = useState("");
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
+  const cancelRef = useRef(false);
 
   const filtered = books.filter(b => {
     const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -125,12 +126,14 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       toast({ title: "All books already have editorials" });
       return;
     }
+    cancelRef.current = false;
     setBulkGenerating(true);
     setBulkProgress({ current: 0, total: booksWithout.length });
     let successCount = 0;
     let failCount = 0;
 
     for (let i = 0; i < booksWithout.length; i++) {
+      if (cancelRef.current) break;
       setBulkProgress({ current: i + 1, total: booksWithout.length });
       try {
         const { data, error } = await supabase.functions.invoke("generate-editorial", {
@@ -144,12 +147,18 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       }
     }
 
+    const wasCancelled = cancelRef.current;
     setBulkGenerating(false);
+    cancelRef.current = false;
     toast({
-      title: `Bulk generation complete`,
-      description: `${successCount} succeeded, ${failCount} failed out of ${booksWithout.length} books.`,
+      title: wasCancelled ? "Generation cancelled" : "Bulk generation complete",
+      description: `${successCount} succeeded, ${failCount} failed${wasCancelled ? " (cancelled)" : ""}.`,
     });
     onRefresh();
+  };
+
+  const cancelBulkGeneration = () => {
+    cancelRef.current = true;
   };
 
   const missingEditorialCount = books.filter(b => !b.editorial_description).length;
@@ -178,26 +187,33 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
           <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
           <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
         </div>
-        <Button
-          onClick={generateAllEditorials}
-          disabled={bulkGenerating || missingEditorialCount === 0}
-          className="gap-2 shrink-0"
-        >
-          {bulkGenerating ? (
-            <>
-              <Wand2 className="w-4 h-4 animate-pulse" />
-              Generating {bulkProgress.current}/{bulkProgress.total}…
-            </>
-          ) : (
-            <>
-              <Wand2 className="w-4 h-4" />
-              Generate Editorials for All Books
-              {missingEditorialCount > 0 && (
-                <Badge variant="secondary" className="ml-1">{missingEditorialCount}</Badge>
-              )}
-            </>
+        <div className="flex gap-2 shrink-0">
+          {bulkGenerating && (
+            <Button variant="destructive" onClick={cancelBulkGeneration} className="gap-2">
+              <XCircle className="w-4 h-4" /> Stop
+            </Button>
           )}
-        </Button>
+          <Button
+            onClick={generateAllEditorials}
+            disabled={bulkGenerating || missingEditorialCount === 0}
+            className="gap-2"
+          >
+            {bulkGenerating ? (
+              <>
+                <Wand2 className="w-4 h-4 animate-pulse" />
+                Generating {bulkProgress.current}/{bulkProgress.total}…
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-4 h-4" />
+                Generate Editorials for All Books
+                {missingEditorialCount > 0 && (
+                  <Badge variant="secondary" className="ml-1">{missingEditorialCount}</Badge>
+                )}
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {bulkGenerating && (
