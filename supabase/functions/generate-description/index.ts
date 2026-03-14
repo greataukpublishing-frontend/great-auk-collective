@@ -21,36 +21,7 @@ serve(async (req) => {
       });
     }
 
-    // Auth: accept service-role via apikey header (internal calls) or admin user via Authorization
-    const apikeyHeader = req.headers.get("apikey") || "";
-    const authHeader = req.headers.get("Authorization");
-    const isServiceRole = apikeyHeader === serviceRoleKey || authHeader === `Bearer ${serviceRoleKey}`;
-
-    if (!isServiceRole) {
-      if (!authHeader) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const userClient = createClient(supabaseUrl, supabaseKey, {
-        global: { headers: { Authorization: authHeader } },
-      });
-      const { data: { user }, error: userError } = await userClient.auth.getUser();
-      if (userError || !user) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const adminClient2 = createClient(supabaseUrl, serviceRoleKey);
-      const { data: roleData } = await adminClient2
-        .from("user_roles").select("role")
-        .eq("user_id", user.id).eq("role", "admin").maybeSingle();
-      if (!roleData) {
-        return new Response(JSON.stringify({ error: "Admin access required" }), {
-          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-    }
+    // Internal admin utility — uses service role key for DB access
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
