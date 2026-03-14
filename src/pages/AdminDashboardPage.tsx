@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"; // admin dashboard v2
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { fetchAllBooks } from "@/lib/books";
 import {
   LayoutDashboard, BookOpen, Users, ShoppingCart,
   Tags, MessageSquare, BarChart3, Settings, Briefcase, FileText, ToggleRight,
@@ -22,10 +23,44 @@ import AdminFeatureToggles from "@/components/admin/AdminFeatureToggles";
 import AdminSubmissions from "@/components/admin/AdminSubmissions";
 import AdminMembership from "@/components/admin/AdminMembership";
 import AdminAmazonClicks from "@/components/admin/AdminAmazonClicks";
-import { fetchAllBooks } from "@/lib/books";
 
 const NAV_ITEMS = [
-...
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "books", label: "Books", icon: BookOpen },
+  { id: "users", label: "Users", icon: Users },
+  { id: "orders", label: "Orders & Sales", icon: ShoppingCart },
+  { id: "categories", label: "Categories", icon: Tags },
+  { id: "reviews", label: "Reviews", icon: MessageSquare },
+  { id: "submissions", label: "Book Submissions", icon: Heart },
+  { id: "services", label: "Premium Services", icon: Briefcase },
+  { id: "content", label: "Content & Homepage", icon: FileText },
+  { id: "membership", label: "Membership Plans", icon: Crown },
+  { id: "amazon-clicks", label: "Amazon Clicks", icon: MousePointerClick },
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "features", label: "Feature Toggles", icon: ToggleRight },
+  { id: "settings", label: "Settings", icon: Settings },
+];
+
+export default function AdminDashboardPage() {
+  const { signOut } = useAuth();
+  const { toast } = useToast();
+  const [tab, setTab] = useState("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Data state
+  const [books, setBooks] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [settings, setSettings] = useState<any[]>([]);
+  const [services, setServices] = useState<any[]>([]);
+  const [serviceOrders, setServiceOrders] = useState<any[]>([]);
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const fetchAll = async () => {
     setLoading(true);
     const [booksR, profilesR, ordersR, rolesR, catsR, reviewsR, settingsR, servicesR, soR, subsR] = await Promise.all([
@@ -43,7 +78,7 @@ const NAV_ITEMS = [
 
     if (booksR.error) {
       toast({
-        title: "Failed to load books",
+        title: "Error loading books",
         description: booksR.error.message,
         variant: "destructive",
       });
@@ -104,9 +139,9 @@ const NAV_ITEMS = [
         <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-1">
           {NAV_ITEMS.map((item) => {
             const isActive = tab === item.id;
-            const badge = item.id === "books" ? pendingCount 
-              : item.id === "reviews" ? flaggedCount 
-              : item.id === "submissions" ? submissionsCount 
+            const badge = item.id === "books" ? pendingCount
+              : item.id === "reviews" ? flaggedCount
+              : item.id === "submissions" ? submissionsCount
               : 0;
             return (
               <button
