@@ -39,7 +39,7 @@ serve(async (req) => {
 
     const needsDescription = (books || []).filter(
       (b: any) => !b.description || b.description.length < 100
-    );
+    ).slice(0, limit);
 
     const results: { id: string; title: string; description: string; status: string }[] = [];
 
