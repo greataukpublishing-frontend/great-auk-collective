@@ -203,6 +203,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const pending = books.filter(b => b.status === "pending").length;
   const approved = books.filter(b => b.status === "approved").length;
   const featured = books.filter(b => b.featured).length;
+  const missingEditorialCount = books.filter(b => !b.editorial_description).length;
+  const missingDescriptionCount = books.filter(b => !b.description || b.description.length < 100).length;
 
   return (
     <div className="space-y-6">
@@ -211,12 +213,23 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
           <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
           <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2 shrink-0 flex-wrap">
           {bulkGenerating && (
             <Button variant="destructive" onClick={cancelBulkGeneration} className="gap-2">
               <XCircle className="w-4 h-4" /> Stop
             </Button>
           )}
+          <Button
+            onClick={generateDescriptions}
+            disabled={descGenerating || missingDescriptionCount === 0}
+            className="gap-2"
+          >
+            <AlignLeft className={`w-4 h-4 ${descGenerating ? "animate-pulse" : ""}`} />
+            {descGenerating ? "Generating Descriptions…" : "Generate Book Descriptions"}
+            {!descGenerating && missingDescriptionCount > 0 && (
+              <Badge variant="secondary" className="ml-1">{missingDescriptionCount}</Badge>
+            )}
+          </Button>
           <Button
             onClick={generateAllEditorials}
             disabled={bulkGenerating || missingEditorialCount === 0}
