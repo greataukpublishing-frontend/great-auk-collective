@@ -227,7 +227,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {isAuthor && (
+          {isAuthor && selfPublishingEnabled && (
             <Link
               to="/author-dashboard"
               onClick={() => setOpen(false)}
