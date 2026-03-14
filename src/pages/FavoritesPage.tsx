@@ -127,8 +127,7 @@ export default function FavoritesPage() {
             {favorites.map((fav) => {
               const book = fav.books;
               if (!book) return null;
-
-              const price = book.ebook_price || book.print_price || 0;
+              const amazonUrl = book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + (book.author_name || ""))}`;
 
               return (
                 <div
@@ -143,7 +142,7 @@ export default function FavoritesPage() {
                   >
                     <Heart
                       size={16}
-                      className="text-red-500 fill-red-500"
+                      className="text-destructive fill-destructive"
                     />
                   </button>
 
@@ -179,20 +178,16 @@ export default function FavoritesPage() {
                       </p>
                     )}
 
-                    <div className="flex items-center justify-between mt-3">
-                      <span className="font-semibold text-card-foreground">
-                        ₹{price.toFixed ? price.toFixed(2) : price}
-                      </span>
-
-                      {/* Add to cart */}
-                      <button
-                         onClick={() => handleAddToCart(book)}
-                        className="flex items-center gap-1.5 text-xs font-medium text-primary bg-secondary hover:bg-primary hover:text-primary-foreground rounded-full px-3 py-1.5 transition-colors"
-                        aria-label="Add to BookCart"
+                    <div className="mt-3">
+                      <a
+                        href={amazonUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground rounded-full px-3 py-1.5 text-xs font-medium shadow-sm hover:opacity-90 transition-all"
                       >
-                        <Plus size={14} />
-                        <ShoppingCart size={14} />
-                      </button>
+                        <ExternalLink size={12} />
+                        Check Price on Amazon
+                      </a>
                     </div>
                   </div>
                 </div>
