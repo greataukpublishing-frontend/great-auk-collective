@@ -5,3 +5,5 @@ verify_jwt = false
 
 [functions.generate-description]
 verify_jwt = false
+[functions.generate-affiliate-links]
+verify_jwt = false
