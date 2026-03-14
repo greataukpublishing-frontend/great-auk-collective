@@ -28,12 +28,10 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [editorialDialog, setEditorialDialog] = useState<any>(null);
   const [editorialText, setEditorialText] = useState("");
-  const [bulkGenerating, setBulkGenerating] = false;
+  const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
   const [descGenerating, setDescGenerating] = useState(false);
-  const [descProgress, setDescProgress] = useState({ current: 0, total: 0 });
   const cancelRef = useRef(false);
-  const cancelDescRef = useRef(false);
 
   const filtered = books.filter(b => {
     const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
