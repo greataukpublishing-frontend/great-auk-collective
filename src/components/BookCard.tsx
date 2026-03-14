@@ -145,16 +145,20 @@ export default function BookCard({
               )}
             </div>
 
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="font-bold text-card-foreground">
-                ₹{ebookPrice?.toFixed(2) ?? price.toFixed(2)}
-              </span>
-              {ebookPrice && ebookPrice < price && (
-                <span className="text-xs text-muted-foreground line-through">
-                  ₹{price.toFixed(2)}
+            {(ebookPrice ?? price) > 0 ? (
+              <div className="flex items-baseline gap-2 mt-2">
+                <span className="font-bold text-card-foreground">
+                  ₹{ebookPrice?.toFixed(2) ?? price.toFixed(2)}
                 </span>
-              )}
-            </div>
+                {ebookPrice && ebookPrice < price && (
+                  <span className="text-xs text-muted-foreground line-through">
+                    ₹{price.toFixed(2)}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <span className="inline-block mt-2 text-xs font-medium text-primary">View Details →</span>
+            )}
           </div>
 
           {/* Action bar */}
