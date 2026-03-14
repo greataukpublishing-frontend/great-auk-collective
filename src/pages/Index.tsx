@@ -104,6 +104,15 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Amazon Affiliate Disclosure */}
+      {(featuredBooks.length > 0 || recentBooks.length > 0) && (
+        <div className="container mx-auto px-4 pt-4">
+          <p className="text-xs text-muted-foreground text-center">
+            As an Amazon Associate, we earn from qualifying purchases.
+          </p>
+        </div>
+      )}
+
       {/* Editor's Picks */}
       {featuredBooks.length > 0 && (
         <section className="container mx-auto px-4 py-16">
