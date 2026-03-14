@@ -119,17 +119,40 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     setEditorialText(book.editorial_description || "");
   };
 
-  const saveEditorial = async () => {
-    if (!editorialDialog) return;
-    const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
-    if (error) {
-      toast({ title: "Error saving editorial", description: error.message, variant: "destructive" });
+  const generateAllEditorials = async () => {
+    const booksWithout = books.filter(b => !b.editorial_description);
+    if (booksWithout.length === 0) {
+      toast({ title: "All books already have editorials" });
       return;
     }
-    toast({ title: "Editorial updated" });
-    setEditorialDialog(null);
+    setBulkGenerating(true);
+    setBulkProgress({ current: 0, total: booksWithout.length });
+    let successCount = 0;
+    let failCount = 0;
+
+    for (let i = 0; i < booksWithout.length; i++) {
+      setBulkProgress({ current: i + 1, total: booksWithout.length });
+      try {
+        const { data, error } = await supabase.functions.invoke("generate-editorial", {
+          body: { book_id: booksWithout[i].id },
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        successCount++;
+      } catch {
+        failCount++;
+      }
+    }
+
+    setBulkGenerating(false);
+    toast({
+      title: `Bulk generation complete`,
+      description: `${successCount} succeeded, ${failCount} failed out of ${booksWithout.length} books.`,
+    });
     onRefresh();
   };
+
+  const missingEditorialCount = books.filter(b => !b.editorial_description).length;
 
   const statusColor = (s: string) => s === "approved" ? "default" : s === "pending" ? "secondary" : "destructive";
   const pending = books.filter(b => b.status === "pending").length;
