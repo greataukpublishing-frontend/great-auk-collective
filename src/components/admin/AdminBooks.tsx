@@ -446,7 +446,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
             {filtered.length === 0 && <p className="text-center py-8 text-muted-foreground">No books found.</p>}
