@@ -265,6 +265,7 @@ export default function BookDetailPage() {
               </div>
             )}
 
+            <div className="flex flex-wrap gap-3 mt-4">
               <Button variant="outline" size="lg" onClick={toggleFavorite}>
                 <Heart className={`w-4 h-4 mr-2 ${isFavorite ? "fill-destructive text-destructive" : ""}`} />
                 {isFavorite ? "Saved" : "Favorite"}
