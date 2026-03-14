@@ -71,6 +71,7 @@ export default function Footer() {
               {isEnabled("bring_book_back") && <li><Link to="/bring-book-back" className="hover:text-gold transition-colors">Bring a Book Back</Link></li>}
               <li><Link to="/privacy-policy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-gold transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/disclosure" className="hover:text-gold transition-colors">Affiliate Disclosure</Link></li>
             </ul>
           </div>
         </div>
