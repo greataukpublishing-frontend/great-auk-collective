@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { Heart, ShoppingCart, Plus, BookOpen } from "lucide-react";
+import { Heart, ExternalLink, BookOpen } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getBookCover } from "@/lib/covers";
-import { useCart } from "@/contexts/CartContext";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<any[]>([]);
