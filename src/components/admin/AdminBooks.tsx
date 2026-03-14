@@ -30,6 +30,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [editorialText, setEditorialText] = useState("");
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
+  const cancelRef = useRef(false);
 
   const filtered = books.filter(b => {
     const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
