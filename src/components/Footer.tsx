@@ -76,8 +76,10 @@ export default function Footer() {
         </div>
         <div className="border-t border-primary-foreground/10 mt-12 pt-8 text-center text-sm text-primary-foreground/50">
           © 2026 Great Auk Publishing. All rights reserved. Bringing lost knowledge back to life.
-          <span className="block mt-1 text-xs text-primary-foreground/30">
-            Great Auk Publishing is a participant in the Amazon Services LLC Associates Programme, an affiliate advertising programme designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.in.
+          <span className="block mt-1">Pillion Intelligence Ltd.</span>
+          <span className="block">Mayfair, London, United Kingdom</span>
+          <span className="block mt-2 text-xs text-primary-foreground/30">
+            Great Auk Publishing is a participant in the Amazon Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by linking to Amazon and its affiliated sites.
           </span>
         </div>
       </div>

@@ -304,6 +304,18 @@ export default function BookDetailPage() {
           </div>
         </div>
 
+        {/* Why We Recommend This Book */}
+        {book.description && (
+          <div className="mt-12 max-w-2xl">
+            <h2 className="font-display text-xl font-bold text-foreground mb-4">Why We Recommend This Book</h2>
+            <div className="p-6 rounded-xl bg-accent/5 border border-accent/15">
+              <p className="text-foreground/80 leading-relaxed text-sm">
+                {book.description}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Reviews Section */}
         <div className="mt-12 max-w-2xl">
           <div className="flex items-center justify-between mb-6">
