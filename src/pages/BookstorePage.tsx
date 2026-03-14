@@ -59,6 +59,7 @@ export default function BookstorePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navbar />
       <div className="bg-muted border-b border-border">
         <div className="container mx-auto px-4 py-2 text-center text-xs text-muted-foreground">
           As an Amazon Associate, I earn from qualifying purchases.
