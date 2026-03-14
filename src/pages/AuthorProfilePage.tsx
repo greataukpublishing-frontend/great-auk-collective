@@ -90,10 +90,9 @@ export default function AuthorProfilePage() {
                 id={book.id}
                 title={book.title}
                 author={book.author_name}
-                price={book.print_price || 0}
-                ebookPrice={book.ebook_price || 0}
                 category={book.category}
                 cover={book.cover_url || ""}
+                amazonLink={book.amazon_link || undefined}
               />
             ))}
           </div>

@@ -174,10 +174,9 @@ export default function BookstorePage() {
                 id={book.id}
                 title={book.title}
                 author={book.author_name}
-                price={book.print_price || 0}
-                ebookPrice={book.ebook_price || 0}
                 category={book.category}
                 cover={book.cover_url || ""}
+                amazonLink={book.amazon_link || undefined}
                 tag={book.featured ? "new" : undefined}
               />
             ))}
