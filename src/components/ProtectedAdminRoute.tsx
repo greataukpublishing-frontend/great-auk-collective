@@ -33,12 +33,14 @@ export default function ProtectedAdminRoute({ children }: { children: React.Reac
 
   if (!user) return <Navigate to="/admin-login" replace />;
 
-  if (!isAdmin) {
+  // Hard block — only this email can ever access admin
+  const ADMIN_EMAIL = "greataukpublishing@gmail.com";
+  if (!isAdmin || user?.email !== ADMIN_EMAIL) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="font-display text-2xl font-bold text-foreground mb-2">Access Denied</h1>
-          <p className="text-muted-foreground">You need admin privileges to access this page.</p>
+          <p className="text-muted-foreground">You are not authorised to access this page.</p>
         </div>
       </div>
     );
