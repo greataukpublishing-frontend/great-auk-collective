@@ -25,20 +25,20 @@ import AdminMembership from "@/components/admin/AdminMembership";
 import AdminAmazonClicks from "@/components/admin/AdminAmazonClicks";
 
 const NAV_ITEMS = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "books", label: "Books", icon: BookOpen },
-  { id: "users", label: "Users", icon: Users },
-  { id: "orders", label: "Orders & Sales", icon: ShoppingCart },
-  { id: "categories", label: "Categories", icon: Tags },
-  { id: "reviews", label: "Reviews", icon: MessageSquare },
-  { id: "submissions", label: "Book Submissions", icon: Heart },
-  { id: "services", label: "Premium Services", icon: Briefcase },
-  { id: "content", label: "Content & Homepage", icon: FileText },
-  { id: "membership", label: "Membership Plans", icon: Crown },
-  { id: "amazon-clicks", label: "Amazon Clicks", icon: MousePointerClick },
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
-  { id: "features", label: "Feature Toggles", icon: ToggleRight },
-  { id: "settings", label: "Settings", icon: Settings },
+  { id: "overview", label: "📊 Overview", icon: LayoutDashboard },
+  { id: "books", label: "📚 Books", icon: BookOpen },
+  { id: "amazon-clicks", label: "🛒 Amazon Clicks", icon: MousePointerClick },
+  { id: "analytics", label: "📈 Analytics", icon: BarChart3 },
+  { id: "reviews", label: "⭐ Reviews", icon: MessageSquare },
+  { id: "categories", label: "🏷️ Categories", icon: Tags },
+  { id: "users", label: "👥 Users", icon: Users },
+  { id: "content", label: "🏠 Homepage Content", icon: FileText },
+  { id: "features", label: "⚙️ Feature Toggles", icon: ToggleRight },
+  { id: "settings", label: "🔧 Settings", icon: Settings },
+  { id: "orders", label: "📦 Orders (Future)", icon: ShoppingCart },
+  { id: "submissions", label: "📝 Book Submissions (Future)", icon: Heart },
+  { id: "services", label: "💎 Premium Services (Future)", icon: Briefcase },
+  { id: "membership", label: "👑 Membership (Future)", icon: Crown },
 ];
 
 export default function AdminDashboardPage() {
