@@ -137,21 +137,13 @@ export default function Navbar() {
 
                 <DropdownMenuItem asChild>
                   <Link to="/bookstore" className="flex items-center gap-2 cursor-pointer">
-                    <ShoppingCart className="w-4 h-4" /> Bookstore
+                    <BookOpen className="w-4 h-4" /> Bookstore
                   </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem asChild>
-                  <Link to="/favorites" className="flex items-center gap-2 cursor-pointer">
-                    <Heart className="w-4 h-4" /> My Favorites
-                  </Link>
-                </DropdownMenuItem>
 
-                <DropdownMenuItem asChild>
-                  <Link to="/orders" className="flex items-center gap-2 cursor-pointer">
-                    <Package className="w-4 h-4" /> My Orders
-                  </Link>
-                </DropdownMenuItem>
+
+
 
                 <DropdownMenuSeparator />
 
