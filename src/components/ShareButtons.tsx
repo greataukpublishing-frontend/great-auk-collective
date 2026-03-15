@@ -8,17 +8,21 @@ interface ShareButtonsProps {
   title: string;
   bookId: string;
   compact?: boolean;
+  amazonUrl?: string;
 }
 
 const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
-export default function ShareButtons({ title, bookId, compact = false }: ShareButtonsProps) {
+export default function ShareButtons({ title, bookId, compact = false, amazonUrl }: ShareButtonsProps) {
   const [open, setOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const bookUrl = `${baseUrl}/book/${bookId}`;
   const encodedUrl = encodeURIComponent(bookUrl);
   const encodedTitle = encodeURIComponent(`Check out "${title}" on Great Auk Publishing!`);
+
+  const encodedAmazon = amazonUrl ? encodeURIComponent(amazonUrl) : "";
+  const amazonTitle = encodeURIComponent(`Buy "${title}" on Amazon`);
 
   const shareLinks = [
     {
@@ -32,6 +36,12 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
       icon: MessageCircle,
       url: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
     },
+    ...(amazonUrl ? [{
+      name: "Share Amazon",
+      icon: Link2,
+      action: "copy-amazon" as const,
+      url: amazonUrl,
+    }] : []),
     {
       name: "Facebook",
       icon: Facebook,
@@ -42,7 +52,11 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
   const handleClick = (e: React.MouseEvent, link: typeof shareLinks[0]) => {
     e.preventDefault();
     e.stopPropagation();
-    if ("action" in link && link.action === "copy") {
+    if ("action" in link && link.action === "copy-amazon") {
+      navigator.clipboard.writeText(amazonUrl || bookUrl);
+      trackShare("copy_amazon", bookId, title);
+      toast({ title: "Amazon link copied! 🛒", description: "Share this to earn commission when friends buy!" });
+    } else if ("action" in link && link.action === "copy") {
       navigator.clipboard.writeText(bookUrl);
       trackShare("copy_link", bookId, title);
       toast({ title: "Link copied!", description: "Book link copied to clipboard." });

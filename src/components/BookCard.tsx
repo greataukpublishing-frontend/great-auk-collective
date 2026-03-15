@@ -175,7 +175,7 @@ export default function BookCard({
                 onPointerDown={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
               >
-                <ShareButtons title={title} bookId={id} compact />
+                <ShareButtons title={title} bookId={id} amazonUrl={amazonUrl} compact />
               </div>
               <div
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
