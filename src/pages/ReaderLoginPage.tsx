@@ -102,15 +102,15 @@ export default function ReaderLoginPage() {
       <div className="container mx-auto px-4 py-16 flex justify-center">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
-              <User className="w-8 h-8 text-primary" />
+            <div className="w-16 h-16 rounded-full bg-gold/15 mx-auto mb-4 flex items-center justify-center border-2 border-gold/40">
+              <User className="w-8 h-8 text-gold" />
             </div>
             <h1 className="font-display text-3xl font-bold text-foreground">
               {isSignUp ? "Create Your Account" : "Welcome Back"}
             </h1>
             <p className="text-muted-foreground mt-2">
               {isSignUp
-                ? "Join Great Auk Publishing to discover and purchase books"
+                ? "Join Great Auk Publishing to restore and collect timeless books"
                 : "Sign in to access your library and purchases"}
             </p>
           </div>
