@@ -35,19 +35,19 @@ export default function Navbar() {
 
     <nav className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md border-b border-primary/80">
 
-      <div className="container mx-auto flex items-center justify-between h-16 px-4">
+      <div className="container mx-auto flex items-center justify-between h-18 px-4">
 
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="relative">
+          <div className="relative flex flex-col items-center gap-0.5">
             <img
               src={greatAukLogo}
               alt="Great Auk"
-              className={`h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? "auk-playing" : ""}`}
+              className={`h-9 w-9 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? "auk-playing" : ""}`}
               onClick={(e) => { e.preventDefault(); toggleAukCall(); }}
             />
             {!aukPlaying && (
-              <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] font-bold text-gold animate-pulse">tap me 🎵</span>
+              <span className="text-[10px] font-extrabold text-gold animate-pulse whitespace-nowrap leading-none">tap me 🎵</span>
             )}
           </div>
           <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
