@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText, Wand2, AlignLeft } from "lucide-react";
+import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText, Wand2, AlignLeft, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -34,6 +34,10 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
   const [descGenerating, setDescGenerating] = useState(false);
+  const [coverDialog, setCoverDialog] = useState<any>(null);
+  const [coverUrl, setCoverUrl] = useState("");
+  const [uploadingCoverId, setUploadingCoverId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const cancelRef = useRef(false);
 
   const filtered = books.filter(b => {
@@ -42,6 +46,10 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     const matchStatus = statusFilter === "all" || b.status === statusFilter;
     return matchSearch && matchStatus;
   });
+
+  const hasCover = (book: any) => {
+    return book.cover_url && book.cover_url.trim() !== "" && !book.cover_url.includes("placeholder");
+  };
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("books").update({ status }).eq("id", id);
@@ -89,6 +97,66 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     toast({ title: "Book updated" });
     setEditBook(null);
     onRefresh();
+  };
+
+  const openCoverDialog = (book: any) => {
+    setCoverDialog(book);
+    setCoverUrl(book.cover_url || "");
+  };
+
+  const saveCoverUrl = async () => {
+    if (!coverDialog || !coverUrl.trim()) {
+      toast({ title: "Error", description: "Please enter a valid URL", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.from("books").update({ cover_url: coverUrl, cover_image_url: coverUrl }).eq("id", coverDialog.id);
+    if (error) {
+      toast({ title: "Error saving cover URL", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Cover URL updated ✨" });
+    setCoverDialog(null);
+    onRefresh();
+  };
+
+  const uploadCoverImage = async (file: File) => {
+    if (!coverDialog) return;
+    if (!file.type.match(/image\/(jpeg|png)/)) {
+      toast({ title: "Invalid file type", description: "Only JPG and PNG files are allowed", variant: "destructive" });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Maximum file size is 5MB", variant: "destructive" });
+      return;
+    }
+
+    setUploadingCoverId(coverDialog.id);
+    try {
+      const fileName = `${coverDialog.id}-${Date.now()}.${file.type === "image/jpeg" ? "jpg" : "png"}`;
+      const { error: uploadError, data } = await supabase.storage
+        .from("book-covers")
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = supabase.storage
+        .from("book-covers")
+        .getPublicUrl(fileName);
+
+      const publicUrl = publicUrlData.publicUrl;
+
+      const { error: updateError } = await supabase.from("books").update({ cover_url: publicUrl, cover_image_url: publicUrl }).eq("id", coverDialog.id);
+      if (updateError) throw updateError;
+
+      toast({ title: "Cover uploaded successfully ✨" });
+      setCoverDialog(null);
+      onRefresh();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      toast({ title: "Upload failed", description: message, variant: "destructive" });
+    } finally {
+      setUploadingCoverId(null);
+    }
   };
 
   const generateEditorial = async (bookId: string) => {
@@ -246,6 +314,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const featured = books.filter(b => b.featured).length;
   const missingEditorialCount = books.filter(b => !b.editorial_description).length;
   const missingDescriptionCount = books.filter(b => !b.description || b.description.length < 100).length;
+  const missingCoverCount = books.filter(b => !hasCover(b)).length;
 
   return (
     <div className="space-y-6">
@@ -303,7 +372,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
         <Card><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Total</p><p className="text-lg font-bold">{books.length}</p></CardContent></Card>
         <Card className="border-amber-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Pending Review</p><p className="text-lg font-bold text-amber-600">{pending}</p></CardContent></Card>
         <Card className="border-emerald-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Approved</p><p className="text-lg font-bold text-emerald-600">{approved}</p></CardContent></Card>
-        <Card><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Featured</p><p className="text-lg font-bold text-gold">{featured}</p></CardContent></Card>
+        <Card className={missingCoverCount > 0 ? "border-red-200" : ""}><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Missing Covers</p><p className={`text-lg font-bold ${missingCoverCount > 0 ? "text-red-600" : ""}`}>{missingCoverCount}</p></CardContent></Card>
       </div>
 
       {/* Pending Manuscripts Review Section */}
@@ -368,6 +437,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                   <th className="p-3 font-medium">Category</th>
                   <th className="p-3 font-medium">Status</th>
                   <th className="p-3 font-medium">⭐</th>
+                  <th className="p-3 font-medium">Cover</th>
                   <th className="p-3 font-medium">Description</th>
                   <th className="p-3 font-medium">Editorial</th>
                   <th className="p-3 font-medium">Actions</th>
@@ -376,8 +446,9 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
               <tbody>
                 {filtered.map(b => {
                   const hasDesc = b.description && b.description.length >= 100;
+                  const coverExists = hasCover(b);
                   return (
-                  <tr key={b.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                  <tr key={b.id} className={`border-b border-border/50 hover:bg-muted/30 transition-colors ${!coverExists ? "border-l-4 border-l-red-500" : ""}`}>
                     <td className="p-3">
                       <p className="font-medium text-foreground">{b.title}</p>
                       <p className="text-xs text-muted-foreground">by {b.author_name}</p>
@@ -388,6 +459,13 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                       <button onClick={() => toggleFeatured(b.id, b.featured ?? false)} title={b.featured ? "Remove from featured" : "Add to featured"}>
                         <Star className={`w-4 h-4 ${b.featured ? "text-gold fill-gold" : "text-muted-foreground"}`} />
                       </button>
+                    </td>
+                    <td className="p-3">
+                      {coverExists ? (
+                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Has Cover</Badge>
+                      ) : (
+                        <Badge variant="destructive" className="bg-red-100 text-red-700 border-red-300">No Cover</Badge>
+                      )}
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1">
@@ -427,6 +505,9 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1 flex-wrap">
+                        <Button size="sm" variant="ghost" onClick={() => openCoverDialog(b)} title="Upload or Set Cover" className="gap-1">
+                          <ImageIcon className={`w-4 h-4 ${coverExists ? "text-muted-foreground" : "text-accent"}`} />
+                        </Button>
                         {b.status !== "approved" && (
                           <Button size="sm" variant="ghost" onClick={() => updateStatus(b.id, "approved")} title="Approve">
                             <CheckCircle className="w-4 h-4 text-emerald-600" />
@@ -463,63 +544,85 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
             <div><Label>Title</Label><Input value={editForm.title || ""} onChange={e => setEditForm({...editForm, title: e.target.value})} /></div>
             <div><Label>Author Name</Label><Input value={editForm.author_name || ""} onChange={e => setEditForm({...editForm, author_name: e.target.value})} /></div>
             <div><Label>Description</Label><Textarea value={editForm.description || ""} onChange={e => setEditForm({...editForm, description: e.target.value})} /></div>
-            <div><Label>Preview Content (Look Inside)</Label><Textarea value={editForm.preview_content || ""} onChange={e => setEditForm({...editForm, preview_content: e.target.value})} placeholder="Paste first few pages for reader preview..." /></div>
-            <div><Label>Category</Label>
-              <Select value={editForm.category || ""} onValueChange={v => setEditForm({...editForm, category: v})}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{categories.map(c => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label>eBook Price ($)</Label><Input type="number" step="0.01" value={editForm.ebook_price ?? 0} onChange={e => setEditForm({...editForm, ebook_price: parseFloat(e.target.value)})} /></div>
-              <div><Label>Print Price ($)</Label><Input type="number" step="0.01" value={editForm.print_price ?? 0} onChange={e => setEditForm({...editForm, print_price: parseFloat(e.target.value)})} /></div>
-            </div>
-            <Button onClick={saveEdit} className="w-full">Save Changes</Button>
+            <div><Label>Preview Content (Look Inside)</Label><Textarea value={editForm.preview_content || ""} onChange={e => setEditForm({...editForm, preview_content: e.target.value})} placeholder="Paste sample text from the book" /></div>
+            <div><Label>Category</Label><Input value={editForm.category || ""} onChange={e => setEditForm({...editForm, category: e.target.value})} /></div>
+            <div className="grid grid-cols-2 gap-3"><div><Label>eBook Price</Label><Input type="number" value={editForm.ebook_price || 0} onChange={e => setEditForm({...editForm, ebook_price: parseFloat(e.target.value)})} /></div><div><Label>Print Price</Label><Input type="number" value={editForm.print_price || 0} onChange={e => setEditForm({...editForm, print_price: parseFloat(e.target.value)})} /></div></div>
+            <div className="flex gap-2"><Button variant="outline" onClick={() => setEditBook(null)}>Cancel</Button><Button onClick={saveEdit}>Save Changes</Button></div>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Edit Editorial Dialog */}
+      {/* Cover Upload Dialog */}
+      <Dialog open={!!coverDialog} onOpenChange={(o) => !o && setCoverDialog(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Upload or Set Cover for {coverDialog?.title}</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Upload Image (JPG/PNG, max 5MB)</Label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) {
+                    uploadCoverImage(e.target.files[0]);
+                  }
+                }}
+                className="hidden"
+              />
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingCoverId === coverDialog?.id}
+                className="w-full gap-2"
+              >
+                <Upload className={`w-4 h-4 ${uploadingCoverId === coverDialog?.id ? "animate-pulse" : ""}`} />
+                {uploadingCoverId === coverDialog?.id ? "Uploading..." : "Choose Image to Upload"}
+              </Button>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or</span>
+              </div>
+            </div>
+
+            <div>
+              <Label>Set Cover URL</Label>
+              <Input
+                placeholder="https://example.com/cover.jpg"
+                value={coverUrl}
+                onChange={(e) => setCoverUrl(e.target.value)}
+                className="mb-3"
+              />
+              <Button onClick={saveCoverUrl} className="w-full">Save Cover URL</Button>
+            </div>
+
+            <Button variant="outline" onClick={() => setCoverDialog(null)} className="w-full">Cancel</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Editorial Edit Dialog */}
       <Dialog open={!!editorialDialog} onOpenChange={(o) => !o && setEditorialDialog(null)}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Edit Editorial Review</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Edit Editorial for {editorialDialog?.title}</DialogTitle></DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Edit the editorial description for <strong>{editorialDialog?.title}</strong></p>
-            <Textarea
-              value={editorialText}
-              onChange={(e) => setEditorialText(e.target.value)}
-              className="min-h-[200px] resize-none"
-              placeholder="Editorial description..."
-            />
-            <div className="flex gap-2">
-              <Button onClick={saveEditorial} className="flex-1">Save Editorial</Button>
-              <Button variant="outline" onClick={() => { generateEditorial(editorialDialog.id); setEditorialDialog(null); }}>
-                <RefreshCw className="w-4 h-4 mr-1.5" /> Regenerate
-              </Button>
-            </div>
+            <Textarea value={editorialText} onChange={e => setEditorialText(e.target.value)} placeholder="Enter editorial description..." className="min-h-[200px]" />
+            <div className="flex gap-2"><Button variant="outline" onClick={() => setEditorialDialog(null)}>Cancel</Button><Button onClick={saveEditorial}>Save Editorial</Button></div>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Edit Description Dialog */}
+      {/* Description Edit Dialog */}
       <Dialog open={!!descriptionDialog} onOpenChange={(o) => !o && setDescriptionDialog(null)}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Edit Book Description</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Edit Description for {descriptionDialog?.title}</DialogTitle></DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Edit the description for <strong>{descriptionDialog?.title}</strong></p>
-            <Textarea
-              value={descriptionText}
-              onChange={(e) => setDescriptionText(e.target.value)}
-              className="min-h-[120px] resize-none"
-              placeholder="Book description (120-180 characters)..."
-            />
-            <p className="text-xs text-muted-foreground">{descriptionText.length} characters</p>
-            <div className="flex gap-2">
-              <Button onClick={saveDescription} className="flex-1">Save Description</Button>
-              <Button variant="outline" onClick={() => { generateSingleDescription(descriptionDialog.id); setDescriptionDialog(null); }}>
-                <RefreshCw className="w-4 h-4 mr-1.5" /> Regenerate
-              </Button>
-            </div>
+            <Textarea value={descriptionText} onChange={e => setDescriptionText(e.target.value)} placeholder="Enter book description..." className="min-h-[200px]" />
+            <div className="flex gap-2"><Button variant="outline" onClick={() => setDescriptionDialog(null)}>Cancel</Button><Button onClick={saveDescription}>Save Description</Button></div>
           </div>
         </DialogContent>
       </Dialog>
