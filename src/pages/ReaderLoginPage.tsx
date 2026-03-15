@@ -115,7 +115,7 @@ export default function ReaderLoginPage() {
             </p>
           </div>
 
-          <div className="bg-card rounded-lg border border-border p-6 space-y-4">
+          <div className="bg-card rounded-lg border-2 border-gold/50 p-6 space-y-4 shadow-[0_0_20px_-5px_hsl(var(--gold)/0.3)]">
             <form onSubmit={handleSubmit} className="space-y-4">
               {isSignUp && (
                 <div>
