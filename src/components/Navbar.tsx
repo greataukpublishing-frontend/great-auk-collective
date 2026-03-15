@@ -13,9 +13,9 @@ import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 const baseNavLinks = [
   { label: "Home", to: "/" },
   { label: "Bookstore", to: "/bookstore" },
-  { label: "AI", to: "/bookstore?category=AI" },
-  { label: "Fiction", to: "/bookstore?category=Fiction" },
-  { label: "Self Help", to: "/bookstore?category=Self+Help" },
+  { label: "AI", to: "/bookstore?category=AI", category: "AI" },
+  { label: "Fiction", to: "/bookstore?category=Fiction", category: "Fiction" },
+  { label: "Self Help", to: "/bookstore?category=Self%20Help", category: "Self Help" },
   { label: "About", to: "/about" },
 ];
 
