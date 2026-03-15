@@ -25,7 +25,7 @@ export default function BookstorePage() {
 
   useEffect(() => {
     const cat = searchParams.get("category");
-    if (cat) setSelectedCategory(cat);
+    setSelectedCategory(cat || "All");
   }, [searchParams]);
 
   async function fetchData() {
