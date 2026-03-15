@@ -84,7 +84,7 @@ export default function BookCard({
       </button>
 
       <Link to={`/book/${id}`}>
-        <div className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-border">
+        <div className="bg-card rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-border">
 
           <div className="relative aspect-[2/3] overflow-hidden bg-muted">
             {!imageLoaded && (
