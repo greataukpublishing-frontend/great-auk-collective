@@ -183,6 +183,7 @@ export default function BookstorePage() {
                 author={book.author_name}
                 category={book.category}
                 cover={book.cover_url || ""}
+                coverImageUrl={book.cover_image_url || undefined}
                 amazonLink={book.amazon_link || undefined}
                 amazonAffiliateUrl={book.amazon_affiliate_url || undefined}
                 tag={book.featured ? "new" : undefined}

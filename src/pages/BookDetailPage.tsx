@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { getBookCover } from "@/lib/covers";
+import { getBookCover, getBookCoverWithFallback } from "@/lib/covers";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -20,6 +20,7 @@ export default function BookDetailPage() {
   const navigate = useNavigate();
 
   const [book, setBook] = useState<any>(null);
+  const [currentCover, setCurrentCover] = useState<string>("");
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -187,7 +188,7 @@ export default function BookDetailPage() {
                   </div>
                 )}
                 <img
-                  src={getBookCover(book.cover_url)}
+                  src={currentCover}
                   alt={`${book.title} by ${book.author_name}`}
                   loading="lazy"
                   className={`w-full rounded-xl shadow-2xl transition-opacity duration-300 ${coverImageLoaded ? "opacity-100" : "opacity-0"}`}

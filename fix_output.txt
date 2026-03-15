@@ -1,0 +1,129 @@
+Fetching approved books from Supabase...
+Found 91 approved books. Checking covers...
+✓ 2 States - Cover already looks good.
+✓ The Body Keeps the Score - Cover already looks good.
+✓ The Coming Wave - Cover already looks good.
+Attempting to fix cover for: The Blue Umbrella by Ruskin Bond (ID: 3575992c-8714-4f06-9f9b-092cafce526d)
+✓ The Blue Umbrella [204]
+✓ Co-Intelligence - Cover already looks good.
+✓ How to Win Friends and Influence People - Cover already looks good.
+✓ English, August - Cover already looks good.
+Attempting to fix cover for: Fahrenheit 451 by Ray Bradbury (ID: de087f27-e1a2-4455-839d-aa0dfa1efebc)
+✓ Fahrenheit 451 [204]
+✓ Educated - Cover already looks good.
+✓ Can't Hurt Me - Cover already looks good.
+Attempting to fix cover for: The Palace of Illusions by Chitra Banerjee Divakaruni (ID: e0b8dd73-1f4e-4178-8bc6-78c510d303e7)
+✓ The Palace of Illusions [204]
+✓ Midnight's Children - Cover already looks good.
+✓ Human Compatible - Cover already looks good.
+✓ Life 3.0 - Cover already looks good.
+✓ Never Let Me Go - Cover already looks good.
+✓ Piranesi - Cover already looks good.
+✓ The Argumentative Indian - Cover already looks good.
+Attempting to fix cover for: The Alchemist by Paulo Coelho (ID: c09af320-11fe-427b-897c-1b3fae1b4483)
+✓ The Alchemist [204]
+Attempting to fix cover for: The Lowland by Jhumpa Lahiri (ID: 851284f6-cb26-4a6c-881d-2cda87373958)
+✓ The Lowland [204]
+✓ A World Without Work - Cover already looks good.
+✓ Prediction Machines - Cover already looks good.
+✓ Sacred Games - Cover already looks good.
+✓ Klara and the Sun - Cover already looks good.
+Attempting to fix cover for: Thinking, Fast and Slow by Daniel Kahneman (ID: ddb3dbfc-6a59-48e5-9ac2-7592ed31f3c0)
+✓ Thinking, Fast and Slow [204]
+✓ Exhalation - Cover already looks good.
+✓ Solaris - Cover already looks good.
+✓ Station Eleven - Cover already looks good.
+✓ Superintelligence - Cover already looks good.
+✓ The 48 Laws of Power - Cover already looks good.
+✓ The Age of AI - Cover already looks good.
+✓ The Alignment Problem - Cover already looks good.
+✓ A Memory Called Empire - Cover already looks good.
+Attempting to fix cover for: Atomic Habits by James Clear (ID: d9d97df6-2373-4c02-ac6a-9c8bd6aafee7)
+✓ Atomic Habits [204]
+✓ All Systems Red - Cover already looks good.
+✓ Atlas of AI - Cover already looks good.
+✓ A Fine Balance - Cover already looks good.
+✓ Four Thousand Weeks - Cover already looks good.
+✓ Genius Makers - Cover already looks good.
+✓ Essentialism - Cover already looks good.
+✓ Grit - Cover already looks good.
+Attempting to fix cover for: Start With Why by Simon Sinek (ID: b7c8e352-48ef-4945-996d-1d755365a825)
+✓ Start With Why [204]
+✓ Flowers for Algernon - Cover already looks good.
+Attempting to fix cover for: Rich Dad Poor Dad by Robert Kiyosaki (ID: 7d45900a-e557-4272-af5b-fa644adfc13b)
+✓ Rich Dad Poor Dad [204]
+✓ The Midnight Library - Cover already looks good.
+✓ Man's Search for Meaning - Cover already looks good.
+✓ Ignore Everybody - Cover already looks good.
+✓ India After Gandhi - Cover already looks good.
+✓ My Experiments with Truth - Cover already looks good.
+✓ Power and Prediction - Cover already looks good.
+Attempting to fix cover for: Brave New World by Aldous Huxley (ID: 1286783a-f4d9-4163-a3fc-83be897abcd1)
+✓ Brave New World [204]
+✓ The Namesake - Cover already looks good.
+✓ Stories of Your Life and Others - Cover already looks good.
+Attempting to fix cover for: The Inheritance of Loss by Kiran Desai (ID: f228dc83-ec2e-4b3c-a179-3daf5a3e20f4)
+✓ The Inheritance of Loss [204]
+✓ The Difficulty of Being Good - Cover already looks good.
+Attempting to fix cover for: 1984 by George Orwell (ID: 9d39260f-3dd3-41e7-999e-eea847cdb438)
+✓ 1984 [204]
+✓ The Worlds I See - Cover already looks good.
+✓ Artificial Intelligence: A Guide for Thinking Humans - Cover already looks good.
+✓ You Can Win - Cover already looks good.
+✓ Weapons of Math Destruction - Cover already looks good.
+Attempting to fix cover for: The Book Thief by Markus Zusak (ID: f78e711e-b951-46b6-b41d-99b5e42dbe36)
+✓ The Book Thief [204]
+✓ Wings of Fire - Cover already looks good.
+Attempting to fix cover for: The Road by Cormac McCarthy (ID: e4dcc5b5-20e3-4f04-aca3-bbe55a43dbee)
+✓ The Road [204]
+✓ Project Hail Mary - Cover already looks good.
+✓ Dark Matter - Cover already looks good.
+Attempting to fix cover for: The Subtle Art of Not Giving a F*ck by Mark Manson (ID: a8129bab-89ab-4a01-bb21-425eb8d6cee3)
+✓ The Subtle Art of Not Giving a F*ck [204]
+✓ The Dispossessed - Cover already looks good.
+✓ The Rozabal Line - Cover already looks good.
+✓ The Space Between Us - Cover already looks good.
+Attempting to fix cover for: Think and Grow Rich by Napoleon Hill (ID: 5fdc7167-aac5-40a4-88ab-97e393e2e53c)
+✓ Think and Grow Rich [204]
+✓ The Power - Cover already looks good.
+Attempting to fix cover for: Life of Pi by Yann Martel (ID: 95846192-59c4-4481-9ca5-ced416e1f093)
+✓ Life of Pi [204]
+✓ The Power of Now - Cover already looks good.
+Attempting to fix cover for: The Lean Startup by Eric Ries (ID: c7c2c3b4-5773-4aab-bac2-c516ec878b89)
+✓ The Lean Startup [204]
+Attempting to fix cover for: The Immortals of Meluha by Amish Tripathi (ID: 8536ad90-2606-4824-8d7a-4479252ad40f)
+✓ The Immortals of Meluha [204]
+✓ Recursion - Cover already looks good.
+Attempting to fix cover for: Train to Pakistan by Khushwant Singh (ID: e5c698c5-a46c-4ece-afe4-75f06af7e83b)
+✓ Train to Pakistan [204]
+Attempting to fix cover for: The Kite Runner by Khaled Hosseini (ID: 66ceafdd-4258-4fb1-9f87-16efaf3bc55a)
+✓ The Kite Runner [204]
+Attempting to fix cover for: Sapiens by Yuval Noah Harari (ID: b327596f-2cfc-459f-83a1-37a7f08382e5)
+✓ Sapiens [204]
+Attempting to fix cover for: The God of Small Things by Arundhati Roy (ID: ed4886cc-0d97-448d-8b6f-ed9df707de80)
+✓ The God of Small Things [204]
+Attempting to fix cover for: The White Tiger by Aravind Adiga (ID: 4cbe96a3-3340-4743-8b2a-4b0bb10f06bc)
+✓ The White Tiger [204]
+Attempting to fix cover for: Ikigai by Héctor García (ID: 83b2d2ac-0fcc-446e-85a7-4d9710e30645)
+✓ Ikigai [204]
+Attempting to fix cover for: Homo Deus by Yuval Noah Harari (ID: b407982a-a35b-45b6-81d6-e5adc65854a3)
+✓ Homo Deus [204]
+Attempting to fix cover for: The Catcher in the Rye by J.D. Salinger (ID: fa3b4052-cd71-4c23-8efc-7e130206ebc3)
+✓ The Catcher in the Rye [204]
+Attempting to fix cover for: A Thousand Splendid Suns by Khaled Hosseini (ID: 9dac3b49-9279-40c8-a7fe-1526b337234b)
+✓ A Thousand Splendid Suns [204]
+Attempting to fix cover for: Deep Work by Cal Newport (ID: d9b2769c-1c1b-48bc-b376-b025f1e8bc79)
+✓ Deep Work [204]
+Attempting to fix cover for: A Suitable Boy by Vikram Seth (ID: df20fc94-9be1-460a-a17c-b197d0b7fdb8)
+✓ A Suitable Boy [204]
+Attempting to fix cover for: Norwegian Wood by Haruki Murakami (ID: 03a27b2d-9803-43d9-9a17-d441ba7b3197)
+✓ Norwegian Wood [204]
+Attempting to fix cover for: The Power of Habit by Charles Duhigg (ID: 99e24f23-74c7-4fb9-a651-5504ab9c8040)
+✓ The Power of Habit [204]
+Attempting to fix cover for: To Kill a Mockingbird by Harper Lee (ID: 2497f9d6-1a52-4e45-9001-fc157fe9fda2)
+✓ To Kill a Mockingbird [204]
+Attempting to fix cover for: Sea of Poppies by Amitav Ghosh (ID: ed61fd7a-cb9f-47a9-a0e1-3d5d1fcce3f7)
+✓ Sea of Poppies [204]
+Attempting to fix cover for: Interpreter of Maladies by Jhumpa Lahiri (ID: b9c7b9d9-4e0f-47d9-a02c-1aa5facb9dc4)
+✓ Interpreter of Maladies [204]
+Done! 35/91 updated.
