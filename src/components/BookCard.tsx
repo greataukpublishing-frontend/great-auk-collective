@@ -94,12 +94,13 @@ export default function BookCard({
             )}
             <img
               src={getBookCover(cover)}
-              alt={title}
+              alt={`${title} by ${author}`}
               loading="lazy"
               decoding="async"
               fetchPriority="low"
               className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
               onLoad={() => setImageLoaded(true)}
+              onError={() => setImageLoaded(true)}
             />
             {tag && (
               <span

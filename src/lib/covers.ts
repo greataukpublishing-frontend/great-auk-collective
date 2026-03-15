@@ -14,6 +14,9 @@ const coverMap: Record<string, string> = {
   "book-cover-6": bookCover6,
 };
 
+// Placeholder image for missing covers
+const PLACEHOLDER_COVER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 450'%3E%3Crect fill='%23e5e7eb' width='300' height='450'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%236b7280' text-anchor='middle' dominant-baseline='middle' font-family='system-ui'%3ENo Cover Available%3C/text%3E%3C/svg%3E";
+
 export function getBookCover(key: string, width = 400): string {
   // Local asset key
   if (coverMap[key]) return coverMap[key];
@@ -22,7 +25,21 @@ export function getBookCover(key: string, width = 400): string {
     try {
       const url = new URL(key);
 
-      // Open Library ISBN URLs work reliably – use them directly.
+      // Google Books URLs: add high-resolution parameter
+      if (url.hostname.includes("books.google.com")) {
+        // Ensure HTTPS
+        url.protocol = "https:";
+        // Add high-resolution parameter
+        if (!url.searchParams.has("fife")) {
+          url.searchParams.set("fife", "w600");
+        }
+        return url.toString();
+      }
+
+      // Open Library URLs: use directly
+      if (url.hostname.includes("openlibrary.org")) {
+        return url.toString();
+      }
 
       // Only apply image transform params to backend storage objects.
       if (url.pathname.includes("/storage/v1/object/")) {
@@ -32,10 +49,10 @@ export function getBookCover(key: string, width = 400): string {
 
       return url.toString();
     } catch {
-      return key;
+      return PLACEHOLDER_COVER;
     }
   }
 
-  // No cover available — return the key as-is (may be empty)
-  return key || "";
+  // No cover available — return placeholder
+  return PLACEHOLDER_COVER;
 }

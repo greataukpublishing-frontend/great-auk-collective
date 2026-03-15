@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { getBookCover } from "@/lib/covers";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -28,6 +29,7 @@ export default function BookDetailPage() {
   const [reviewRating, setReviewRating] = useState(5);
   const [submittingReview, setSubmittingReview] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [coverImageLoaded, setCoverImageLoaded] = useState(false);
 
   const isAuthor = user?.id === book?.author_id;
 
@@ -178,11 +180,21 @@ export default function BookDetailPage() {
           {/* Cover */}
           <div className="relative">
             {book.cover_url ? (
-              <img
-                src={book.cover_url}
-                alt={book.title}
-                className="w-full rounded-xl shadow-2xl"
-              />
+              <div className="relative">
+                {!coverImageLoaded && (
+                  <div className="absolute inset-0 bg-muted rounded-xl animate-pulse z-10">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/40 to-transparent animate-[shimmer_1.5s_infinite]" />
+                  </div>
+                )}
+                <img
+                  src={getBookCover(book.cover_url)}
+                  alt={`${book.title} by ${book.author_name}`}
+                  loading="eager"
+                  className={`w-full rounded-xl shadow-2xl transition-opacity duration-300 ${coverImageLoaded ? "opacity-100" : "opacity-0"}`}
+                  onLoad={() => setCoverImageLoaded(true)}
+                  onError={() => setCoverImageLoaded(true)}
+                />
+              </div>
             ) : (
               <div className="w-full aspect-[2/3] bg-muted rounded-xl flex items-center justify-center">
                 <BookOpen className="w-16 h-16 text-muted-foreground" />
