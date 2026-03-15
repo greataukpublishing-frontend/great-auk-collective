@@ -264,18 +264,7 @@ export default function BookDetailPage() {
                   Buy on Amazon
                 </Button>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-11 w-11"
-                  onClick={() => {
-                    navigator.clipboard.writeText(amazonUrl);
-                    toast({ title: "Link copied! 🔗" });
-                  }}
-                  title="Copy Amazon link"
-                >
-                  <Share2 className="w-4 h-4" />
-                </Button>
+
               </div>
             )}
 
