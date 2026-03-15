@@ -39,7 +39,7 @@ export default function Navbar() {
 
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex flex-col items-center">
+          <div className="relative">
             <img
               src={greatAukLogo}
               alt="Great Auk"
@@ -47,7 +47,7 @@ export default function Navbar() {
               onClick={(e) => { e.preventDefault(); toggleAukCall(); }}
             />
             {!aukPlaying && (
-              <span className="text-[9px] font-bold text-gold animate-pulse leading-none">tap me 🎵</span>
+              <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] font-bold text-gold animate-pulse">tap me 🎵</span>
             )}
           </div>
           <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
