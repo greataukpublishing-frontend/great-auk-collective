@@ -72,11 +72,26 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
         {open && (
           <>
             <div
-              className="fixed inset-0 z-[999]"
+              className="fixed inset-0 z-[9998]"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(false); }}
             />
             <div
-              className="absolute top-full right-0 mt-2 z-[1000] w-48 p-2 rounded-xl shadow-2xl border border-border bg-card"
+              className="fixed z-[9999] w-48 p-2 rounded-xl shadow-2xl border border-border bg-card"
+              style={(() => {
+                if (typeof document !== 'undefined') {
+                  const btn = document.activeElement as HTMLElement;
+                  const els = document.querySelectorAll('[aria-label="Share this book"]');
+                  let rect = { bottom: 100, left: 100 };
+                  els.forEach(el => {
+                    if (el.closest('.relative')) rect = el.getBoundingClientRect();
+                  });
+                  return {
+                    top: rect.bottom + 8,
+                    left: Math.min(rect.left, window.innerWidth - 210),
+                  };
+                }
+                return { top: 100, left: 100 };
+              })()}
               onClick={(e) => e.stopPropagation()}
             >
               {shareLinks.map((link) => (
