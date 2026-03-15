@@ -72,14 +72,16 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-            <div className="hidden md:flex justify-center animate-fade-in">
+            <div className="hidden md:flex flex-col items-center justify-center animate-fade-in">
               <img
                 src={greatAukHero}
                 alt="The Great Auk"
                 className={`w-72 h-72 object-contain drop-shadow-2xl cursor-pointer hover:scale-105 transition-transform ${aukPlaying ? 'auk-playing' : ''}`}
                 onClick={() => toggleAukCall()}
-                title="Click to hear the Great Auk"
               />
+              {!aukPlaying && (
+                <span className="text-sm font-bold text-gold animate-pulse mt-2">tap me 🎵</span>
+              )}
             </div>
           </div>
         </div>
