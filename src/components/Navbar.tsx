@@ -30,7 +30,7 @@ export default function Navbar() {
   const { isEnabled } = useFeatureToggles();
   const selfPublishingEnabled = isEnabled("self_publishing");
 
-  const navLinks = baseNavLinks.filter(l => !l.feature || isEnabled(l.feature));
+  const navLinks = baseNavLinks;
 
   return (
 

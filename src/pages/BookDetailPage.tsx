@@ -55,7 +55,7 @@ export default function BookDetailPage() {
     }
 
     setBook(bookData);
-    setCurrentCover(bookData.cover_url || bookData.cover_image_url || "");
+    setCurrentCover(bookData.cover_url || "");
 
     const { data: reviewsData } = await supabase
       .from("reviews")
