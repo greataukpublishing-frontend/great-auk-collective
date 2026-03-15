@@ -51,10 +51,10 @@ export default function ShareButtons({ title, bookId, compact = false, amazonUrl
   const handleClick = (e: React.MouseEvent, link: typeof shareLinks[0]) => {
     e.preventDefault();
     e.stopPropagation();
-    if ("action" in link && link.action === "copy-amazon") {
+    if ("action" in link && link.action === "copy") {
       navigator.clipboard.writeText(amazonUrl || bookUrl);
-      trackShare("copy_amazon", bookId, title);
-      toast({ title: "Amazon link copied! 🛒", description: "Share this to earn commission when friends buy!" });
+      trackShare("copy_link", bookId, title);
+      toast({ title: "Link copied! 🔗", description: "Share this link with friends!" });
     } else if ("action" in link && link.action === "copy") {
       navigator.clipboard.writeText(shareUrl);
       trackShare("copy_link", bookId, title);
