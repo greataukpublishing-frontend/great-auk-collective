@@ -51,7 +51,7 @@ export default function ContactPage() {
           <div className="space-y-6">
             {[
               { icon: Mail, label: "Email", value: "greataukpublishing@gmail.com" },
-              { icon: MapPin, label: "Address", value: "Pillion Intelligence Ltd\nOffice 130, Unit 5\n399-405 Oxford Street\nMayfair, London, UK" },
+              
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
                 <item.icon className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />

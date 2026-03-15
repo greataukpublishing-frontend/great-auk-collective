@@ -46,7 +46,7 @@ export default function AboutPage() {
             At Great Auk, we believe every great book deserves to be read — wherever it comes from.
           </p>
           <p className="text-sm text-muted-foreground !mt-10">
-            Great Auk Publishing is part of Pillion Intelligence Ltd.<br />Mayfair, London, United Kingdom.
+            Great Auk Publishing is an independent digital bookstore.
           </p>
         </div>
       </div>
