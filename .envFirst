@@ -1,0 +1,1 @@
+VITE_GOOGLE_BOOKS_API_KEY="paste_your_real_key_here" remove the placeholder line sed -i  /AIzaSyBD8K_FY-9syPHPWWSJNTiWpHNOnDtKJJs/d .env
