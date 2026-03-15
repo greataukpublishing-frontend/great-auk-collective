@@ -16,6 +16,7 @@ export default function HomePage() {
   const { isEnabled } = useFeatureToggles();
   const [featuredBooks, setFeaturedBooks] = useState<any[]>([]);
   const [recentBooks, setRecentBooks] = useState<any[]>([]);
+  const [malayalamBooks, setMalayalamBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +41,15 @@ export default function HomePage() {
     ]);
 
     setFeaturedBooks(featuredRes.data || []);
+
+    const malayalamRes = await supabase
+      .from("books")
+      .select("*")
+      .eq("status", "approved")
+      .eq("language", "Malayalam")
+      .eq("featured", true)
+      .limit(4);
+    setMalayalamBooks(malayalamRes.data || []);
     setRecentBooks(recentRes.data || []);
     setLoading(false);
   };
@@ -144,6 +154,36 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Malayalam Picks */}
+      {malayalamBooks.length > 0 && (
+        <section className="container mx-auto px-4 py-16">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">🌴 Kerala''s Best</p>
+              <h2 className="font-display text-3xl font-bold text-foreground">Malayalam Picks</h2>
+            </div>
+            <a href="/bookstore?language=Malayalam" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
+              View All →
+            </a>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {malayalamBooks.map((book) => (
+              <BookCard
+                key={book.id}
+                id={book.id}
+                title={book.title}
+                author={book.author_name}
+                cover={book.cover_url || ""}
+                category={book.category}
+                amazonLink={book.amazon_link}
+                amazonAffiliateUrl={book.amazon_affiliate_url}
+                tag="new"
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Recently Added */}
       {recentBooks.length > 0 && (
