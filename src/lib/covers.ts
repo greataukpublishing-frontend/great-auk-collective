@@ -17,6 +17,57 @@ const coverMap: Record<string, string> = {
 // Placeholder image for missing covers
 const PLACEHOLDER_COVER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 450'%3E%3Crect fill='%23e5e7eb' width='300' height='450'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%236b7280' text-anchor='middle' dominant-baseline='middle' font-family='system-ui'%3ENo Cover Available%3C/text%3E%3C/svg%3E";
 
+// Cache for Google Books API lookups to avoid repeated requests
+const googleBooksCache: Record<string, string | null> = {};
+
+// Fetch cover from Google Books API as fallback
+async function fetchGoogleBooksCover(title: string, author: string): Promise<string | null> {
+  const cacheKey = `${title}|${author}`;
+  
+  // Check cache first
+  if (cacheKey in googleBooksCache) {
+    return googleBooksCache[cacheKey];
+  }
+
+  try {
+    const query = `${title} ${author}`;
+    const encodedQuery = encodeURIComponent(query);
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=${encodedQuery}&fields=items(volumeInfo(imageLinks(thumbnail)))`
+    );
+
+    if (!response.ok) {
+      googleBooksCache[cacheKey] = null;
+      return null;
+    }
+
+    const data = await response.json();
+    
+    if (data && data.items && data.items.length > 0) {
+      for (const item of data.items) {
+        if (item.volumeInfo?.imageLinks?.thumbnail) {
+          let coverUrl = item.volumeInfo.imageLinks.thumbnail;
+          // Convert to HTTPS, remove &edge=curl, append &fife=w600
+          coverUrl = coverUrl.replace("http://", "https://");
+          coverUrl = coverUrl.replace("&edge=curl", "");
+          if (!coverUrl.includes("&fife=")) {
+            coverUrl += "&fife=w600";
+          }
+          googleBooksCache[cacheKey] = coverUrl;
+          return coverUrl;
+        }
+      }
+    }
+
+    googleBooksCache[cacheKey] = null;
+    return null;
+  } catch (error) {
+    console.error(`Error fetching Google Books cover for "${title}" by "${author}":`, error);
+    googleBooksCache[cacheKey] = null;
+    return null;
+  }
+}
+
 export function getBookCover(key: string, width = 400): string {
   // Local asset key
   if (coverMap[key]) return coverMap[key];
@@ -54,5 +105,30 @@ export function getBookCover(key: string, width = 400): string {
   }
 
   // No cover available — return placeholder
+  return PLACEHOLDER_COVER;
+}
+
+// Async function to fetch cover with Google Books fallback
+export async function getBookCoverWithFallback(
+  key: string | null | undefined,
+  title: string,
+  author: string,
+  width = 400
+): Promise<string> {
+  // Try primary key first
+  if (key) {
+    const primaryCover = getBookCover(key, width);
+    if (primaryCover !== PLACEHOLDER_COVER) {
+      return primaryCover;
+    }
+  }
+
+  // Try Google Books API as fallback
+  const googleBooksCover = await fetchGoogleBooksCover(title, author);
+  if (googleBooksCover) {
+    return googleBooksCover;
+  }
+
+  // Return placeholder if all else fails
   return PLACEHOLDER_COVER;
 }
