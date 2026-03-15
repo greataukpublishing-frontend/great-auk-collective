@@ -36,9 +36,17 @@ export default function BookstorePage() {
       supabase.from("categories").select("name").order("name"),
     ]);
 
-    if (booksRes.data) setBooks(booksRes.data);
-    if (categoriesRes.data) {
-      setCategories(["All", ...categoriesRes.data.map((c) => c.name)]);
+    if (booksRes.data) {
+      setBooks(booksRes.data);
+      // Build categories from actual books as fallback
+      const bookCats = [...new Set(booksRes.data.map((b: any) => b.category).filter(Boolean))].sort();
+      if (categoriesRes.data && categoriesRes.data.length > 0) {
+        const dbCats = categoriesRes.data.map((c) => c.name);
+        const allCats = [...new Set([...dbCats, ...bookCats])].sort();
+        setCategories(["All", ...allCats]);
+      } else {
+        setCategories(["All", ...bookCats]);
+      }
     }
 
     setLoading(false);
