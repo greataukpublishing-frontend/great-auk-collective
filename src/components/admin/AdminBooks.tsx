@@ -39,6 +39,47 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [uploadingCoverId, setUploadingCoverId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cancelRef = useRef(false);
+  const [addDialog, setAddDialog] = useState(false);
+  const [newBook, setNewBook] = useState({
+    title: "", author_name: "", category: "Fiction", description: "",
+    editorial_description: "", amazon_link: "", cover_url: "", language: "English"
+  });
+  const [addingBook, setAddingBook] = useState(false);
+
+  const handleAddBook = async () => {
+    if (!newBook.title || !newBook.author_name) {
+      toast({ title: "Title and author are required", variant: "destructive" });
+      return;
+    }
+    setAddingBook(true);
+    // Auto-generate affiliate link if not provided
+    const amazonLink = newBook.amazon_link ||
+      `https://www.amazon.in/s?k=${encodeURIComponent(newBook.title + " " + newBook.author_name)}&tag=greakaukpubli-21`;
+    const { error } = await supabase.from("books").insert({
+      title: newBook.title,
+      author_name: newBook.author_name,
+      category: newBook.category,
+      description: newBook.description,
+      editorial_description: newBook.editorial_description,
+      amazon_link: amazonLink,
+      amazon_affiliate_url: amazonLink,
+      cover_url: newBook.cover_url || null,
+      language: newBook.language,
+      status: "approved",
+      featured: false,
+      format: ["paperback"],
+    });
+    setAddingBook(false);
+    if (error) {
+      toast({ title: "Failed to add book", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Book added successfully! ✅" });
+      setAddDialog(false);
+      setNewBook({ title: "", author_name: "", category: "Fiction", description: "",
+        editorial_description: "", amazon_link: "", cover_url: "", language: "English" });
+      fetchBooks();
+    }
+  };
 
   const filtered = books.filter(b => {
     const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -425,6 +466,62 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
           </SelectContent>
         </Select>
       </div>
+
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={() => setAddDialog(true)}
+          className="px-4 py-2 bg-accent text-accent-foreground rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+        >
+          + Add Book
+        </button>
+      </div>
+
+      {/* Add Book Dialog */}
+      {addDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="font-display text-xl font-bold mb-4">Add New Book</h2>
+            <div className="space-y-3">
+              <input placeholder="Title *" value={newBook.title} onChange={e => setNewBook({...newBook, title: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+              <input placeholder="Author Name *" value={newBook.author_name} onChange={e => setNewBook({...newBook, author_name: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+              <select value={newBook.category} onChange={e => setNewBook({...newBook, category: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background">
+                <option>Fiction</option>
+                <option>Self Help</option>
+                <option>AI</option>
+                <option>Non-Fiction</option>
+              </select>
+              <select value={newBook.language} onChange={e => setNewBook({...newBook, language: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background">
+                <option>English</option>
+                <option>Malayalam</option>
+                <option>Hindi</option>
+                <option>Tamil</option>
+              </select>
+              <textarea placeholder="Description" value={newBook.description} onChange={e => setNewBook({...newBook, description: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-20" />
+              <textarea placeholder="Editorial Description" value={newBook.editorial_description} onChange={e => setNewBook({...newBook, editorial_description: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-20" />
+              <input placeholder="Amazon Affiliate Link (auto-generated if empty)" value={newBook.amazon_link} onChange={e => setNewBook({...newBook, amazon_link: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+              <input placeholder="Cover Image URL (optional)" value={newBook.cover_url} onChange={e => setNewBook({...newBook, cover_url: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+            </div>
+            <div className="flex gap-3 mt-4">
+              <button onClick={handleAddBook} disabled={addingBook}
+                className="flex-1 py-2 bg-accent text-accent-foreground rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-50">
+                {addingBook ? "Adding..." : "Add Book"}
+              </button>
+              <button onClick={() => setAddDialog(false)}
+                className="flex-1 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-muted">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Books table */}
       <Card>
