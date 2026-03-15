@@ -232,6 +232,44 @@ export default function Navbar() {
             </Link>
           )}
 
+          <div className="border-t border-primary/80 mt-2 pt-2">
+            {!loading && user ? (
+              <>
+                <div className="px-6 py-2">
+                  <p className="text-xs text-primary-foreground/60">{user.email}</p>
+                  <p className="text-xs font-medium text-primary-foreground">
+                    {isAuthor ? "Author" : "Reader"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => { signOut(); setOpen(false); }}
+                  className="block w-full text-left px-6 py-3 text-sm font-medium text-gold"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/reader-login"
+                  onClick={() => setOpen(false)}
+                  className="block px-6 py-3 text-sm font-medium text-primary-foreground/80 hover:text-gold"
+                >
+                  Reader Login
+                </Link>
+                {isEnabled("self_publishing") && (
+                  <Link
+                    to="/author-login"
+                    onClick={() => setOpen(false)}
+                    className="block px-6 py-3 text-sm font-medium text-primary-foreground/80 hover:text-gold"
+                  >
+                    Author Login
+                  </Link>
+                )}
+              </>
+            )}
+          </div>
+
         </div>
       )}
 
