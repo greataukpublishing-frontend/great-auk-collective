@@ -39,17 +39,16 @@ export default function Navbar() {
 
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="relative flex flex-col items-center gap-0.5">
-            <img
-              src={greatAukLogo}
-              alt="Great Auk"
-              className={`h-9 w-9 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? "auk-playing" : ""}`}
-              onClick={(e) => { e.preventDefault(); toggleAukCall(); }}
-            />
-            {!aukPlaying && (
-              <span className="text-[10px] font-extrabold text-gold animate-pulse whitespace-nowrap leading-none">tap me 🎵</span>
-            )}
-          </div>
+          <img
+            src={greatAukLogo}
+            alt="Great Auk"
+            className={`h-10 w-10 object-contain cursor-pointer hover:scale-110 transition-transform ${aukPlaying ? "auk-playing" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              toggleAukCall();
+            }}
+            title="Click to hear the Great Auk"
+          />
           <span className="font-display text-xl font-bold text-primary-foreground tracking-wide">
             Great Auk <span className="text-gold">Publishing</span>
           </span>
