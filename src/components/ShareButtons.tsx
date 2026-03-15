@@ -71,9 +71,8 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
 
         {open && (
           <>
-            {/* Backdrop to close on outside click */}
             <div
-              className="fixed inset-0 z-40"
+              className="fixed inset-0 z-[999]"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -81,7 +80,21 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
               }}
             />
             <div
-              className="absolute top-full right-0 mt-1.5 z-50 w-44 p-1.5 rounded-lg shadow-lg border border-border bg-card animate-fade-in"
+              className="fixed z-[1000] w-48 p-2 rounded-xl shadow-2xl border border-border bg-card"
+              style={{
+                top: "auto",
+                bottom: "auto",
+              }}
+              ref={(el) => {
+                if (el) {
+                  const btn = el.parentElement?.querySelector("button");
+                  if (btn) {
+                    const rect = btn.getBoundingClientRect();
+                    el.style.top = `${rect.bottom + 8}px`;
+                    el.style.left = `${Math.min(rect.left, window.innerWidth - 200)}px`;
+                  }
+                }
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               {shareLinks.map((link) => (
@@ -89,10 +102,10 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
                   key={link.name}
                   type="button"
                   onClick={(e) => handleClick(e, link)}
-                  className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-card-foreground rounded-md hover:bg-secondary transition-colors"
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-card-foreground rounded-lg hover:bg-accent/10 hover:text-accent transition-colors"
                 >
-                  <link.icon size={15} className="text-muted-foreground" />
-                  <span>{link.name}</span>
+                  <link.icon size={16} className="text-muted-foreground" />
+                  <span className="font-medium">{link.name}</span>
                 </button>
               ))}
             </div>
