@@ -165,7 +165,7 @@ export default function BookDetailPage() {
       <Navbar />
       <div className="bg-muted border-b border-border">
         <div className="container mx-auto px-4 py-2 text-center text-xs text-muted-foreground">
-          As an Amazon Associate, I earn from qualifying purchases.
+          As an Amazon Associate, we earn from qualifying purchases.
         </div>
       </div>
       <div className="container mx-auto px-4 py-10 max-w-5xl">
@@ -189,7 +189,7 @@ export default function BookDetailPage() {
                 <img
                   src={getBookCover(book.cover_url)}
                   alt={`${book.title} by ${book.author_name}`}
-                  loading="eager"
+                  loading="lazy"
                   className={`w-full rounded-xl shadow-2xl transition-opacity duration-300 ${coverImageLoaded ? "opacity-100" : "opacity-0"}`}
                   onLoad={() => setCoverImageLoaded(true)}
                   onError={() => setCoverImageLoaded(true)}

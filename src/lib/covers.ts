@@ -36,9 +36,9 @@ export function getBookCover(key: string, width = 400): string {
         return url.toString();
       }
 
-      // Open Library URLs: use directly
+      // Open Library URLs: no longer supported, fallback to placeholder
       if (url.hostname.includes("openlibrary.org")) {
-        return url.toString();
+        return PLACEHOLDER_COVER;
       }
 
       // Only apply image transform params to backend storage objects.

@@ -69,7 +69,7 @@ export default function BookstorePage() {
       <Navbar />
       <div className="bg-muted border-b border-border">
         <div className="container mx-auto px-4 py-2 text-center text-xs text-muted-foreground">
-          As an Amazon Associate, I earn from qualifying purchases.
+          As an Amazon Associate, we earn from qualifying purchases.
         </div>
       </div>
 

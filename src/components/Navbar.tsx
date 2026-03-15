@@ -16,8 +16,6 @@ const baseNavLinks = [
   { label: "AI", to: "/bookstore?category=AI" },
   { label: "Fiction", to: "/bookstore?category=Fiction" },
   { label: "Self Help", to: "/bookstore?category=Self+Help" },
-  { label: "Self Publishing", to: "/publish", feature: "self_publishing" },
-  { label: "Membership", to: "/membership", feature: "membership" },
   { label: "About", to: "/about" },
 ];
 
