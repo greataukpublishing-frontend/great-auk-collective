@@ -13,6 +13,9 @@ import { useFeatureToggles } from "@/hooks/useFeatureToggle";
 const baseNavLinks = [
   { label: "Home", to: "/" },
   { label: "Bookstore", to: "/bookstore" },
+  { label: "AI Books", to: "/bookstore?category=AI" },
+  { label: "Fiction", to: "/bookstore?category=Fiction" },
+  { label: "Self Help", to: "/bookstore?category=Self+Help" },
   { label: "Self Publishing", to: "/publish", feature: "self_publishing" },
   { label: "Membership", to: "/membership", feature: "membership" },
   { label: "About", to: "/about" },
@@ -88,10 +91,7 @@ export default function Navbar() {
         {/* RIGHT SIDE */}
         <div className="hidden md:flex items-center gap-3">
 
-          {/* SEARCH */}
-          <Link to="/bookstore" className="p-2 rounded-full hover:bg-primary-foreground/10 transition-colors">
-            <Search className="w-6 h-6 text-primary-foreground/90 hover:text-gold transition-colors" />
-          </Link>
+
 
           {/* CART */}
           {isEnabled("cart") && (
