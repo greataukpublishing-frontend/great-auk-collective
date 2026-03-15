@@ -52,13 +52,9 @@ export default function ShareButtons({ title, bookId, compact = false, amazonUrl
     e.preventDefault();
     e.stopPropagation();
     if ("action" in link && link.action === "copy") {
-      navigator.clipboard.writeText(amazonUrl || bookUrl);
-      trackShare("copy_link", bookId, title);
-      toast({ title: "Link copied! 🔗", description: "Share this link with friends!" });
-    } else if ("action" in link && link.action === "copy") {
       navigator.clipboard.writeText(shareUrl);
       trackShare("copy_link", bookId, title);
-      toast({ title: "Amazon link copied! 🛒", description: "Share this to earn commission!" });
+      toast({ title: "Link copied! 🔗", description: "Share this link with friends!" });
     } else {
       trackShare(link.name, bookId, title);
       window.open(link.url, "_blank", "noopener,noreferrer,width=600,height=400");
