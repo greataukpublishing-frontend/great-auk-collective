@@ -250,13 +250,15 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link
-                  to="/reader-login"
-                  onClick={() => setOpen(false)}
-                  className="block px-6 py-3 text-sm font-medium text-primary-foreground/80 hover:text-gold"
-                >
-                  Reader Login
-                </Link>
+                <div className="px-6 py-3">
+                  <Link
+                    to="/reader-login"
+                    onClick={() => setOpen(false)}
+                    className="block w-full text-center py-3 rounded-md bg-gold text-gold-foreground font-semibold text-sm hover:opacity-90 transition-opacity"
+                  >
+                    Reader Login
+                  </Link>
+                </div>
                 {isEnabled("self_publishing") && (
                   <Link
                     to="/author-login"
