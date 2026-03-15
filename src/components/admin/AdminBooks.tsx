@@ -134,13 +134,13 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
     try {
       const fileName = `${coverDialog.id}-${Date.now()}.${file.type === "image/jpeg" ? "jpg" : "png"}`;
       const { error: uploadError, data } = await supabase.storage
-        .from("book-covers")
+        .from("covers")
         .upload(fileName, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
       const { data: publicUrlData } = supabase.storage
-        .from("book-covers")
+        .from("covers")
         .getPublicUrl(fileName);
 
       const publicUrl = publicUrlData.publicUrl;
