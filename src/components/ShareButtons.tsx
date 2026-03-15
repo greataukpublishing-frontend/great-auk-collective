@@ -24,6 +24,11 @@ export default function ShareButtons({ title, bookId, compact = false, amazonUrl
   const encodedAmazon = amazonUrl ? encodeURIComponent(amazonUrl) : "";
   const amazonTitle = encodeURIComponent(`Buy "${title}" on Amazon`);
 
+  // Use Amazon affiliate URL for all sharing if available
+  const shareUrl = amazonUrl || bookUrl;
+  const encodedShareUrl = encodeURIComponent(shareUrl);
+  const encodedShareTitle = encodeURIComponent(`Check out "${title}" — Buy on Amazon`);
+
   const shareLinks = [
     {
       name: "Copy Link",
@@ -34,18 +39,12 @@ export default function ShareButtons({ title, bookId, compact = false, amazonUrl
     {
       name: "WhatsApp",
       icon: MessageCircle,
-      url: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
+      url: `https://wa.me/?text=${encodedShareTitle}%20${encodedShareUrl}`,
     },
-    ...(amazonUrl ? [{
-      name: "Share Amazon",
-      icon: Link2,
-      action: "copy-amazon" as const,
-      url: amazonUrl,
-    }] : []),
     {
       name: "Facebook",
       icon: Facebook,
-      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}`,
     },
   ];
 
@@ -57,9 +56,9 @@ export default function ShareButtons({ title, bookId, compact = false, amazonUrl
       trackShare("copy_amazon", bookId, title);
       toast({ title: "Amazon link copied! 🛒", description: "Share this to earn commission when friends buy!" });
     } else if ("action" in link && link.action === "copy") {
-      navigator.clipboard.writeText(bookUrl);
+      navigator.clipboard.writeText(shareUrl);
       trackShare("copy_link", bookId, title);
-      toast({ title: "Link copied!", description: "Book link copied to clipboard." });
+      toast({ title: "Amazon link copied! 🛒", description: "Share this to earn commission!" });
     } else {
       trackShare(link.name, bookId, title);
       window.open(link.url, "_blank", "noopener,noreferrer,width=600,height=400");
