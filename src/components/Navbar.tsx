@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X, Search, ShoppingCart, User, BookOpen, LogOut, Heart, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ const baseNavLinks = [
 export default function Navbar() {
 
   const [open, setOpen] = useState(false);
+  const [searchParams] = useSearchParams();
   const location = useLocation();
   const aukPlaying = useAukPlaying();
   const { user, isAuthor, loading, signOut } = useAuth();
