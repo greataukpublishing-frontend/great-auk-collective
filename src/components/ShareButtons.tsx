@@ -81,7 +81,7 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
               }}
             />
             <div
-              className="absolute bottom-full right-0 mb-1.5 z-50 w-44 p-1.5 rounded-lg shadow-lg border border-border bg-card animate-fade-in"
+              className="absolute top-full right-0 mt-1.5 z-50 w-44 p-1.5 rounded-lg shadow-lg border border-border bg-card animate-fade-in"
               onClick={(e) => e.stopPropagation()}
             >
               {shareLinks.map((link) => (
