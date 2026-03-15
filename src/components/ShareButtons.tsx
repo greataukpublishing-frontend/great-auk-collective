@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Facebook, Link2, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackShare } from "@/lib/shareAnalytics";
