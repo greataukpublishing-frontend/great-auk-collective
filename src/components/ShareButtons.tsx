@@ -73,28 +73,10 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
           <>
             <div
               className="fixed inset-0 z-[999]"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setOpen(false);
-              }}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(false); }}
             />
             <div
-              className="fixed z-[1000] w-48 p-2 rounded-xl shadow-2xl border border-border bg-card"
-              style={{
-                top: "auto",
-                bottom: "auto",
-              }}
-              ref={(el) => {
-                if (el) {
-                  const btn = el.parentElement?.querySelector("button");
-                  if (btn) {
-                    const rect = btn.getBoundingClientRect();
-                    el.style.top = `${rect.bottom + 8}px`;
-                    el.style.left = `${Math.min(rect.left, window.innerWidth - 200)}px`;
-                  }
-                }
-              }}
+              className="absolute top-full right-0 mt-2 z-[1000] w-48 p-2 rounded-xl shadow-2xl border border-border bg-card"
               onClick={(e) => e.stopPropagation()}
             >
               {shareLinks.map((link) => (
