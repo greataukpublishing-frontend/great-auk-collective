@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Facebook, Link2, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackShare } from "@/lib/shareAnalytics";
+import ReactDOM from "react-dom";
 
 interface ShareButtonsProps {
   title: string;
@@ -13,6 +14,8 @@ const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
 export default function ShareButtons({ title, bookId, compact = false }: ShareButtonsProps) {
   const [open, setOpen] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
   const bookUrl = `${baseUrl}/book/${bookId}`;
   const encodedUrl = encodeURIComponent(bookUrl);
   const encodedTitle = encodeURIComponent(`Check out "${title}" on Great Auk Publishing!`);
@@ -58,18 +61,23 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (btnRef.current) {
+              const r = btnRef.current.getBoundingClientRect();
+              setPos({ top: r.bottom + 8, left: Math.min(r.left, window.innerWidth - 210) });
+            }
             setOpen((prev) => !prev);
           }}
           onMouseDown={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
+          ref={btnRef}
           className="p-2 rounded-full bg-card/90 text-muted-foreground hover:text-accent hover:bg-card shadow-sm transition-colors"
           aria-label="Share this book"
         >
           <Share2 size={15} />
         </button>
 
-        {open && (
+        {open && typeof document !== "undefined" && ReactDOM.createPortal(
           <>
             <div
               className="fixed inset-0 z-[9998]"
@@ -77,21 +85,7 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
             />
             <div
               className="fixed z-[9999] w-48 p-2 rounded-xl shadow-2xl border border-border bg-card"
-              style={(() => {
-                if (typeof document !== 'undefined') {
-                  const btn = document.activeElement as HTMLElement;
-                  const els = document.querySelectorAll('[aria-label="Share this book"]');
-                  let rect = { bottom: 100, left: 100 };
-                  els.forEach(el => {
-                    if (el.closest('.relative')) rect = el.getBoundingClientRect();
-                  });
-                  return {
-                    top: rect.bottom + 8,
-                    left: Math.min(rect.left, window.innerWidth - 210),
-                  };
-                }
-                return { top: 100, left: 100 };
-              })()}
+              style={{ top: pos.top, left: pos.left }}
               onClick={(e) => e.stopPropagation()}
             >
               {shareLinks.map((link) => (
@@ -106,7 +100,8 @@ export default function ShareButtons({ title, bookId, compact = false }: ShareBu
                 </button>
               ))}
             </div>
-          </>
+          </>,
+          document.body
         )}
       </div>
     );
