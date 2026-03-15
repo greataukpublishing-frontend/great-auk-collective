@@ -63,7 +63,11 @@ export default function Navbar() {
               key={link.to}
               to={link.to}
               className={`text-sm font-medium transition-colors ${
-                location.pathname === link.to
+                (link.category
+                  ? location.pathname === "/bookstore" && searchParams.get("category") === link.category
+                  : link.to === "/bookstore"
+                    ? location.pathname === "/bookstore" && !searchParams.get("category")
+                    : location.pathname === link.to)
                   ? "text-gold"
                   : "text-primary-foreground/80 hover:text-gold"
               }`}
