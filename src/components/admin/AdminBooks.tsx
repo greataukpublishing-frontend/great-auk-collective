@@ -95,7 +95,7 @@ const [addDialog, setAddDialog] = useState(false);
       amazon_affiliate_url: amazonLink,
       cover_url: newBook.cover_url || null,
       language: newBook.language,
-      status: "approved",
+      status: "published",
       featured: false,
       format: ["paperback"],
       asin: newBook.asin || null,
@@ -381,9 +381,9 @@ const [addDialog, setAddDialog] = useState(false);
     onRefresh();
   };
 
-  const statusColor = (s: string) => s === "approved" ? "default" : s === "pending" ? "secondary" : "destructive";
+  const statusColor = (s: string) => s === "published" ? "default" : s === "pending" ? "secondary" : "destructive";
   const pending = books.filter(b => b.status === "pending").length;
-  const approved = books.filter(b => b.status === "approved").length;
+  const publishedCount = books.filter(b => b.status === "published").length;
   const featured = books.filter(b => b.featured).length;
   const missingEditorialCount = books.filter(b => !b.editorial_description).length;
   const missingDescriptionCount = books.filter(b => !b.description || b.description.length < 100).length;
@@ -453,7 +453,7 @@ const [addDialog, setAddDialog] = useState(false);
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Total</p><p className="text-lg font-bold">{books.length}</p></CardContent></Card>
         <Card className="border-amber-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Pending Review</p><p className="text-lg font-bold text-amber-600">{pending}</p></CardContent></Card>
-        <Card className="border-emerald-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Approved</p><p className="text-lg font-bold text-emerald-600">{approved}</p></CardContent></Card>
+        <Card className="border-emerald-200"><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Published</p><p className="text-lg font-bold text-emerald-600">{publishedCount}</p></CardContent></Card>
         <Card className={missingCoverCount > 0 ? "border-red-200" : ""}><CardContent className="pt-4 pb-3 text-center"><p className="text-xs text-muted-foreground">Missing Covers</p><p className={`text-lg font-bold ${missingCoverCount > 0 ? "text-red-600" : ""}`}>{missingCoverCount}</p></CardContent></Card>
       </div>
 
@@ -475,7 +475,7 @@ const [addDialog, setAddDialog] = useState(false);
                   {b.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{b.description}</p>}
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <Button size="sm" variant="default" onClick={() => updateStatus(b.id, "approved")} className="gap-1">
+                  <Button size="sm" variant="default" onClick={() => updateStatus(b.id, "published")} className="gap-1">
                     <CheckCircle className="w-3.5 h-3.5" /> Approve
                   </Button>
                   <Button size="sm" variant="destructive" onClick={() => updateStatus(b.id, "rejected")} className="gap-1">
@@ -502,7 +502,7 @@ const [addDialog, setAddDialog] = useState(false);
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
+            <SelectItem value="published">Published</SelectItem>
             <SelectItem value="rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
@@ -652,8 +652,8 @@ const [addDialog, setAddDialog] = useState(false);
                         <Button size="sm" variant="ghost" onClick={() => openCoverDialog(b)} title="Upload or Set Cover" className="gap-1">
                           <ImageIcon className={`w-4 h-4 ${coverExists ? "text-muted-foreground" : "text-accent"}`} />
                         </Button>
-                        {b.status !== "approved" && (
-                          <Button size="sm" variant="ghost" onClick={() => updateStatus(b.id, "approved")} title="Approve">
+                        {b.status !== "published" && (
+                          <Button size="sm" variant="ghost" onClick={() => updateStatus(b.id, "published")} title="Approve">
                             <CheckCircle className="w-4 h-4 text-emerald-600" />
                           </Button>
                         )}

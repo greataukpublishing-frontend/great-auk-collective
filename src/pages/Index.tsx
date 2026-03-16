@@ -29,13 +29,13 @@ export default function HomePage() {
       supabase
         .from("books")
         .select("*")
-        .eq("status", "approved")
+        .eq("status", "published")
         .eq("featured", true)
         .limit(8),
       supabase
         .from("books")
         .select("*")
-        .eq("status", "approved")
+        .eq("status", "published")
         .order("created_at", { ascending: false })
         .limit(8),
     ]);
@@ -45,7 +45,7 @@ export default function HomePage() {
     const malayalamRes = await supabase
       .from("books")
       .select("*")
-      .eq("status", "approved")
+      .eq("status", "published")
       .eq("language", "Malayalam")
       .eq("featured", true)
       .limit(4);

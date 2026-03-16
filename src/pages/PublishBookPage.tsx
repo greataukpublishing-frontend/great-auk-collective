@@ -102,7 +102,7 @@ export default function PublishBookPage() {
 
       toast({
         title: "Book submitted!",
-        description: "Your book is now pending review. We'll notify you once it's approved.",
+        description: "Your book is now pending review. We'll notify you once it's published.",
       });
 
       navigate("/author-dashboard");

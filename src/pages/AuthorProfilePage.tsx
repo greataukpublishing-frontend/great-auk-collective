@@ -26,12 +26,12 @@ export default function AuthorProfilePage() {
       .eq("id", authorId)
       .maybeSingle();
 
-    // Fetch author's approved books
+    // Fetch author's published books
     const { data: booksData } = await supabase
       .from("books")
       .select("*")
       .eq("author_id", authorId)
-      .eq("status", "approved")
+      .eq("status", "published")
       .order("created_at", { ascending: false });
 
     setAuthor(profileData);

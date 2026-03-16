@@ -97,9 +97,9 @@ export default function AdminSubmissions({ submissions, onRefresh }: Props) {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => updateStatus(sub.id, "approved")}
+                        onClick={() => updateStatus(sub.id, "published")}
                       >
-                        <Check className="w-4 h-4 mr-1" /> Approve
+                        <Check className="w-4 h-4 mr-1" /> Publish
                       </Button>
                       <Button
                         size="sm"
@@ -143,7 +143,7 @@ export default function AdminSubmissions({ submissions, onRefresh }: Props) {
                         <td className="p-3 text-muted-foreground">{sub.category || "—"}</td>
                         <td className="p-3 text-muted-foreground">{sub.submitter_name}</td>
                         <td className="p-3">
-                          <Badge variant={sub.status === "approved" ? "default" : "secondary"}>
+                          <Badge variant={sub.status === "published" ? "default" : "secondary"}>
                             {sub.status}
                           </Badge>
                         </td>

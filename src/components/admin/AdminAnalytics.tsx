@@ -20,7 +20,7 @@ export default function AdminAnalytics({ books, orders, profiles, roles, categor
 
   // Books by status
   const statusData = [
-    { name: "Approved", value: books.filter(b => b.status === "approved").length },
+    { name: "Published", value: books.filter(b => b.status === "published").length },
     { name: "Pending", value: books.filter(b => b.status === "pending").length },
     { name: "Rejected", value: books.filter(b => b.status === "rejected").length },
   ].filter(s => s.value > 0);

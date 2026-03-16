@@ -13,8 +13,8 @@ interface Props {
 export default function AdminContent({ books, onRefresh }: Props) {
   const { toast } = useToast();
   const featured = books.filter(b => b.featured);
-  const approved = books.filter(b => b.status === "approved");
-  const newest = [...approved].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 10);
+  const published = books.filter(b => b.status === "published");
+  const newest = [...published].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 10);
 
   const toggleFeatured = async (id: string, current: boolean) => {
     await supabase.from("books").update({ featured: !current }).eq("id", id);
@@ -58,7 +58,7 @@ export default function AdminContent({ books, onRefresh }: Props) {
       {/* New Releases */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2"><Eye className="w-5 h-5 text-primary" /> New Releases (Latest Approved)</CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2"><Eye className="w-5 h-5 text-primary" /> New Releases (Latest Published)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -76,7 +76,7 @@ export default function AdminContent({ books, onRefresh }: Props) {
                 </Button>
               </div>
             ))}
-            {newest.length === 0 && <p className="text-muted-foreground text-sm text-center py-4">No approved books yet.</p>}
+            {newest.length === 0 && <p className="text-muted-foreground text-sm text-center py-4">No published books yet.</p>}
           </div>
         </CardContent>
       </Card>

@@ -32,7 +32,7 @@ export default function BookstorePage() {
     setLoading(true);
 
     const [booksRes, categoriesRes] = await Promise.all([
-      fetchAllBooks({ status: "approved", orderBy: "featured", ascending: false }),
+      fetchAllBooks({ status: "published", orderBy: "featured", ascending: false }),
       supabase.from("categories").select("name").order("name"),
     ]);
 

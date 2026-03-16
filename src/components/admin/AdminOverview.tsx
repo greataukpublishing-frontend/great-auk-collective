@@ -16,7 +16,7 @@ interface Props {
 export default function AdminOverview({ books, profiles, orders, roles, onApprove, onReject, onNavigate }: Props) {
   const totalBooks = books.length;
   const pendingBooks = books.filter(b => b.status === "pending");
-  const approvedBooks = books.filter(b => b.status === "approved").length;
+  const publishedBooks = books.filter(b => b.status === "published").length;
   const totalUsers = profiles.length;
   const totalAuthors = roles.filter(r => r.role === "author").length;
   const totalRevenue = orders.reduce((s: number, o: any) => s + Number(o.amount), 0);
@@ -26,7 +26,7 @@ export default function AdminOverview({ books, profiles, orders, roles, onApprov
   const stats = [
     { label: "Total Books", value: totalBooks, icon: BookOpen, color: "text-primary" },
     { label: "Pending Approval", value: pendingBooks.length, icon: Eye, color: "text-amber-600" },
-    { label: "Approved Books", value: approvedBooks, icon: CheckCircle, color: "text-emerald-600" },
+    { label: "Published Books", value: publishedBooks, icon: CheckCircle, color: "text-emerald-600" },
     { label: "Total Users", value: totalUsers, icon: Users, color: "text-primary" },
     { label: "Authors", value: totalAuthors, icon: UserCheck, color: "text-primary" },
     { label: "Total Orders", value: orders.length, icon: ShoppingCart, color: "text-primary" },

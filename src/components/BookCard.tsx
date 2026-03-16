@@ -166,7 +166,7 @@ export default function BookCard({
                 }}
               >
                 <ExternalLink size={12} />
-                Check Price on Amazon
+                Buy on Amazon
               </a>
             </div>
           </div>

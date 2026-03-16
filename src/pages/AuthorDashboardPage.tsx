@@ -112,7 +112,7 @@ export default function AuthorDashboardPage() {
   const stats = [
     {
       label: "Books Published",
-      value: books.filter((b) => b.status === "approved").length.toString(),
+      value: books.filter((b) => b.status === "published").length.toString(),
       icon: BookOpen,
     },
     { label: "Total Sales", value: totalSales.toString(), icon: TrendingUp },
