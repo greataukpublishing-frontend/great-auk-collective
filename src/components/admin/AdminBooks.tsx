@@ -396,7 +396,7 @@ const [addDialog, setAddDialog] = useState(false);
           <h2 className="font-display text-2xl font-bold text-foreground">Book Management</h2>
           <p className="text-muted-foreground text-sm mt-1">Review manuscripts, approve, edit, feature, and manage all books</p>
         </div>
-        <div className="flex gap-2 shrink-0 flex-wrap">
+        <div className="flex gap-2 shrink-0 flex-wrap overflow-x-auto pb-1">
           {bulkGenerating && (
             <Button variant="destructive" onClick={cancelBulkGeneration} className="gap-2">
               <XCircle className="w-4 h-4" /> Stop
