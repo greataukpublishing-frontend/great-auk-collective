@@ -91,17 +91,19 @@ export default function BookCard({
 
           <div className="relative aspect-[2/3] overflow-hidden bg-muted">
             {!imageLoaded && (
-              <div className="absolute inset-0 bg-muted animate-pulse">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/40 to-transparent animate-[shimmer_1.5s_infinite]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-muted via-muted/80 to-muted animate-pulse">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_1s_ease-in-out_infinite]" />
+                <div className="absolute bottom-4 left-4 right-4 h-3 bg-white/10 rounded-full" />
+                <div className="absolute bottom-9 left-4 right-8 h-2 bg-white/10 rounded-full" />
               </div>
             )}
             <img
               src={currentCover}
               alt={`${title} by ${author}`}
-              loading="lazy"
+              loading="lazy" decoding="async"
               decoding="async"
               fetchPriority="high"
-              className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${imageLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"}`}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageLoaded(true)}
             />
