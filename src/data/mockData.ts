@@ -20,7 +20,7 @@ export const categories = [
   "All",
   "Fiction",
   "Classic Literature",
-  "Philosophy",
+  "Non-Fiction",
   "Science",
   "Mystery",
   "Historical Fiction",
