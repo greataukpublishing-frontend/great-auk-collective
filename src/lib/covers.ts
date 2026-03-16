@@ -119,9 +119,14 @@ export function getBookCover(key: string, width = 250): string {
 
       // Only apply image transform params to backend storage objects.
       if (url.pathname.includes("/storage/v1/object/")) {
+        // Optimization: use smaller widths for thumbnails, larger for details
         url.searchParams.set("width", String(width));
-        url.searchParams.set("quality", "50");
-      url.searchParams.set("format", "webp");      }
+        // Use high quality but optimized format
+        url.searchParams.set("quality", "75");
+        url.searchParams.set("format", "webp");
+        // Ensure resizing mode is efficient
+        url.searchParams.set("resize", "contain");
+      }
 
       return url.toString();
     } catch {

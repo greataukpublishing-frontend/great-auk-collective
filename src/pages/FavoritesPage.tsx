@@ -150,7 +150,7 @@ export default function FavoritesPage() {
                   <Link to={`/book/${book.id}`}>
                     <div className="relative aspect-[2/3] overflow-hidden bg-muted">
                       <img
-                        src={book.cover_url ? getBookCover(book.cover_url) : "/placeholder.svg"}
+                        src={book.cover_url ? getBookCover(book.cover_url, 300) : "/placeholder.svg"}
                         alt={book.title}
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

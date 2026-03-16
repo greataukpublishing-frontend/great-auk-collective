@@ -55,7 +55,8 @@ export default function BookDetailPage() {
     }
 
     setBook(bookData);
-    setCurrentCover(getBookCover(bookData.cover_url || ""));
+    // Request a higher resolution cover for the detail page
+    setCurrentCover(getBookCover(bookData.cover_url || "", 600));
 
     const { data: reviewsData } = await supabase
       .from("reviews")

@@ -12,6 +12,8 @@ import { Progress } from "@/components/ui/progress";
 import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, RefreshCw, FileText, Wand2, AlignLeft, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getBookCover } from "@/lib/covers";
+import { useState, useRef } from "react";
 
 interface Props {
   books: any[];
@@ -134,6 +136,27 @@ const [addDialog, setAddDialog] = useState(false);
     onRefresh();
   };
 
+  const approveAllPending = async () => {
+    const pendingIds = books.filter(b => b.status === "pending").map(b => b.id);
+    if (pendingIds.length === 0) {
+      toast({ title: "No pending books to approve" });
+      return;
+    }
+    
+    const { error } = await supabase
+      .from("books")
+      .update({ status: "published" })
+      .in("id", pendingIds);
+      
+    if (error) {
+      toast({ title: "Error approving all books", description: error.message, variant: "destructive" });
+      return;
+    }
+    
+    toast({ title: `Successfully approved ${pendingIds.length} books! ✨` });
+    onRefresh();
+  };
+
   const toggleFeatured = async (id: string, current: boolean) => {
     const { error } = await supabase.from("books").update({ featured: !current }).eq("id", id);
     if (error) {
@@ -194,8 +217,8 @@ const [addDialog, setAddDialog] = useState(false);
 
   const uploadCoverImage = async (file: File) => {
     if (!coverDialog) return;
-    if (!file.type.match(/image\/(jpeg|png)/)) {
-      toast({ title: "Invalid file type", description: "Only JPG and PNG files are allowed", variant: "destructive" });
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) {
+      toast({ title: "Invalid file type", description: "Only JPG, PNG and WebP files are allowed", variant: "destructive" });
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -205,7 +228,8 @@ const [addDialog, setAddDialog] = useState(false);
 
     setUploadingCoverId(coverDialog.id);
     try {
-      const fileName = `${coverDialog.id}-${Date.now()}.${file.type === "image/jpeg" ? "jpg" : "png"}`;
+      const fileExt = file.type === "image/jpeg" ? "jpg" : file.type === "image/webp" ? "webp" : "png";
+      const fileName = `${coverDialog.id}-${Date.now()}.${fileExt}`;
       const { error: uploadError, data } = await supabase.storage
         .from("covers")
         .upload(fileName, file, { upsert: true });
@@ -606,9 +630,16 @@ const [addDialog, setAddDialog] = useState(false);
                     </td>
                     <td className="p-3">
                       {coverExists ? (
-                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Has Cover</Badge>
+                        <div className="flex flex-col gap-1">
+                          <img 
+                            src={getBookCover(b.cover_url || b.cover_image_url || "", 60)} 
+                            className="w-8 h-12 object-cover rounded shadow-sm border border-border" 
+                            alt="Cover" 
+                          />
+                          <Badge variant="outline" className="text-[10px] py-0 px-1 bg-emerald-50 text-emerald-700 border-emerald-200">OK</Badge>
+                        </div>
                       ) : (
-                        <Badge variant="destructive" className="bg-red-100 text-red-700 border-red-300">No Cover</Badge>
+                        <Badge variant="destructive" className="text-[10px] py-0 px-1 bg-red-100 text-red-700 border-red-300">MISSING</Badge>
                       )}
                     </td>
                     <td className="p-3">
@@ -702,11 +733,11 @@ const [addDialog, setAddDialog] = useState(false);
           <DialogHeader><DialogTitle>Upload or Set Cover for {coverDialog?.title}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label>Upload Image (JPG/PNG, max 5MB)</Label>
+              <Label>Upload Image (JPG/PNG/WebP, max 5MB)</Label>
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/jpeg,image/png"
+                accept="image/jpeg,image/png,image/webp"
                 onChange={(e) => {
                   if (e.target.files?.[0]) {
                     uploadCoverImage(e.target.files[0]);
