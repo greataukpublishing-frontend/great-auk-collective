@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { getBookCover, getBookCover } from "@/lib/covers";
+import { getBookCover } from "@/lib/covers";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -55,7 +55,7 @@ export default function BookDetailPage() {
     }
 
     setBook(bookData);
-    setCurrentCover(bookData.cover_url || "");
+    setCurrentCover(getBookCover(bookData.cover_url || ""));
 
     const { data: reviewsData } = await supabase
       .from("reviews")
