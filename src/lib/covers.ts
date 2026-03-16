@@ -68,6 +68,26 @@ async function fetchGoogleBooksCover(title: string, author: string): Promise<str
   }
 }
 
+export function ensureAffiliateTag(url: string): string {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("amazon.")) {
+      u.searchParams.set("tag", "greakaukpubli-21");
+      return u.toString();
+    }
+  } catch {}
+  return url;
+}
+
+export function getAmazonCoverUrl(asin: string): string {
+  return "https://images-amazon.com/images/P/" + asin + ".01._SCLZZZZZZZ_.jpg";
+}
+
+export function buildAffiliateUrl(asin: string): string {
+  return "https://www.amazon.in/dp/" + asin + "?tag=greakaukpubli-21";
+}
+
 export function getBookCover(key: string, width = 400): string {
   // Local asset key
   if (coverMap[key]) return coverMap[key];
@@ -75,6 +95,11 @@ export function getBookCover(key: string, width = 400): string {
   if (key && key.startsWith("http")) {
     try {
       const url = new URL(key);
+
+      // Amazon CDN — serve directly
+      if (url.hostname.includes("images-amazon.com") || url.hostname.includes("m.media-amazon.com")) {
+        return key;
+      }
 
       // Google Books URLs: add high-resolution parameter
       if (url.hostname.includes("books.google.com")) {
@@ -89,7 +114,7 @@ export function getBookCover(key: string, width = 400): string {
 
       // Open Library URLs: no longer supported, fallback to placeholder
       if (url.hostname.includes("openlibrary.org")) {
-        return PLACEHOLDER_COVER;
+        return key;
       }
 
       // Only apply image transform params to backend storage objects.
