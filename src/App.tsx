@@ -60,7 +60,7 @@ const App = () => (
 
             {/* BOOKSTORE */}
             <Route path="/bookstore" element={<BookstorePage />} />
-            <Route path="/book/:id" element={<BookDetailPage />} />
+            <Route path="/book/:slug" element={<BookDetailPage />} />
 
             {/* PUBLISHING */}
             <Route path="/publish" element={<PublishPage />} />
