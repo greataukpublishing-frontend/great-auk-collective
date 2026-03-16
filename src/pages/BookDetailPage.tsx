@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { getBookCover, getBookCoverWithFallback } from "@/lib/covers";
+import { getBookCover, getBookCover } from "@/lib/covers";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -191,7 +191,7 @@ export default function BookDetailPage() {
                 <img
                   src={currentCover}
                   alt={`${book.title} by ${book.author_name}`}
-                  loading="lazy"
+                  loading="eager" fetchPriority="high" decoding="async"
                   className={`w-full rounded-xl shadow-2xl transition-opacity duration-300 ${coverImageLoaded ? "opacity-100" : "opacity-0"}`}
                   onLoad={() => setCoverImageLoaded(true)}
                   onError={() => setCoverImageLoaded(true)}
