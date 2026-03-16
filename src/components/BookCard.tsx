@@ -100,7 +100,7 @@ export default function BookCard({
             <img
               src={currentCover}
               alt={`${title} by ${author}`}
-              loading="lazy" decoding="async"
+               decoding="async"
               decoding="async"
               fetchPriority="high"
               className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${imageLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"}`}

@@ -88,7 +88,7 @@ export function buildAffiliateUrl(asin: string): string {
   return "https://www.amazon.in/dp/" + asin + "?tag=greakaukpubli-21";
 }
 
-export function getBookCover(key: string, width = 400): string {
+export function getBookCover(key: string, width = 250): string {
   // Local asset key
   if (coverMap[key]) return coverMap[key];
 
@@ -120,8 +120,8 @@ export function getBookCover(key: string, width = 400): string {
       // Only apply image transform params to backend storage objects.
       if (url.pathname.includes("/storage/v1/object/")) {
         url.searchParams.set("width", String(width));
-        url.searchParams.set("quality", "75");
-      }
+        url.searchParams.set("quality", "50");
+      url.searchParams.set("format", "webp");      }
 
       return url.toString();
     } catch {
@@ -138,7 +138,7 @@ export async function getBookCoverWithFallback(
   key: string | null | undefined,
   title: string,
   author: string,
-  width = 400
+  width = 250
 ): Promise<string> {
   // Try primary key first
   if (key) {
