@@ -31,7 +31,7 @@ export default function AuthorProfilePage() {
       .from("books")
       .select("*")
       .eq("author_id", authorId)
-      .eq("status", "published")
+      .eq("status", "approved")
       .order("created_at", { ascending: false });
 
     setAuthor(profileData);

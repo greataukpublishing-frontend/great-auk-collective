@@ -97,7 +97,7 @@ const [addDialog, setAddDialog] = useState(false);
       amazon_affiliate_url: amazonLink,
       cover_url: newBook.cover_url || null,
       language: newBook.language,
-      status: "published",
+      status: "approved",
       featured: false,
       format: ["paperback"],
       asin: newBook.asin || null,
@@ -145,7 +145,7 @@ const [addDialog, setAddDialog] = useState(false);
     
     const { error } = await supabase
       .from("books")
-      .update({ status: "published" })
+      .update({ status: "approved" })
       .in("id", pendingIds);
       
     if (error) {
@@ -405,9 +405,9 @@ const [addDialog, setAddDialog] = useState(false);
     onRefresh();
   };
 
-  const statusColor = (s: string) => s === "published" ? "default" : s === "pending" ? "secondary" : "destructive";
+  const statusColor = (s: string) => s === "approved" ? "default" : s === "pending" ? "secondary" : "destructive";
   const pending = books.filter(b => b.status === "pending").length;
-  const publishedCount = books.filter(b => b.status === "published").length;
+  const publishedCount = books.filter(b => b.status === "approved").length;
   const featured = books.filter(b => b.featured).length;
   const missingEditorialCount = books.filter(b => !b.editorial_description).length;
   const missingDescriptionCount = books.filter(b => !b.description || b.description.length < 100).length;
@@ -499,7 +499,7 @@ const [addDialog, setAddDialog] = useState(false);
                   {b.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{b.description}</p>}
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <Button size="sm" variant="default" onClick={() => updateStatus(b.id, "published")} className="gap-1">
+                  <Button size="sm" variant="default" onClick={() => updateStatus(b.id, "approved")} className="gap-1">
                     <CheckCircle className="w-3.5 h-3.5" /> Approve
                   </Button>
                   <Button size="sm" variant="destructive" onClick={() => updateStatus(b.id, "rejected")} className="gap-1">
@@ -526,7 +526,7 @@ const [addDialog, setAddDialog] = useState(false);
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="published">Published</SelectItem>
+            <SelectItem value="approved">Approved</SelectItem>
             <SelectItem value="rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
@@ -683,8 +683,8 @@ const [addDialog, setAddDialog] = useState(false);
                         <Button size="sm" variant="ghost" onClick={() => openCoverDialog(b)} title="Upload or Set Cover" className="gap-1">
                           <ImageIcon className={`w-4 h-4 ${coverExists ? "text-muted-foreground" : "text-accent"}`} />
                         </Button>
-                        {b.status !== "published" && (
-                          <Button size="sm" variant="ghost" onClick={() => updateStatus(b.id, "published")} title="Approve">
+                        {b.status !== "approved" && (
+                          <Button size="sm" variant="ghost" onClick={() => updateStatus(b.id, "approved")} title="Approve">
                             <CheckCircle className="w-4 h-4 text-emerald-600" />
                           </Button>
                         )}

@@ -13,7 +13,7 @@ interface Props {
 export default function AdminContent({ books, onRefresh }: Props) {
   const { toast } = useToast();
   const featured = books.filter(b => b.featured);
-  const published = books.filter(b => b.status === "published");
+  const published = books.filter(b => b.status === "approved");
   const newest = [...published].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 10);
 
   const toggleFeatured = async (id: string, current: boolean) => {
@@ -76,7 +76,7 @@ export default function AdminContent({ books, onRefresh }: Props) {
                 </Button>
               </div>
             ))}
-            {newest.length === 0 && <p className="text-muted-foreground text-sm text-center py-4">No published books yet.</p>}
+            {newest.length === 0 && <p className="text-muted-foreground text-sm text-center py-4">No approved books yet.</p>}
           </div>
         </CardContent>
       </Card>

@@ -45,7 +45,7 @@ export default function BookDetailPage() {
       .from("books")
       .select("*")
       .eq("slug", bookId)
-      .eq("status", "published")
+      .eq("status", "approved")
       .maybeSingle();
 
     if (!bookData) {

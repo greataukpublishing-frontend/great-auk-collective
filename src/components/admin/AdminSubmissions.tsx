@@ -1,105 +1,73 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Check, X, ExternalLink } from "lucide-react";
+import { Check, X, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {
-  submissions: any[];
-  onRefresh: () => void;
+  onNavigate: (section: string) => void;
 }
 
-export default function AdminSubmissions({ submissions, onRefresh }: Props) {
+export default function AdminSubmissions({ onNavigate }: Props) {
   const { toast } = useToast();
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchSubmissions();
+  }, []);
+
+  const fetchSubmissions = async () => {
+    const { data } = await supabase.from("book_submissions").select("*").order("created_at", { ascending: false });
+    setSubmissions(data || []);
+    setLoading(false);
+  };
 
   const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase
-      .from("book_submissions")
-      .update({ status })
-      .eq("id", id);
-
-    if (error) {
-      toast({ title: "Update failed", description: error.message, variant: "destructive" });
-    } else {
+    const { error } = await supabase.from("book_submissions").update({ status }).eq("id", id);
+    if (!error) {
       toast({ title: `Submission ${status}` });
-      onRefresh();
+      fetchSubmissions();
     }
   };
 
   const pendingSubs = submissions.filter(s => s.status === "pending");
   const reviewedSubs = submissions.filter(s => s.status !== "pending");
 
+  if (loading) return <div className="text-center py-8">Loading...</div>;
+
   return (
     <div className="space-y-6">
-      <div>
-         <h2 className="font-display text-2xl font-bold text-foreground">Book Restoration Submissions</h2>
-         <p className="text-muted-foreground text-sm mt-1">Manage books suggested by users for restoration</p>
-      </div>
-
-      {/* Pending Submissions */}
       {pendingSubs.length > 0 && (
-        <div>
-          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-            <Badge variant="secondary">{pendingSubs.length}</Badge>
-            Pending Review
-          </h3>
-          <div className="space-y-4">
+        <Card className="border-amber-200 bg-amber-50/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="w-5 h-5" />
+              Pending Submissions
+              <Badge variant="secondary">{pendingSubs.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             {pendingSubs.map((sub) => (
               <Card key={sub.id}>
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <Heart className="w-5 h-5 text-accent mt-1 flex-shrink-0" />
-                        <div className="flex-1">
-                          <h4 className="font-display font-semibold text-foreground text-lg">
-                            {sub.book_title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground mt-0.5">
-                            by {sub.author_name}
-                            {sub.year_published && ` (${sub.year_published})`}
-                          </p>
-                          
-                          {sub.category && (
-                            <Badge variant="outline" className="mt-2 text-xs">
-                              {sub.category}
-                            </Badge>
-                          )}
-                          
-                          <div className="mt-3 space-y-2">
-                            <div>
-                              <p className="text-xs font-medium text-foreground">Why restore this book:</p>
-                              <p className="text-sm text-muted-foreground mt-1">{sub.why_restore}</p>
-                            </div>
-                            
-                            {sub.source_link && (
-                              <a
-                                href={sub.source_link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-primary hover:underline flex items-center gap-1"
-                              >
-                                View Source <ExternalLink className="w-3 h-3" />
-                              </a>
-                            )}
-                          </div>
-
-                          <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
-                            <p>Submitted by: {sub.submitter_name} ({sub.submitter_email})</p>
-                            <p>Date: {new Date(sub.created_at).toLocaleDateString()}</p>
-                          </div>
-                        </div>
-                      </div>
+                <CardContent className="pt-6">
+                  <div className="space-y-3">
+                    <div>
+                      <p className="font-semibold">{sub.book_title}</p>
+                      <p className="text-sm text-muted-foreground">by {sub.author_name}</p>
+                      {sub.year_published && ` (${sub.year_published})`}
                     </div>
+                    <p className="text-sm">{sub.description}</p>
                     
                     <div className="flex gap-2">
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => updateStatus(sub.id, "published")}
+                        onClick={() => updateStatus(sub.id, "approved")}
                       >
-                        <Check className="w-4 h-4 mr-1" /> Publish
+                        <Check className="w-4 h-4 mr-1" /> Approve
                       </Button>
                       <Button
                         size="sm"
@@ -113,58 +81,27 @@ export default function AdminSubmissions({ submissions, onRefresh }: Props) {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
-      {/* Reviewed Submissions */}
       {reviewedSubs.length > 0 && (
-        <div>
-          <h3 className="font-semibold text-foreground mb-3">Reviewed Submissions</h3>
-          <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border text-left text-muted-foreground bg-muted/30">
-                      <th className="p-3 font-medium">Book Title</th>
-                      <th className="p-3 font-medium">Author</th>
-                      <th className="p-3 font-medium">Category</th>
-                      <th className="p-3 font-medium">Submitter</th>
-                      <th className="p-3 font-medium">Status</th>
-                      <th className="p-3 font-medium">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reviewedSubs.map((sub) => (
-                      <tr key={sub.id} className="border-b border-border/50">
-                        <td className="p-3 font-medium text-foreground">{sub.book_title}</td>
-                        <td className="p-3 text-muted-foreground">{sub.author_name}</td>
-                        <td className="p-3 text-muted-foreground">{sub.category || "—"}</td>
-                        <td className="p-3 text-muted-foreground">{sub.submitter_name}</td>
-                        <td className="p-3">
-                          <Badge variant={sub.status === "published" ? "default" : "secondary"}>
-                            {sub.status}
-                          </Badge>
-                        </td>
-                        <td className="p-3 text-muted-foreground">
-                          {new Date(sub.created_at).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {submissions.length === 0 && (
         <Card>
-          <CardContent className="p-10 text-center">
-            <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-muted-foreground">No book submissions yet.</p>
+          <CardHeader>
+            <CardTitle>Reviewed Submissions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {reviewedSubs.map((sub) => (
+              <div key={sub.id} className="flex items-center justify-between p-3 border rounded">
+                <div>
+                  <p className="font-medium">{sub.book_title}</p>
+                  <p className="text-sm text-muted-foreground">by {sub.author_name}</p>
+                </div>
+                <Badge variant={sub.status === "approved" ? "default" : "secondary"}>
+                  {sub.status}
+                </Badge>
+              </div>
+            ))}
           </CardContent>
         </Card>
       )}

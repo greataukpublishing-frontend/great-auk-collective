@@ -205,7 +205,7 @@ export default function AdminDashboardPage() {
             <>
               {tab === "overview" && (
                 <AdminOverview books={books} profiles={profiles} orders={orders} roles={roles}
-                  onApprove={(id) => updateBookStatus(id, "published")}
+                  onApprove={(id) => updateBookStatus(id, "approved")}
                   onReject={(id) => updateBookStatus(id, "rejected")}
                   onNavigate={navigate} />
               )}
