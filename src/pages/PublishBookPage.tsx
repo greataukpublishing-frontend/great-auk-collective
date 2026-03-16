@@ -214,7 +214,7 @@ export default function PublishBookPage() {
                     <option>Fiction</option>
                     <option>Non-Fiction</option>
                     <option>Science</option>
-                    <option>Philosophy</option>
+                    <option>Non-Fiction</option>
                     <option>Mystery</option>
                     <option>Romance</option>
                     <option>Biography</option>

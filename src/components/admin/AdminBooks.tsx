@@ -530,7 +530,7 @@ const [addDialog, setAddDialog] = useState(false);
               <select value={newBook.category} onChange={e => setNewBook({...newBook, category: e.target.value})}
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background">
                 <option>Fiction</option>
-                <option>Self Help</option>
+                <option>Self-Help</option>
                 <option>AI</option>
                 <option>Non-Fiction</option>
               </select>

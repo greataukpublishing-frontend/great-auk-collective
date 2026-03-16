@@ -32,9 +32,9 @@ const initialForm: FormData = {
 
 const categories = [
   "Literature & Fiction",
-  "Philosophy",
-  "Science & Natural History",
-  "History & Biography",
+  "Non-Fiction",
+  "Non-Fiction",
+  "Non-Fiction",
   "Poetry & Drama",
   "Religion & Theology",
   "Mathematics & Logic",
