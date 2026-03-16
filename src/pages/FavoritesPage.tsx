@@ -126,7 +126,8 @@ export default function FavoritesPage() {
             {favorites.map((fav) => {
               const book = fav.books;
               if (!book) return null;
-              const amazonUrl = book.amazon_affiliate_url || book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + (book.author_name || ""))}&tag=greakaukpubli-21`;
+              const rawUrl = book.amazon_affiliate_url || book.amazon_link || "https://www.amazon.in/s?k=" + encodeURIComponent(book.title + " " + (book.author_name || "")) + "&tag=greakaukpubli-21";
+          const amazonUrl = (() => { try { const u = new URL(rawUrl); if (u.hostname.includes("amazon.")) { u.searchParams.set("tag", "greakaukpubli-21"); return u.toString(); } } catch {} return rawUrl; })();
 
               return (
                 <div

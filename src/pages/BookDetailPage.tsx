@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { getBookCover } from "@/lib/covers";
+import { getBookCover, ensureAffiliateTag } from "@/lib/covers";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -160,7 +160,7 @@ export default function BookDetailPage() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  const amazonUrl = book.amazon_affiliate_url || book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}&tag=greakaukpubli-21`;
+  const amazonUrl = ensureAffiliateTag(book.amazon_affiliate_url || book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}&tag=greakaukpubli-21`);
 
   return (
     <div className="min-h-screen bg-background">

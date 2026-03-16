@@ -63,7 +63,7 @@ serve(async (req) => {
     const results: { id: string; isbn: string; status: string }[] = [];
 
     for (const book of books || []) {
-      const affiliateUrl = `https://www.amazon.in/s?k=${book.isbn}&tag=${AFFILIATE_TAG}`;
+      const affiliateUrl = `https://www.amazon.in/dp/${book.isbn}?tag=${AFFILIATE_TAG}`;
       
       const { error: updateError } = await adminClient
         .from("books")

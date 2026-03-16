@@ -70,7 +70,7 @@ export default function BookCard({
       setFavorited(true);
     }
   }
-  const amazonUrl = amazonAffiliateUrl || amazonLink || `https://www.amazon.in/s?k=${encodeURIComponent(title + " " + author)}&tag=greakaukpubli-21`;
+  const amazonUrl = ensureAffiliateTag(amazonAffiliateUrl || amazonLink || `https://www.amazon.in/s?k=${encodeURIComponent(title + " " + author)}&tag=greakaukpubli-21`);
 
   return (
     <div className="relative group block">

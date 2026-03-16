@@ -42,7 +42,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   
 const extractASIN = (url) => { const m = url.match(/(?:dp|gp\/product|ASIN)\/([A-Z0-9]{10})/i); return m ? m[1] : null; };
 const toAffiliateLink = (url, asin) => { const id = asin || extractASIN(url); if (id) return 'https://www.amazon.in/dp/' + id + '?tag=greakaukpubli-21'; try { const u = new URL(url); u.searchParams.set('tag', 'greakaukpubli-21'); return u.toString(); } catch { return url; } };
-const fetchBookDataFromGoogle = async (title, author) => { try { const res = await fetch('https://www.googleapis.com/books/v1/volumes?q=' + encodeURIComponent(title + ' ' + author) + '&maxResults=1'); const data = await res.json(); const info = data?.items?.[0]?.volumeInfo; if (!info) return null; const cover = (info?.imageLinks?.thumbnail || '').replace('http://','https://').replace('&edge=curl','') + '&fife=w600'; return { description: info?.description, cover }; } catch { return null; } };
+const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + asin + '.01._SCLZZZZZZZ_.jpg' : null;
 const [addDialog, setAddDialog] = useState(false);
   const [fetchingAmazon, setFetchingAmazon] = useState(false);
   const [newBook, setNewBook] = useState({
@@ -545,7 +545,7 @@ const [addDialog, setAddDialog] = useState(false);
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-20" />
               <textarea placeholder="Editorial Description" value={newBook.editorial_description} onChange={e => setNewBook({...newBook, editorial_description: e.target.value})}
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-20" />
-              <input placeholder="Paste Amazon link - cover and description auto-fill" value={newBook.amazon_link} onChange={async (e) => { const val = e.target.value; const asin = extractASIN(val); const aff = val ? toAffiliateLink(val, asin || undefined) : ""; setNewBook(prev => ({...prev, amazon_link: aff, asin: asin || prev.asin})); if (asin) { setFetchingAmazon(true); const d = await fetchBookDataFromGoogle(newBook.title, newBook.author_name); if (d) setNewBook(prev => ({...prev, cover_url: d.cover || prev.cover_url, description: d.description || prev.description})); setFetchingAmazon(false); } }}
+              <input placeholder="Paste Amazon link - cover and description auto-fill" value={newBook.amazon_link} onChange={(e) => { const val = e.target.value; const asin = extractASIN(val); const aff = val ? toAffiliateLink(val, asin || undefined) : ""; const amazonCover = getAmazonCover(asin || null); setNewBook(prev => ({...prev, amazon_link: aff, asin: asin || prev.asin, cover_url: amazonCover || prev.cover_url})); }}
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
               <input placeholder="Cover Image URL (optional)" value={newBook.cover_url} onChange={e => setNewBook({...newBook, cover_url: e.target.value})}
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
