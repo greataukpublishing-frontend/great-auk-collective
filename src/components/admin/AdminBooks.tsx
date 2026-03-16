@@ -42,9 +42,34 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [addDialog, setAddDialog] = useState(false);
   const [newBook, setNewBook] = useState({
     title: "", author_name: "", category: "Fiction", description: "",
-    editorial_description: "", amazon_link: "", cover_url: "", language: "English"
+    editorial_description: "", amazon_link: "", cover_url: "", language: "English",
+    asin: "", isbn: ""
   });
   const [addingBook, setAddingBook] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+
+  const handleSyncBooks = async () => {
+    setSyncing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("sync-books", {
+        body: {},
+      });
+      if (error) throw error;
+      toast({
+        title: "Sync Completed! ✨",
+        description: `Updated: ${data.updated}, Skipped: ${data.skipped}, Errors: ${data.errors}`,
+      });
+      onRefresh();
+    } catch (e: any) {
+      toast({
+        title: "Sync Failed",
+        description: e.message || "Unknown error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const handleAddBook = async () => {
     if (!newBook.title || !newBook.author_name) {
@@ -68,6 +93,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       status: "approved",
       featured: false,
       format: ["paperback"],
+      asin: newBook.asin || null,
+      isbn: newBook.isbn || null,
     });
     setAddingBook(false);
     if (error) {
@@ -76,7 +103,7 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
       toast({ title: "Book added successfully! ✅" });
       setAddDialog(false);
       setNewBook({ title: "", author_name: "", category: "Fiction", description: "",
-        editorial_description: "", amazon_link: "", cover_url: "", language: "English" });
+        editorial_description: "", amazon_link: "", cover_url: "", language: "English", asin: "", isbn: "" });
       fetchBooks();
     }
   };
@@ -382,6 +409,15 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
             )}
           </Button>
           <Button
+            onClick={handleSyncBooks}
+            disabled={syncing}
+            variant="outline"
+            className="gap-2 border-accent text-accent hover:bg-accent/10"
+          >
+            <RefreshCw className={`w-4 h-4 ${syncing ? "animate-spin" : ""}`} />
+            {syncing ? "Syncing Books..." : "Sync Books"}
+          </Button>
+          <Button
             onClick={generateAllEditorials}
             disabled={bulkGenerating || missingEditorialCount === 0}
             className="gap-2"
@@ -508,6 +544,12 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
               <input placeholder="Cover Image URL (optional)" value={newBook.cover_url} onChange={e => setNewBook({...newBook, cover_url: e.target.value})}
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+              <div className="grid grid-cols-2 gap-3">
+                <input placeholder="ASIN (optional)" value={newBook.asin} onChange={e => setNewBook({...newBook, asin: e.target.value})}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+                <input placeholder="ISBN (optional)" value={newBook.isbn} onChange={e => setNewBook({...newBook, isbn: e.target.value})}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+              </div>
             </div>
             <div className="flex gap-3 mt-4">
               <button onClick={handleAddBook} disabled={addingBook}
