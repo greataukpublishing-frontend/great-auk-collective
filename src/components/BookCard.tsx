@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { getBookCover, getBookCoverWithFallback } from "@/lib/covers";
+import { getBookCover } from "@/lib/covers";
 import { Star, Heart, ExternalLink } from "lucide-react";
 import ShareButtons from "@/components/ShareButtons";
 import BookVoting from "@/components/BookVoting";
@@ -38,14 +38,6 @@ export default function BookCard({
   const [favorited, setFavorited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [currentCover, setCurrentCover] = useState(getBookCover(coverImageUrl || cover));
-
-  useEffect(() => {
-    const loadCover = async () => {
-      const fallbackCover = await getBookCoverWithFallback(coverImageUrl || cover, title, author);
-      setCurrentCover(fallbackCover);
-    };
-    loadCover();
-  }, [cover, title, author]);
 
   useEffect(() => {
     checkFavorite();
@@ -108,7 +100,7 @@ export default function BookCard({
               alt={`${title} by ${author}`}
               loading="lazy"
               decoding="async"
-              fetchPriority="low"
+              fetchPriority="high"
               className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageLoaded(true)}
