@@ -37,10 +37,10 @@ const NAV_ITEMS = [
   { id: "content", label: "🏠 Homepage Content", icon: FileText },
   { id: "features", label: "⚙️ Feature Toggles", icon: ToggleRight },
   { id: "settings", label: "🔧 Settings", icon: Settings },
-  { id: "orders", label: "📦 Orders (Future)", icon: ShoppingCart },
-  { id: "submissions", label: "📝 Book Submissions (Future)", icon: Heart },
-  { id: "services", label: "💎 Premium Services (Future)", icon: Briefcase },
-  { id: "membership", label: "👑 Membership (Future)", icon: Crown },
+  { id: "orders", label: "📦 Orders", icon: ShoppingCart },
+  { id: "submissions", label: "📝 Book Submissions", icon: Heart },
+  { id: "services", label: "💎 Premium Services", icon: Briefcase },
+  { id: "membership", label: "👑 Membership", icon: Crown },
 ];
 
 export default function AdminDashboardPage() {
@@ -216,11 +216,11 @@ export default function AdminDashboardPage() {
               {tab === "orders" && <AdminOrders orders={orders} books={books} />}
               {tab === "categories" && <AdminCategories categories={categories} books={books} onRefresh={fetchAll} />}
               {tab === "reviews" && <AdminReviews reviews={reviews} books={books} onRefresh={fetchAll} />}
-              {tab === "submissions" && <AdminSubmissions submissions={submissions} onRefresh={fetchAll} />}
+              {tab === "submissions" && <AdminSubmissions submissions={submissions} onRefresh={fetchAll} onNavigate={navigate} />}
               {tab === "services" && <AdminServices services={services} serviceOrders={serviceOrders} onRefresh={fetchAll} />}
               {tab === "content" && <AdminContent books={books} onRefresh={fetchAll} />}
               {tab === "analytics" && <AdminAnalytics books={books} orders={orders} profiles={profiles} roles={roles} categories={categories} />}
-              {tab === "membership" && <AdminMembership onRefresh={fetchAll} />}
+              {tab === "membership" && <AdminMembership onRefresh={fetchAll} onNavigate={navigate} />}
               {tab === "amazon-clicks" && <AdminAmazonClicks />}
               {tab === "ai-costs" && <AdminAICosts />}
               {tab === "features" && <AdminFeatureToggles onRefresh={fetchAll} />}

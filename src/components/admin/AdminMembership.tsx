@@ -19,9 +19,10 @@ interface Plan {
 
 interface Props {
   onRefresh: () => void;
+  onNavigate: (section: string) => void;
 }
 
-export default function AdminMembership({ onRefresh }: Props) {
+export default function AdminMembership({ onRefresh, onNavigate }: Props) {
   const { toast } = useToast();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);

@@ -7,36 +7,24 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {
+  submissions: any[];
+  onRefresh: () => void;
   onNavigate: (section: string) => void;
 }
 
-export default function AdminSubmissions({ onNavigate }: Props) {
+export default function AdminSubmissions({ submissions, onRefresh, onNavigate }: Props) {
   const { toast } = useToast();
-  const [submissions, setSubmissions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchSubmissions();
-  }, []);
-
-  const fetchSubmissions = async () => {
-    const { data } = await supabase.from("book_submissions").select("*").order("created_at", { ascending: false });
-    setSubmissions(data || []);
-    setLoading(false);
-  };
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("book_submissions").update({ status }).eq("id", id);
     if (!error) {
       toast({ title: `Submission ${status}` });
-      fetchSubmissions();
+      onRefresh();
     }
   };
 
   const pendingSubs = submissions.filter(s => s.status === "pending");
   const reviewedSubs = submissions.filter(s => s.status !== "pending");
-
-  if (loading) return <div className="text-center py-8">Loading...</div>;
 
   return (
     <div className="space-y-6">
