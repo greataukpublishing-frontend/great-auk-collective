@@ -1,3 +1,5 @@
+import React from "react";
+import { Euro } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 
@@ -7,11 +9,21 @@ interface Props {
   profiles: any[];
   roles: any[];
   categories: any[];
+  onNavigate?: (tab: string) => void;
 }
 
 const COLORS = ["hsl(170,40%,20%)", "hsl(42,80%,55%)", "hsl(170,30%,35%)", "hsl(0,72%,51%)", "hsl(40,25%,60%)", "hsl(200,60%,40%)", "hsl(280,50%,50%)", "hsl(120,40%,40%)"];
 
-export default function AdminAnalytics({ books, orders, profiles, roles, categories }: Props) {
+export default function AdminAnalytics({ books, orders, profiles, roles, categories, onNavigate }: Props) {
+  const [aiLogs, setAiLogs] = React.useState<any[]>([]);
+  const [aiLoading, setAiLoading] = React.useState(true);
+  React.useEffect(() => {
+    import("@/integrations/supabase/client").then(({ supabase }) => {
+      supabase.from("ai_generation_logs").select("*").order("created_at", { ascending: false }).limit(100)
+        .then(({ data }) => { setAiLogs(data ?? []); setAiLoading(false); });
+    });
+  }, []);
+
   // Books by category
   const catData = categories.map(c => ({
     name: c.name,
@@ -135,6 +147,60 @@ export default function AdminAnalytics({ books, orders, profiles, roles, categor
             ) : <p className="text-muted-foreground text-sm text-center py-8">No data yet</p>}
           </CardContent>
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-display text-lg font-bold flex items-center gap-2">
+            <Euro className="w-5 h-5 text-accent" /> AI Generation Costs
+          </h3>
+          {onNavigate && (
+            <button onClick={() => onNavigate("ai-costs")} className="text-sm text-accent underline hover:opacity-80">
+              View Full AI Costs →
+            </button>
+          )}
+        </div>
+        {aiLoading ? <p className="text-muted-foreground text-sm">Loading AI costs...</p> : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <Card><CardContent className="pt-4 pb-3 text-center">
+                <p className="text-xs text-muted-foreground">Total Generations</p>
+                <p className="text-2xl font-bold">{aiLogs.length}</p>
+              </CardContent></Card>
+              <Card><CardContent className="pt-4 pb-3 text-center">
+                <p className="text-xs text-muted-foreground">Total Cost (EUR)</p>
+                <p className="text-2xl font-bold text-accent">€{aiLogs.reduce((s, l) => s + (l.cost_eur || 0), 0).toFixed(4)}</p>
+              </CardContent></Card>
+              <Card><CardContent className="pt-4 pb-3 text-center">
+                <p className="text-xs text-muted-foreground">Total Cost (USD)</p>
+                <p className="text-2xl font-bold">${aiLogs.reduce((s, l) => s + (l.cost_usd || 0), 0).toFixed(4)}</p>
+              </CardContent></Card>
+              <Card><CardContent className="pt-4 pb-3 text-center">
+                <p className="text-xs text-muted-foreground">Avg Per Generation</p>
+                <p className="text-2xl font-bold">€{aiLogs.length > 0 ? (aiLogs.reduce((s, l) => s + (l.cost_eur || 0), 0) / aiLogs.length).toFixed(4) : "0.0000"}</p>
+              </CardContent></Card>
+            </div>
+            {aiLogs.length > 0 && (
+              <Card>
+                <CardHeader><CardTitle className="text-base">Cost Per Day (EUR)</CardTitle></CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={Object.entries(aiLogs.reduce((acc: any, l) => {
+                      const d = new Date(l.created_at).toLocaleDateString("en-GB");
+                      acc[d] = (acc[d] || 0) + (l.cost_eur || 0);
+                      return acc;
+                    }, {})).map(([date, cost]) => ({ date, cost: Number((cost as number).toFixed(5)) }))}>
+                      <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                      <YAxis tick={{ fontSize: 10 }} />
+                      <Tooltip formatter={(v: any) => `€${Number(v).toFixed(5)}`} />
+                      <Bar dataKey="cost" fill="hsl(42,80%,55%)" radius={[4,4,0,0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
