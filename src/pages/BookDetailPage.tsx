@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getBookCover, ensureAffiliateTag } from "@/lib/covers";
 
 export default function BookDetailPage() {
-  const { slug } = useParams();
+  const { id } = useParams();
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -35,8 +35,8 @@ export default function BookDetailPage() {
   const isAuthor = user?.id === book?.author_id;
 
   useEffect(() => {
-    if (slug) fetchBook(slug);
-  }, [slug]);
+    if (id) fetchBook(id);
+  }, [id]);
 
   const fetchBook = async (bookId: string) => {
     setLoading(true);
@@ -44,7 +44,7 @@ export default function BookDetailPage() {
     const { data: bookData } = await supabase
       .from("books")
       .select("*")
-      .eq("slug", bookId)
+      .eq("id", bookId)
       .eq("status", "approved")
       .maybeSingle();
 
