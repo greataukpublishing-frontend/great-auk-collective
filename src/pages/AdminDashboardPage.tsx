@@ -22,12 +22,14 @@ import AdminContent from "@/components/admin/AdminContent";
 import AdminFeatureToggles from "@/components/admin/AdminFeatureToggles";
 import AdminSubmissions from "@/components/admin/AdminSubmissions";
 import AdminMembership from "@/components/admin/AdminMembership";
+import AdminAICosts from "@/components/admin/AdminAICosts";
 import AdminAmazonClicks from "@/components/admin/AdminAmazonClicks";
 
 const NAV_ITEMS = [
   { id: "overview", label: "📊 Overview", icon: LayoutDashboard },
   { id: "books", label: "📚 Books", icon: BookOpen },
   { id: "amazon-clicks", label: "🛒 Amazon Clicks", icon: MousePointerClick },
+  { id: "ai-costs", label: "💶 AI Costs", icon: MousePointerClick },
   { id: "analytics", label: "📈 Analytics", icon: BarChart3 },
   { id: "reviews", label: "⭐ Reviews", icon: MessageSquare },
   { id: "categories", label: "🏷️ Categories", icon: Tags },
@@ -220,6 +222,7 @@ export default function AdminDashboardPage() {
               {tab === "analytics" && <AdminAnalytics books={books} orders={orders} profiles={profiles} roles={roles} categories={categories} />}
               {tab === "membership" && <AdminMembership onRefresh={fetchAll} />}
               {tab === "amazon-clicks" && <AdminAmazonClicks />}
+              {tab === "ai-costs" && <AdminAICosts />}
               {tab === "features" && <AdminFeatureToggles onRefresh={fetchAll} />}
               {tab === "settings" && <AdminSettings settings={settings} onRefresh={fetchAll} />}
             </>
