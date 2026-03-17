@@ -83,6 +83,13 @@ serve(async (req) => {
     if (userError || !user) throw new HttpError("Unauthorized", 401);
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
+
+    // Load AI settings from platform_settings
+    const { data: settingsData } = await adminClient.from("platform_settings").select("key, value").in("key", ["ai_generator_model","ai_reviewer_model","ai_prompt_instructions","ai_monthly_limit_eur"]);
+    const getSetting = (key: string) => settingsData?.find((s: any) => s.key === key)?.value;
+    const GENERATOR_MODEL = getSetting("ai_generator_model") || "google/gemini-2.0-flash-001";
+    const REVIEWER_MODEL = getSetting("ai_reviewer_model") || "openai/gpt-4o-mini";
+    const extraInstructions = getSetting("ai_prompt_instructions") || "";
     const { data: roleData } = await adminClient.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle();
     if (!roleData) throw new HttpError("Admin access required", 403);
 
@@ -92,8 +99,8 @@ serve(async (req) => {
     const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
     if (!OPENROUTER_API_KEY) throw new HttpError("OPENROUTER_API_KEY is not configured", 500);
 
-    const GENERATOR_MODEL = "google/gemini-2.0-flash-001";
-    const REVIEWER_MODEL = "openai/gpt-4o-mini";
+    // Models loaded from platform_settings below
+    // Reviewer model loaded from platform_settings below
 
     // Step 1: Generate editorial with Gemini
     const generatorPrompt = `You are writing editorial book descriptions for a curated reading website called "Great Auk Publishing".
