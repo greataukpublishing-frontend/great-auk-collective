@@ -219,7 +219,7 @@ export default function AdminDashboardPage() {
               {tab === "submissions" && <AdminSubmissions submissions={submissions} onRefresh={fetchAll} onNavigate={navigate} />}
               {tab === "services" && <AdminServices services={services} serviceOrders={serviceOrders} onRefresh={fetchAll} />}
               {tab === "content" && <AdminContent books={books} onRefresh={fetchAll} />}
-              {tab === "analytics" && <AdminAnalytics books={books} orders={orders} profiles={profiles} roles={roles} categories={categories} />}
+              {tab === "analytics" && <AdminAnalytics books={books} orders={orders} profiles={profiles} roles={roles} categories={categories} onNavigate={navigate} />}
               {tab === "membership" && <AdminMembership onRefresh={fetchAll} onNavigate={navigate} />}
               {tab === "amazon-clicks" && <AdminAmazonClicks />}
               {tab === "ai-costs" && <AdminAICosts />}
