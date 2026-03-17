@@ -97,7 +97,7 @@ export default function BookCard({
                 <div className="absolute bottom-9 left-4 right-8 h-2 bg-white/10 rounded-full" />
               </div>
             )}
-            <img alt={`${book.title} by ${book.author_name}`}
+            <img alt={`${title} by ${author}`}
               src={currentCover}
               alt={`${title} by ${author}`}
                decoding="async"
