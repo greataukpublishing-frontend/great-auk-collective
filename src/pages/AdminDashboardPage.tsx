@@ -29,7 +29,7 @@ const NAV_ITEMS = [
   { id: "overview", label: "📊 Overview", icon: LayoutDashboard },
   { id: "books", label: "📚 Books", icon: BookOpen },
   { id: "amazon-clicks", label: "🛒 Amazon Clicks", icon: MousePointerClick },
-  { id: "ai-costs", label: "💶 AI Costs", icon: MousePointerClick },
+  { id: "ai-costs", label: "💶 AI Costs ", icon: MousePointerClick },
   { id: "analytics", label: "📈 Analytics", icon: BarChart3 },
   { id: "reviews", label: "⭐ Reviews", icon: MessageSquare },
   { id: "categories", label: "🏷️ Categories", icon: Tags },
