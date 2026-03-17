@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
             return (
               <button
                 key={item.id}
-                onClick={() => navigate(item.id)}
+                onClick={() => setTab(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-gold/20 text-gold"
