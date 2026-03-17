@@ -13,6 +13,7 @@ import { Search, CheckCircle, XCircle, Star, Pencil, Trash2, Upload, Sparkles, R
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getBookCover } from "@/lib/covers";
+import { getOptimizedImageUrl, getImageUrlForContext } from "@/lib/image-optimization";
 import { useState, useRef } from "react";
 
 interface Props {

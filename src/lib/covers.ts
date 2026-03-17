@@ -4,6 +4,7 @@ import bookCover3 from "@/assets/book-cover-3.jpg";
 import bookCover4 from "@/assets/book-cover-4.jpg";
 import bookCover5 from "@/assets/book-cover-5.jpg";
 import bookCover6 from "@/assets/book-cover-6.jpg";
+import { getOptimizedImageUrl, getImageUrlForContext, isSupabaseStorageUrl } from "./image-optimization";
 
 const coverMap: Record<string, string> = {
   "book-cover-1": bookCover1,
@@ -117,15 +118,9 @@ export function getBookCover(key: string, width = 250): string {
         return key;
       }
 
-      // Only apply image transform params to backend storage objects.
-      if (url.pathname.includes("/storage/v1/object/")) {
-        // Optimization: use smaller widths for thumbnails, larger for details
-        url.searchParams.set("width", String(width));
-        // Use high quality but optimized format
-        url.searchParams.set("quality", "75");
-        url.searchParams.set("format", "webp");
-        // Ensure resizing mode is efficient
-        url.searchParams.set("resize", "contain");
+      // Supabase Storage URLs: apply image transformations
+      if (isSupabaseStorageUrl(key)) {
+        return getOptimizedImageUrl(key, width);
       }
 
       return url.toString();
