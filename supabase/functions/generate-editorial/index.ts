@@ -149,7 +149,7 @@ Return ONLY the final description, no commentary.`;
     const totalTokens = generated.inputTokens + generated.outputTokens + reviewed.inputTokens + reviewed.outputTokens;
 
     // Log costs
-    await adminClient.from("ai_generation_logs").insert({
+    const { error: logError } = await adminClient.from("ai_generation_logs").insert({
       book_id,
       book_title: book.title,
       generator_model: GENERATOR_MODEL,
@@ -158,6 +158,8 @@ Return ONLY the final description, no commentary.`;
       cost_usd: totalCostUsd,
       cost_eur: totalCostEur,
     });
+
+    if (logError) console.error("Failed to log AI cost:", logError);
 
     // Save editorial
     const { error: updateError } = await adminClient.from("books").update({ editorial_description: finalEditorial }).eq("id", book_id);
