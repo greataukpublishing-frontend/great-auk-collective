@@ -31,6 +31,7 @@ export default function HomePage() {
         .select("*")
         .eq("status", "approved")
         .eq("featured", true)
+        .eq("language", "English")
         .limit(8),
       supabase
         .from("books")
