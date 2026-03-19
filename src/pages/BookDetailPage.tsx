@@ -161,7 +161,7 @@ export default function BookDetailPage() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  const amazonUrl = ensureAffiliateTag(book.amazon_affiliate_url || book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}&tag=greakaukpubli-21`);
+  const amazonUrl = ensureAffiliateTag(book.amazon_link || `https://www.amazon.in/s?k=${encodeURIComponent(book.title + " " + book.author_name)}&tag=greakaukpubli-21`);
 
   return (
     <div className="min-h-screen bg-background">
