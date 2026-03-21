@@ -47,11 +47,47 @@ const toAffiliateLink = (url, asin) => { const id = asin || extractASIN(url); if
 const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + asin + '.01._SCLZZZZZZZ_.jpg' : null;
 const [addDialog, setAddDialog] = useState(false);
   const [fetchingAmazon, setFetchingAmazon] = useState(false);
+  const [amazonSearchQuery, setAmazonSearchQuery] = useState("");
   const [newBook, setNewBook] = useState({
     title: "", author_name: "", category: "Fiction", description: "",
     editorial_description: "", amazon_link: "", cover_url: "", language: "English",
     asin: "", isbn: ""
   });
+
+  const handleSearchAmazon = async () => {
+    if (!amazonSearchQuery.trim()) {
+      toast({ title: "Please enter a title or ASIN", variant: "destructive" });
+      return;
+    }
+    setFetchingAmazon(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("fetch-amazon", {
+        body: { query: amazonSearchQuery },
+      });
+      if (error) throw error;
+      
+      setNewBook({
+        ...newBook,
+        title: data.title || newBook.title,
+        author_name: data.author || newBook.author_name,
+        description: data.description || newBook.description,
+        amazon_link: data.amazon_link || newBook.amazon_link,
+        cover_url: data.cover_image || newBook.cover_url,
+        asin: data.asin || newBook.asin,
+      });
+      
+      toast({ title: "Book details fetched from Amazon! ✨" });
+    } catch (e: any) {
+      toast({
+        title: "Amazon Search Failed",
+        description: e.message || "Unknown error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setFetchingAmazon(true); // Keeping it true as per original state if needed, but usually false
+      setFetchingAmazon(false);
+    }
+  };
   const [addingBook, setAddingBook] = useState(false);
   const [syncing, setSyncing] = useState(false);
 
@@ -546,6 +582,26 @@ const [addDialog, setAddDialog] = useState(false);
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="font-display text-xl font-bold mb-4">Add New Book</h2>
+            
+            <div className="flex gap-2 mb-4 p-3 bg-muted/30 rounded-lg border border-border/50">
+              <input 
+                placeholder="Search Amazon (Title or ASIN)..." 
+                value={amazonSearchQuery} 
+                onChange={e => setAmazonSearchQuery(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearchAmazon()}
+                className="flex-1 border border-border rounded-lg px-3 py-2 text-sm bg-background" 
+              />
+              <Button 
+                onClick={handleSearchAmazon} 
+                disabled={fetchingAmazon}
+                size="sm"
+                className="gap-1"
+              >
+                {fetchingAmazon ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
+                Search Amazon
+              </Button>
+            </div>
+
             <div className="space-y-3">
               <input placeholder="Title *" value={newBook.title} onChange={e => setNewBook({...newBook, title: e.target.value})}
                 className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
