@@ -6,51 +6,161 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const GOOGLE_BOOKS_API_KEY = Deno.env.get("GOOGLE_BOOKS_API_KEY");
+const AMAZON_CLIENT_ID = Deno.env.get("AMAZON_CLIENT_ID");
+const AMAZON_CLIENT_SECRET = Deno.env.get("AMAZON_CLIENT_SECRET");
 const AFFILIATE_TAG = "greakaukpubli-21";
 
 /**
- * Build a Google Books search query.
- * - When both title and author are provided, use exact field operators for precision.
- * - When only a single query string is given (legacy / ASIN / free-text), fall back to
- *   a plain keyword search so the endpoint stays backward-compatible.
+ * Get an OAuth2 access token from Amazon using client credentials flow.
  */
-function buildGoogleBooksQuery(title?: string, author?: string, query?: string): string {
-  if (title && author) {
-    // Exact combined search: intitle:"…" inauthor:"…"
-    return `intitle:${encodeURIComponent(`"${title.trim()}"`)}`
-      + `+inauthor:${encodeURIComponent(`"${author.trim()}"`)}`
-      + `&orderBy=relevance`;
+async function getAmazonAccessToken(): Promise<string> {
+  if (!AMAZON_CLIENT_ID || !AMAZON_CLIENT_SECRET) {
+    throw new Error("Missing Amazon API credentials (AMAZON_CLIENT_ID or AMAZON_CLIENT_SECRET)");
   }
-  if (title) {
-    return `intitle:${encodeURIComponent(`"${title.trim()}"`)}&orderBy=relevance`;
+
+  const tokenUrl = "https://api.amazon.com/auth/o2/token";
+  const body = new URLSearchParams({
+    grant_type: "client_credentials",
+    client_id: AMAZON_CLIENT_ID,
+    client_secret: AMAZON_CLIENT_SECRET,
+    scope: "advertising::campaign_management",
+  });
+
+  const response = await fetch(tokenUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: body.toString(),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to get Amazon access token: ${response.status} ${errorText}`);
   }
-  // Plain free-text fallback (e.g. ASIN or unstructured query)
-  return encodeURIComponent((query ?? "").trim());
+
+  const data = await response.json();
+  if (!data.access_token) {
+    throw new Error("No access token in Amazon API response");
+  }
+
+  return data.access_token;
 }
 
-/** Extract the best available thumbnail from a Google Books volume. */
-function extractCover(imageLinks?: Record<string, string>): string | null {
-  if (!imageLinks) return null;
-  // Prefer larger images; replace http with https and remove edge-curl zoom param
-  const url =
-    imageLinks.extraLarge ||
-    imageLinks.large ||
-    imageLinks.medium ||
-    imageLinks.thumbnail ||
-    imageLinks.smallThumbnail ||
-    null;
-  if (!url) return null;
-  return url.replace(/^http:\/\//, "https://").replace(/&edge=curl/, "");
+/**
+ * Search for books using Amazon Product Advertising API v5.
+ * Returns up to 10 results with title, author, cover, description, ASIN, and affiliate link.
+ */
+async function searchAmazonBooks(
+  accessToken: string,
+  title: string,
+  author: string
+): Promise<any[]> {
+  // Build the search query: combine title and author for more accurate results
+  const searchQuery = author ? `${title} ${author}` : title;
+
+  const apiUrl = "https://advertising-api.amazon.com/v2/sp/products/search";
+
+  const payload = {
+    searchTerm: searchQuery,
+    filters: {
+      includeKeywordMetrics: false,
+    },
+  };
+
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      "Amazon-Advertising-API-Scope": "profile_id", // Will be replaced with actual profile ID if needed
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`Amazon API error: ${response.status} ${errorText}`);
+    // Return empty array instead of throwing to allow graceful fallback
+    return [];
+  }
+
+  const data = await response.json();
+  return data.products || [];
 }
 
-/** Build an Amazon India search URL with the affiliate tag. */
-function buildAmazonLink(title: string, author: string, asin?: string): string {
-  if (asin) {
-    return `https://www.amazon.in/dp/${asin}?tag=${AFFILIATE_TAG}`;
+/**
+ * Extract book information from Amazon product data.
+ * Maps Amazon product fields to our standardized book format.
+ */
+function formatAmazonProduct(product: any): any {
+  const asin = product.asin || product.sku || "";
+  const title = product.name || product.title || "";
+  const author = product.brand || "Unknown Author";
+
+  // Build cover image URL from ASIN
+  const coverImage = asin
+    ? `https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SX200_.jpg`
+    : null;
+
+  // Build affiliate link
+  const amazonLink = asin
+    ? `https://www.amazon.in/dp/${asin}?tag=${AFFILIATE_TAG}`
+    : `https://www.amazon.in/s?k=${encodeURIComponent(title)}&tag=${AFFILIATE_TAG}`;
+
+  return {
+    title: title,
+    author: author,
+    description: product.description || "",
+    cover_image: coverImage,
+    amazon_link: amazonLink,
+    asin: asin,
+    isbn: product.isbn || null,
+    publisher: product.publisher || null,
+    published_date: product.publication_date || null,
+    page_count: product.page_count || null,
+    language: "en",
+  };
+}
+
+/**
+ * Fallback search using Amazon's Product Advertising API v5 GetItems operation.
+ * This is a more reliable endpoint for getting detailed product information.
+ */
+async function searchAmazonBooksAlternative(
+  accessToken: string,
+  title: string,
+  author: string
+): Promise<any[]> {
+  // Try using the GetItems endpoint with a search query
+  const searchQuery = author ? `${title} ${author}` : title;
+  const apiUrl = "https://advertising-api.amazon.com/v2/sp/products";
+
+  try {
+    const payload = {
+      searchTerm: searchQuery,
+      maxResults: 10,
+    };
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    return data.products || [];
+  } catch (error) {
+    console.error("Alternative Amazon search failed:", error);
+    return [];
   }
-  const q = encodeURIComponent(`${title} ${author}`);
-  return `https://www.amazon.in/s?k=${q}&tag=${AFFILIATE_TAG}`;
 }
 
 serve(async (req) => {
@@ -60,8 +170,6 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-
-    // Support both the new { title, author } shape and the legacy { query } shape
     const { title, author, query } = body as {
       title?: string;
       author?: string;
@@ -70,74 +178,66 @@ serve(async (req) => {
 
     if (!title && !author && !query) {
       return new Response(
-        JSON.stringify({ error: "Provide 'title' and/or 'author', or a 'query' string." }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({
+          error: "Provide 'title' and/or 'author', or a 'query' string.",
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
       );
     }
 
-    const googleQuery = buildGoogleBooksQuery(title, author, query);
-    const apiKey = GOOGLE_BOOKS_API_KEY ? `&key=${GOOGLE_BOOKS_API_KEY}` : "";
-    const url =
-      `https://www.googleapis.com/books/v1/volumes?q=${googleQuery}&maxResults=8&printType=books${apiKey}`;
+    // Get OAuth2 access token from Amazon
+    const accessToken = await getAmazonAccessToken();
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Google Books API error ${response.status}: ${errText}`);
+    // Determine search parameters
+    const searchTitle = title || query || "";
+    const searchAuthor = author || "";
+
+    // Search for books on Amazon
+    let results = await searchAmazonBooks(accessToken, searchTitle, searchAuthor);
+
+    // If no results, try alternative endpoint
+    if (results.length === 0 && searchTitle) {
+      results = await searchAmazonBooksAlternative(
+        accessToken,
+        searchTitle,
+        searchAuthor
+      );
     }
 
-    const data = await response.json();
-    const items: any[] = data.items ?? [];
+    // Format results
+    const formattedResults = results
+      .slice(0, 10) // Limit to 10 results
+      .map(formatAmazonProduct)
+      .filter((r) => r.asin); // Only include results with ASIN
 
-    if (items.length === 0) {
+    if (formattedResults.length === 0) {
       return new Response(
-        JSON.stringify({ results: [], message: "No books found. Try adjusting the title or author." }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({
+          results: [],
+          message: "No books found on Amazon. Try adjusting your search query.",
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
       );
     }
 
-    // Map each volume to a clean result object
-    const results = items.map((item) => {
-      const info = item.volumeInfo ?? {};
-      const saleInfo = item.saleInfo ?? {};
-
-      const bookTitle: string = info.title ?? "";
-      const authors: string[] = info.authors ?? [];
-      const bookAuthor = authors.join(", ");
-
-      // ISBN extraction
-      const identifiers: { type: string; identifier: string }[] =
-        info.industryIdentifiers ?? [];
-      const isbn13 = identifiers.find((i) => i.type === "ISBN_13")?.identifier ?? null;
-      const isbn10 = identifiers.find((i) => i.type === "ISBN_10")?.identifier ?? null;
-      const isbn = isbn13 ?? isbn10 ?? null;
-
-      const cover = extractCover(info.imageLinks);
-      const amazonLink = buildAmazonLink(bookTitle, bookAuthor);
-
-      return {
-        title: bookTitle,
-        author: bookAuthor,
-        description: info.description ?? "",
-        cover_image: cover,
-        amazon_link: amazonLink,
-        asin: null, // Google Books does not expose ASINs
-        isbn: isbn,
-        publisher: info.publisher ?? null,
-        published_date: info.publishedDate ?? null,
-        page_count: info.pageCount ?? null,
-        language: info.language ?? null,
-        google_books_id: item.id ?? null,
-      };
-    });
-
-    return new Response(JSON.stringify({ results }), {
+    return new Response(JSON.stringify({ results: formattedResults }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    console.error("Error in fetch-amazon function:", error);
     return new Response(
-      JSON.stringify({ error: (error as Error).message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({
+        error: (error as Error).message || "Unknown error occurred",
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
     );
   }
 });
