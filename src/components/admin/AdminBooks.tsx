@@ -45,9 +45,11 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
 const extractASIN = (url) => { const m = url.match(/(?:dp|gp\/product|ASIN)\/([A-Z0-9]{10})/i); return m ? m[1] : null; };
 const toAffiliateLink = (url, asin) => { const id = asin || extractASIN(url); if (id) return 'https://www.amazon.in/dp/' + id + '?tag=greakaukpubli-21'; try { const u = new URL(url); u.searchParams.set('tag', 'greakaukpubli-21'); return u.toString(); } catch { return url; } };
 const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + asin + '.01._SCLZZZZZZZ_.jpg' : null;
-const [addDialog, setAddDialog] = useState(false);
+  const [addDialog, setAddDialog] = useState(false);
   const [fetchingAmazon, setFetchingAmazon] = useState(false);
   const [amazonSearchQuery, setAmazonSearchQuery] = useState("");
+  const [amazonSearchResults, setAmazonSearchResults] = useState<any[]>([]);
+  const [selectedAmazonResult, setSelectedAmazonResult] = useState<any>(null);
   const [newBook, setNewBook] = useState({
     title: "", author_name: "", category: "Fiction", description: "",
     editorial_description: "", amazon_link: "", cover_url: "", language: "English",
@@ -56,37 +58,58 @@ const [addDialog, setAddDialog] = useState(false);
 
   const handleSearchAmazon = async () => {
     if (!amazonSearchQuery.trim()) {
-      toast({ title: "Please enter a title or ASIN", variant: "destructive" });
+      toast({ title: "Please enter a title or author name", variant: "destructive" });
       return;
     }
     setFetchingAmazon(true);
+    setAmazonSearchResults([]);
+    setSelectedAmazonResult(null);
     try {
+      // Parse the query to extract title and author if possible
+      // Format: "Title by Author" or just "Title"
+      const parts = amazonSearchQuery.split(" by ");
+      const title = parts[0].trim();
+      const author = parts[1]?.trim() || "";
+      
       const { data, error } = await supabase.functions.invoke("fetch-amazon", {
-        body: { query: amazonSearchQuery },
+        body: { title, author, query: amazonSearchQuery },
       });
       if (error) throw error;
       
-      setNewBook({
-        ...newBook,
-        title: data.title || newBook.title,
-        author_name: data.author || newBook.author_name,
-        description: data.description || newBook.description,
-        amazon_link: data.amazon_link || newBook.amazon_link,
-        cover_url: data.cover_image || newBook.cover_url,
-        asin: data.asin || newBook.asin,
-      });
-      
-      toast({ title: "Book details fetched from Amazon! ✨" });
+      const results = data.results || [];
+      if (results.length === 0) {
+        toast({ title: "No books found", description: "Try adjusting your search query", variant: "destructive" });
+        setAmazonSearchResults([]);
+      } else {
+        setAmazonSearchResults(results);
+        toast({ title: `Found ${results.length} book(s)`, description: "Select the correct one from the list below" });
+      }
     } catch (e: any) {
       toast({
         title: "Amazon Search Failed",
         description: e.message || "Unknown error occurred",
         variant: "destructive",
       });
+      setAmazonSearchResults([]);
     } finally {
-      setFetchingAmazon(true); // Keeping it true as per original state if needed, but usually false
       setFetchingAmazon(false);
     }
+  };
+
+  const handleSelectAmazonResult = (result: any) => {
+    setSelectedAmazonResult(result);
+    setNewBook({
+      ...newBook,
+      title: result.title || newBook.title,
+      author_name: result.author || newBook.author_name,
+      description: result.description || newBook.description,
+      amazon_link: result.amazon_link || newBook.amazon_link,
+      cover_url: result.cover_image || newBook.cover_url,
+      asin: result.asin || newBook.asin,
+      isbn: result.isbn || newBook.isbn,
+    });
+    toast({ title: "Book selected! ✅", description: "Form has been auto-filled. Review and adjust as needed." });
+    setAmazonSearchResults([]);
   };
   const [addingBook, setAddingBook] = useState(false);
   const [syncing, setSyncing] = useState(false);
@@ -147,7 +170,7 @@ const [addDialog, setAddDialog] = useState(false);
       setAddDialog(false);
       setNewBook({ title: "", author_name: "", category: "Fiction", description: "",
         editorial_description: "", amazon_link: "", cover_url: "", language: "English", asin: "", isbn: "" });
-      fetchBooks();
+      onRefresh();
     }
   };
 
@@ -350,18 +373,12 @@ const [addDialog, setAddDialog] = useState(false);
       } catch {
         failCount++;
       }
-      // 1-second delay between requests to avoid API rate limits
-      if (i < booksWithout.length - 1 && !cancelRef.current) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
     }
 
-    const wasCancelled = cancelRef.current;
     setBulkGenerating(false);
-    cancelRef.current = false;
     toast({
-      title: wasCancelled ? "Generation cancelled" : "Bulk generation complete",
-      description: `${successCount} succeeded, ${failCount} failed${wasCancelled ? " (cancelled)" : ""}.`,
+      title: "Bulk generation complete",
+      description: `Success: ${successCount}, Failed: ${failCount}`,
     });
     onRefresh();
   };
@@ -371,73 +388,37 @@ const [addDialog, setAddDialog] = useState(false);
   };
 
   const generateDescriptions = async () => {
+    const booksWithout = books.filter(b => !b.description || b.description.length < 100);
+    if (booksWithout.length === 0) {
+      toast({ title: "All books already have descriptions" });
+      return;
+    }
+    cancelRef.current = false;
     setDescGenerating(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-book-descriptions", {
-        body: {},
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      toast({
-        title: "Book descriptions generated successfully.",
-        description: `${data?.results?.length ?? 0} book(s) processed.`,
-      });
-      onRefresh();
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      toast({ title: "Description generation failed", description: message, variant: "destructive" });
-    } finally {
-      setDescGenerating(false);
-    }
-  };
+    setBulkProgress({ current: 0, total: booksWithout.length });
+    let successCount = 0;
+    let failCount = 0;
 
-  const generateSingleDescription = async (bookId: string) => {
-    setGeneratingDescId(bookId);
-    try {
-      // The edge function processes books with short/empty descriptions.
-      // We call it with limit=1, but it picks from all books missing descriptions.
-      // For a targeted single-book generation we re-use the same function.
-      const { data, error } = await supabase.functions.invoke("generate-book-descriptions", {
-        body: {},
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      toast({ title: "Description generated ✨" });
-      onRefresh();
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Unknown error";
-      toast({ title: "Generation failed", description: message, variant: "destructive" });
-    } finally {
-      setGeneratingDescId(null);
+    for (let i = 0; i < booksWithout.length; i++) {
+      if (cancelRef.current) break;
+      setBulkProgress({ current: i + 1, total: booksWithout.length });
+      try {
+        const { data, error } = await supabase.functions.invoke("generate-description", {
+          body: { book_id: booksWithout[i].id },
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        successCount++;
+      } catch {
+        failCount++;
+      }
     }
-  };
 
-  const openDescriptionEdit = (book: any) => {
-    setDescriptionDialog(book);
-    setDescriptionText(book.description || "");
-  };
-
-  const saveDescription = async () => {
-    if (!descriptionDialog) return;
-    const { error } = await supabase.from("books").update({ description: descriptionText }).eq("id", descriptionDialog.id);
-    if (error) {
-      toast({ title: "Error saving description", description: error.message, variant: "destructive" });
-      return;
-    }
-    toast({ title: "Description updated" });
-    setDescriptionDialog(null);
-    onRefresh();
-  };
-
-  const saveEditorial = async () => {
-    if (!editorialDialog) return;
-    const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
-    if (error) {
-      toast({ title: "Error saving editorial", description: error.message, variant: "destructive" });
-      return;
-    }
-    toast({ title: "Editorial updated" });
-    setEditorialDialog(null);
+    setDescGenerating(false);
+    toast({
+      title: "Description generation complete",
+      description: `Success: ${successCount}, Failed: ${failCount}`,
+    });
     onRefresh();
   };
 
@@ -580,27 +561,69 @@ const [addDialog, setAddDialog] = useState(false);
       {/* Add Book Dialog */}
       {addDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="font-display text-xl font-bold mb-4">Add New Book</h2>
             
-            <div className="flex gap-2 mb-4 p-3 bg-muted/30 rounded-lg border border-border/50">
-              <input 
-                placeholder="Search Amazon (Title or ASIN)..." 
-                value={amazonSearchQuery} 
-                onChange={e => setAmazonSearchQuery(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSearchAmazon()}
-                className="flex-1 border border-border rounded-lg px-3 py-2 text-sm bg-background" 
-              />
-              <Button 
-                onClick={handleSearchAmazon} 
-                disabled={fetchingAmazon}
-                size="sm"
-                className="gap-1"
-              >
-                {fetchingAmazon ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-                Search Amazon
-              </Button>
+            {/* Search Section */}
+            <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border/50">
+              <label className="block text-sm font-medium mb-2">Search for a book</label>
+              <div className="flex gap-2">
+                <input 
+                  placeholder="e.g., 'The Great Gatsby by F. Scott Fitzgerald' or just 'The Great Gatsby'" 
+                  value={amazonSearchQuery} 
+                  onChange={e => setAmazonSearchQuery(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleSearchAmazon()}
+                  className="flex-1 border border-border rounded-lg px-3 py-2 text-sm bg-background" 
+                />
+                <Button 
+                  onClick={handleSearchAmazon} 
+                  disabled={fetchingAmazon}
+                  size="sm"
+                  className="gap-1 shrink-0"
+                >
+                  {fetchingAmazon ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
+                  Search
+                </Button>
+              </div>
             </div>
+
+            {/* Search Results Section */}
+            {amazonSearchResults.length > 0 && (
+              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h3 className="font-semibold text-sm mb-3 text-blue-900 dark:text-blue-100">Search Results - Click to select the correct book:</h3>
+                <div className="grid gap-3">
+                  {amazonSearchResults.map((result, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSelectAmazonResult(result)}
+                      className="flex gap-3 p-3 bg-background rounded-lg border border-border hover:border-accent hover:bg-accent/5 transition-all text-left"
+                    >
+                      {/* Cover Image */}
+                      {result.cover_image ? (
+                        <img 
+                          src={result.cover_image} 
+                          alt={result.title}
+                          className="w-12 h-16 object-cover rounded border border-border shrink-0"
+                        />
+                      ) : (
+                        <div className="w-12 h-16 bg-muted rounded border border-border flex items-center justify-center shrink-0 text-xs text-muted-foreground">No Image</div>
+                      )}
+                      {/* Book Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground line-clamp-2">{result.title}</p>
+                        <p className="text-xs text-muted-foreground">{result.author || 'Unknown Author'}</p>
+                        {result.publisher && <p className="text-xs text-muted-foreground mt-1">{result.publisher}</p>}
+                        {result.isbn && <p className="text-xs text-muted-foreground">ISBN: {result.isbn}</p>}
+                      </div>
+                      {/* Checkmark for selected */}
+                      {selectedAmazonResult?.google_books_id === result.google_books_id && (
+                        <CheckCircle className="w-5 h-5 text-green-600 shrink-0 mt-1" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="space-y-3">
               <input placeholder="Title *" value={newBook.title} onChange={e => setNewBook({...newBook, title: e.target.value})}
@@ -695,66 +718,40 @@ const [addDialog, setAddDialog] = useState(false);
                           <Badge variant="outline" className="text-[10px] py-0 px-1 bg-emerald-50 text-emerald-700 border-emerald-200">OK</Badge>
                         </div>
                       ) : (
-                        <Badge variant="destructive" className="text-[10px] py-0 px-1 bg-red-100 text-red-700 border-red-300">MISSING</Badge>
+                        <button onClick={() => openCoverDialog(b)} className="text-xs text-destructive hover:underline font-semibold">Add Cover</button>
+                      )}
+                    </td>
+                    <td className="p-3 text-xs">
+                      {hasDesc ? (
+                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Missing</Badge>
+                      )}
+                    </td>
+                    <td className="p-3 text-xs">
+                      {b.editorial_description ? (
+                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Missing</Badge>
                       )}
                     </td>
                     <td className="p-3">
-                      <div className="flex gap-1">
-                        {hasDesc ? (
-                          <>
-                            <Button size="sm" variant="ghost" onClick={() => generateSingleDescription(b.id)} disabled={generatingDescId === b.id} title="Regenerate Description">
-                              <RefreshCw className={`w-4 h-4 text-muted-foreground ${generatingDescId === b.id ? "animate-spin" : ""}`} />
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => openDescriptionEdit(b)} title="Edit Description">
-                              <AlignLeft className="w-4 h-4 text-muted-foreground" />
-                            </Button>
-                          </>
-                        ) : (
-                          <Button size="sm" variant="ghost" onClick={() => generateSingleDescription(b.id)} disabled={generatingDescId === b.id} title="Generate Description" className="gap-1">
-                            <AlignLeft className={`w-4 h-4 text-accent ${generatingDescId === b.id ? "animate-pulse" : ""}`} />
-                          </Button>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="flex gap-1">
-                        {b.editorial_description ? (
-                          <>
-                            <Button size="sm" variant="ghost" onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Regenerate Editorial">
-                              <RefreshCw className={`w-4 h-4 text-muted-foreground ${generatingId === b.id ? "animate-spin" : ""}`} />
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => openEditorialEdit(b)} title="Edit Editorial">
-                              <FileText className="w-4 h-4 text-muted-foreground" />
-                            </Button>
-                          </>
-                        ) : (
-                          <Button size="sm" variant="ghost" onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Generate Editorial Review" className="gap-1">
-                            <Sparkles className={`w-4 h-4 text-accent ${generatingId === b.id ? "animate-pulse" : ""}`} />
-                          </Button>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-3">
                       <div className="flex gap-1 flex-wrap">
-                        <Button size="sm" variant="ghost" onClick={() => openCoverDialog(b)} title="Upload or Set Cover" className="gap-1">
-                          <ImageIcon className={`w-4 h-4 ${coverExists ? "text-muted-foreground" : "text-accent"}`} />
-                        </Button>
-                        {b.status !== "approved" && (
-                          <Button size="sm" variant="ghost" onClick={() => updateStatus(b.id, "approved")} title="Approve">
-                            <CheckCircle className="w-4 h-4 text-emerald-600" />
-                          </Button>
-                        )}
-                        {b.status !== "rejected" && (
-                          <Button size="sm" variant="ghost" onClick={() => updateStatus(b.id, "rejected")} title="Reject">
-                            <XCircle className="w-4 h-4 text-destructive" />
-                          </Button>
-                        )}
-                        <Button size="sm" variant="ghost" onClick={() => openEdit(b)} title="Edit">
-                          <Pencil className="w-4 h-4 text-muted-foreground" />
-                        </Button>
-                        <Button size="sm" variant="ghost" onClick={() => deleteBook(b.id)} title="Delete">
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
+                        <button onClick={() => openEdit(b)} title="Edit" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => openCoverDialog(b)} title="Cover" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
+                          <ImageIcon className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => openEditorialEdit(b)} title="Editorial" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
+                          <FileText className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Generate Editorial" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50">
+                          {generatingId === b.id ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                        </button>
+                        <button onClick={() => deleteBook(b.id)} title="Delete" className="p-1.5 hover:bg-destructive/10 rounded text-muted-foreground hover:text-destructive transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -762,101 +759,154 @@ const [addDialog, setAddDialog] = useState(false);
                 })}
               </tbody>
             </table>
-            {filtered.length === 0 && <p className="text-center py-8 text-muted-foreground">No books found.</p>}
           </div>
         </CardContent>
       </Card>
 
       {/* Edit Book Dialog */}
-      <Dialog open={!!editBook} onOpenChange={(o) => !o && setEditBook(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Edit Book</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <div><Label>Title</Label><Input value={editForm.title || ""} onChange={e => setEditForm({...editForm, title: e.target.value})} /></div>
-            <div><Label>Author Name</Label><Input value={editForm.author_name || ""} onChange={e => setEditForm({...editForm, author_name: e.target.value})} /></div>
-            <div><Label>Description</Label><Textarea value={editForm.description || ""} onChange={e => setEditForm({...editForm, description: e.target.value})} /></div>
-            <div><Label>Preview Content (Look Inside)</Label><Textarea value={editForm.preview_content || ""} onChange={e => setEditForm({...editForm, preview_content: e.target.value})} placeholder="Paste sample text from the book" /></div>
-            <div><Label>Category</Label><Input value={editForm.category || ""} onChange={e => setEditForm({...editForm, category: e.target.value})} /></div>
-            <div className="grid grid-cols-2 gap-3"><div><Label>eBook Price</Label><Input type="number" value={editForm.ebook_price || 0} onChange={e => setEditForm({...editForm, ebook_price: parseFloat(e.target.value)})} /></div><div><Label>Print Price</Label><Input type="number" value={editForm.print_price || 0} onChange={e => setEditForm({...editForm, print_price: parseFloat(e.target.value)})} /></div></div>
-            <div className="flex gap-2"><Button variant="outline" onClick={() => setEditBook(null)}>Cancel</Button><Button onClick={saveEdit}>Save Changes</Button></div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Cover Upload Dialog */}
-      <Dialog open={!!coverDialog} onOpenChange={(o) => !o && setCoverDialog(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Upload or Set Cover for {coverDialog?.title}</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>Upload Image (JPG/PNG/WebP, max 5MB)</Label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    uploadCoverImage(e.target.files[0]);
-                  }
-                }}
-                className="hidden"
-              />
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadingCoverId === coverDialog?.id}
-                className="w-full gap-2"
-              >
-                <Upload className={`w-4 h-4 ${uploadingCoverId === coverDialog?.id ? "animate-pulse" : ""}`} />
-                {uploadingCoverId === coverDialog?.id ? "Uploading..." : "Choose Image to Upload"}
-              </Button>
-            </div>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border"></div>
+      {editBook && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="font-display text-xl font-bold mb-4">Edit Book</h2>
+            <div className="space-y-3">
+              <input placeholder="Title" value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+              <input placeholder="Author" value={editForm.author_name} onChange={e => setEditForm({...editForm, author_name: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+              <select value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background">
+                <option>Fiction</option>
+                <option>Self-Help</option>
+                <option>AI</option>
+                <option>Non-Fiction</option>
+              </select>
+              <textarea placeholder="Description" value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-20" />
+              <div className="grid grid-cols-2 gap-3">
+                <input type="number" placeholder="eBook Price" value={editForm.ebook_price} onChange={e => setEditForm({...editForm, ebook_price: parseFloat(e.target.value) || 0})}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
+                <input type="number" placeholder="Print Price" value={editForm.print_price} onChange={e => setEditForm({...editForm, print_price: parseFloat(e.target.value) || 0})}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or</span>
+              <textarea placeholder="Preview Content" value={editForm.preview_content} onChange={e => setEditForm({...editForm, preview_content: e.target.value})}
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-20" />
+            </div>
+            <div className="flex gap-3 mt-4">
+              <button onClick={saveEdit}
+                className="flex-1 py-2 bg-accent text-accent-foreground rounded-lg text-sm font-semibold hover:opacity-90">
+                Save
+              </button>
+              <button onClick={() => setEditBook(null)}
+                className="flex-1 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-muted">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cover Dialog */}
+      {coverDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="font-display text-xl font-bold mb-4">Update Cover</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Cover URL</label>
+                <input placeholder="https://..." value={coverUrl} onChange={e => setCoverUrl(e.target.value)}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background mt-1" />
+              </div>
+              {coverUrl && (
+                <div>
+                  <label className="text-sm font-medium">Preview</label>
+                  <img src={coverUrl} alt="Preview" className="w-24 h-32 object-cover rounded border border-border mt-2" />
+                </div>
+              )}
+              <div>
+                <label className="text-sm font-medium">Or upload image</label>
+                <input 
+                  type="file" 
+                  ref={fileInputRef}
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={e => e.target.files?.[0] && uploadCoverImage(e.target.files[0])}
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background mt-1"
+                  disabled={uploadingCoverId === coverDialog.id}
+                />
               </div>
             </div>
-
-            <div>
-              <Label>Set Cover URL</Label>
-              <Input
-                placeholder="https://example.com/cover.jpg"
-                value={coverUrl}
-                onChange={(e) => setCoverUrl(e.target.value)}
-                className="mb-3"
-              />
-              <Button onClick={saveCoverUrl} className="w-full">Save Cover URL</Button>
+            <div className="flex gap-3 mt-4">
+              <button onClick={saveCoverUrl} disabled={!coverUrl.trim() || uploadingCoverId === coverDialog.id}
+                className="flex-1 py-2 bg-accent text-accent-foreground rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-50">
+                {uploadingCoverId === coverDialog.id ? "Uploading..." : "Save"}
+              </button>
+              <button onClick={() => setCoverDialog(null)}
+                className="flex-1 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-muted">
+                Cancel
+              </button>
             </div>
-
-            <Button variant="outline" onClick={() => setCoverDialog(null)} className="w-full">Cancel</Button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
-      {/* Editorial Edit Dialog */}
-      <Dialog open={!!editorialDialog} onOpenChange={(o) => !o && setEditorialDialog(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Edit Editorial for {editorialDialog?.title}</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <Textarea value={editorialText} onChange={e => setEditorialText(e.target.value)} placeholder="Enter editorial description..." className="min-h-[200px]" />
-            <div className="flex gap-2"><Button variant="outline" onClick={() => setEditorialDialog(null)}>Cancel</Button><Button onClick={saveEditorial}>Save Editorial</Button></div>
+      {/* Editorial Dialog */}
+      {editorialDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="font-display text-xl font-bold mb-4">Edit Editorial</h2>
+            <textarea placeholder="Editorial Description" value={editorialText} onChange={e => setEditorialText(e.target.value)}
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-40" />
+            <div className="flex gap-3 mt-4">
+              <button onClick={async () => {
+                const { error } = await supabase.from("books").update({ editorial_description: editorialText }).eq("id", editorialDialog.id);
+                if (error) {
+                  toast({ title: "Error saving editorial", description: error.message, variant: "destructive" });
+                } else {
+                  toast({ title: "Editorial saved" });
+                  setEditorialDialog(null);
+                  onRefresh();
+                }
+              }}
+                className="flex-1 py-2 bg-accent text-accent-foreground rounded-lg text-sm font-semibold hover:opacity-90">
+                Save
+              </button>
+              <button onClick={() => setEditorialDialog(null)}
+                className="flex-1 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-muted">
+                Cancel
+              </button>
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
-      {/* Description Edit Dialog */}
-      <Dialog open={!!descriptionDialog} onOpenChange={(o) => !o && setDescriptionDialog(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Edit Description for {descriptionDialog?.title}</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <Textarea value={descriptionText} onChange={e => setDescriptionText(e.target.value)} placeholder="Enter book description..." className="min-h-[200px]" />
-            <div className="flex gap-2"><Button variant="outline" onClick={() => setDescriptionDialog(null)}>Cancel</Button><Button onClick={saveDescription}>Save Description</Button></div>
+      {/* Description Dialog */}
+      {descriptionDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="font-display text-xl font-bold mb-4">Edit Description</h2>
+            <textarea placeholder="Description" value={descriptionText} onChange={e => setDescriptionText(e.target.value)}
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-40" />
+            <div className="flex gap-3 mt-4">
+              <button onClick={async () => {
+                const { error } = await supabase.from("books").update({ description: descriptionText }).eq("id", descriptionDialog.id);
+                if (error) {
+                  toast({ title: "Error saving description", description: error.message, variant: "destructive" });
+                } else {
+                  toast({ title: "Description saved" });
+                  setDescriptionDialog(null);
+                  onRefresh();
+                }
+              }}
+                className="flex-1 py-2 bg-accent text-accent-foreground rounded-lg text-sm font-semibold hover:opacity-90">
+                Save
+              </button>
+              <button onClick={() => setDescriptionDialog(null)}
+                className="flex-1 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-muted">
+                Cancel
+              </button>
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </div>
   );
 }
