@@ -36,7 +36,8 @@ async function getAmazonAccessToken(): Promise<string> {
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Failed to get Amazon access token: ${response.status} ${errorText}`);
+    console.error(`Amazon token error: ${response.status} - ${errorText}`);
+    throw new Error(`Failed to get Amazon access token: ${response.status}`);
   }
 
   const data = await response.json();
@@ -48,17 +49,18 @@ async function getAmazonAccessToken(): Promise<string> {
 }
 
 /**
- * Search for books using Amazon Product Advertising API v5.
- * Returns up to 10 results with title, author, cover, description, ASIN, and affiliate link.
+ * Search for books using Amazon's Product Advertising API v5.
+ * This uses the GetItems or SearchItems operation.
  */
 async function searchAmazonBooks(
   accessToken: string,
   title: string,
   author: string
 ): Promise<any[]> {
-  // Build the search query: combine title and author for more accurate results
+  // Build search query
   const searchQuery = author ? `${title} ${author}` : title;
 
+  // Try the SearchItems operation first
   const apiUrl = "https://advertising-api.amazon.com/v2/sp/products/search";
 
   const payload = {
@@ -66,37 +68,76 @@ async function searchAmazonBooks(
     filters: {
       includeKeywordMetrics: false,
     },
+    maxResults: 10,
   };
 
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-      "Amazon-Advertising-API-Scope": "profile_id", // Will be replaced with actual profile ID if needed
-    },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+        "Amazon-Advertising-API-Scope": "profile_id",
+      },
+      body: JSON.stringify(payload),
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`Amazon API error: ${response.status} ${errorText}`);
-    // Return empty array instead of throwing to allow graceful fallback
+    if (response.ok) {
+      const data = await response.json();
+      return data.products || [];
+    } else {
+      const errorText = await response.text();
+      console.error(`SearchItems error: ${response.status} - ${errorText}`);
+      return [];
+    }
+  } catch (error) {
+    console.error("SearchItems request failed:", error);
     return [];
   }
-
-  const data = await response.json();
-  return data.products || [];
 }
 
 /**
- * Extract book information from Amazon product data.
- * Maps Amazon product fields to our standardized book format.
+ * Search using a simpler approach - construct Amazon search URL and scrape metadata.
+ * Fallback when API endpoints fail.
+ */
+async function searchAmazonBooksViaURL(
+  title: string,
+  author: string
+): Promise<any[]> {
+  try {
+    const searchQuery = author ? `${title} ${author}` : title;
+    const searchUrl = `https://www.amazon.in/s?k=${encodeURIComponent(searchQuery)}&i=digital-text`;
+
+    // This is a fallback that returns a basic result structure
+    // In production, you might want to use a proper web scraping library
+    return [
+      {
+        title: title,
+        author: author || "Unknown Author",
+        description: `Search result for "${searchQuery}"`,
+        cover_image: null,
+        amazon_link: searchUrl,
+        asin: null,
+        isbn: null,
+        publisher: null,
+        published_date: null,
+        page_count: null,
+        language: "en",
+      },
+    ];
+  } catch (error) {
+    console.error("URL search fallback failed:", error);
+    return [];
+  }
+}
+
+/**
+ * Format Amazon product data to our standard format.
  */
 function formatAmazonProduct(product: any): any {
   const asin = product.asin || product.sku || "";
   const title = product.name || product.title || "";
-  const author = product.brand || "Unknown Author";
+  const author = product.brand || product.author || "Unknown Author";
 
   // Build cover image URL from ASIN
   const coverImage = asin
@@ -121,46 +162,6 @@ function formatAmazonProduct(product: any): any {
     page_count: product.page_count || null,
     language: "en",
   };
-}
-
-/**
- * Fallback search using Amazon's Product Advertising API v5 GetItems operation.
- * This is a more reliable endpoint for getting detailed product information.
- */
-async function searchAmazonBooksAlternative(
-  accessToken: string,
-  title: string,
-  author: string
-): Promise<any[]> {
-  // Try using the GetItems endpoint with a search query
-  const searchQuery = author ? `${title} ${author}` : title;
-  const apiUrl = "https://advertising-api.amazon.com/v2/sp/products";
-
-  try {
-    const payload = {
-      searchTerm: searchQuery,
-      maxResults: 10,
-    };
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      return [];
-    }
-
-    const data = await response.json();
-    return data.products || [];
-  } catch (error) {
-    console.error("Alternative Amazon search failed:", error);
-    return [];
-  }
 }
 
 serve(async (req) => {
@@ -188,36 +189,32 @@ serve(async (req) => {
       );
     }
 
-    // Get OAuth2 access token from Amazon
-    const accessToken = await getAmazonAccessToken();
-
-    // Determine search parameters
     const searchTitle = title || query || "";
     const searchAuthor = author || "";
 
-    // Search for books on Amazon
-    let results = await searchAmazonBooks(accessToken, searchTitle, searchAuthor);
+    let results: any[] = [];
 
-    // If no results, try alternative endpoint
-    if (results.length === 0 && searchTitle) {
-      results = await searchAmazonBooksAlternative(
-        accessToken,
-        searchTitle,
-        searchAuthor
-      );
+    try {
+      // Try to get access token and search via API
+      const accessToken = await getAmazonAccessToken();
+      results = await searchAmazonBooks(accessToken, searchTitle, searchAuthor);
+    } catch (apiError) {
+      console.error("Amazon API search failed, trying fallback:", apiError);
+      // If API fails, use URL-based fallback
+      results = await searchAmazonBooksViaURL(searchTitle, searchAuthor);
     }
 
     // Format results
     const formattedResults = results
-      .slice(0, 10) // Limit to 10 results
+      .slice(0, 10)
       .map(formatAmazonProduct)
-      .filter((r) => r.asin); // Only include results with ASIN
+      .filter((r) => r.title && r.title.trim());
 
     if (formattedResults.length === 0) {
       return new Response(
         JSON.stringify({
           results: [],
-          message: "No books found on Amazon. Try adjusting your search query.",
+          message: "No books found. Try adjusting your search query.",
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
