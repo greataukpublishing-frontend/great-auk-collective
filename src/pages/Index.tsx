@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Star, ArrowRight, BookOpen, Crown, Sparkles, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import BookCard from "@/components/BookCard";
+import BookCard, { BookCardSkeleton } from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
 import greatAukHero from "@/assets/great-auk-hero.png";
 import { toggleAukCall } from "@/lib/aukSound";
@@ -108,7 +108,7 @@ export default function HomePage() {
       )}
 
       {/* Editor's Picks */}
-      {featuredBooks.length > 0 && (
+      {(loading || featuredBooks.length > 0) && (
         <section className="container mx-auto px-4 py-16">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -120,19 +120,21 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {featuredBooks.map((book) => (
-                <BookCard
-                  key={book.id}
-                  id={book.id}
-                  title={book.title}
-                  author={book.author_name}
-                  category={book.category}
-                  cover={book.cover_url || ""}
-                  amazonLink={book.amazon_link || undefined}
-                  amazonAffiliateUrl={book.amazon_affiliate_url || undefined}
-                  tag={book.featured ? "new" : undefined}
-                />
-            ))}
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => <BookCardSkeleton key={i} />)
+              : featuredBooks.map((book) => (
+                  <BookCard
+                    key={book.id}
+                    id={book.id}
+                    title={book.title}
+                    author={book.author_name}
+                    category={book.category}
+                    cover={book.cover_url || ""}
+                    amazonLink={book.amazon_link || undefined}
+                    amazonAffiliateUrl={book.amazon_affiliate_url || undefined}
+                    tag={book.featured ? "new" : undefined}
+                  />
+                ))}
           </div>
         </section>
       )}
@@ -157,11 +159,11 @@ export default function HomePage() {
       </section>
 
       {/* Malayalam Picks */}
-      {malayalamBooks.length > 0 && (
+      {(loading || malayalamBooks.length > 0) && (
         <section className="container mx-auto px-4 py-16">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">🌴 Kerala''s Best</p>
+              <p className="text-accent text-sm font-medium tracking-widest uppercase mb-2">🌴 Kerala's Best</p>
               <h2 className="font-display text-3xl font-bold text-foreground">Malayalam Picks</h2>
             </div>
             <a href="/bookstore?language=Malayalam" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
@@ -169,25 +171,27 @@ export default function HomePage() {
             </a>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {malayalamBooks.map((book) => (
-              <BookCard
-                key={book.id}
-                id={book.id}
-                title={book.title}
-                author={book.author_name}
-                cover={book.cover_url || ""}
-                category={book.category}
-                amazonLink={book.amazon_link}
-                amazonAffiliateUrl={book.amazon_affiliate_url}
-                tag="new"
-              />
-            ))}
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => <BookCardSkeleton key={i} />)
+              : malayalamBooks.map((book) => (
+                  <BookCard
+                    key={book.id}
+                    id={book.id}
+                    title={book.title}
+                    author={book.author_name}
+                    cover={book.cover_url || ""}
+                    category={book.category}
+                    amazonLink={book.amazon_link}
+                    amazonAffiliateUrl={book.amazon_affiliate_url}
+                    tag="new"
+                  />
+                ))}
           </div>
         </section>
       )}
 
       {/* Recently Added */}
-      {recentBooks.length > 0 && (
+      {(loading || recentBooks.length > 0) && (
         <section className="container mx-auto px-4 py-16 border-t border-border">
           <div className="flex items-end justify-between mb-10">
             <div>
@@ -199,18 +203,20 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {recentBooks.map((book) => (
-                <BookCard
-                  key={book.id}
-                  id={book.id}
-                  title={book.title}
-                  author={book.author_name}
-                  category={book.category}
-                  cover={book.cover_url || ""}
-                  amazonLink={book.amazon_link || undefined}
-                  amazonAffiliateUrl={book.amazon_affiliate_url || undefined}
-                />
-            ))}
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => <BookCardSkeleton key={i} />)
+              : recentBooks.map((book) => (
+                  <BookCard
+                    key={book.id}
+                    id={book.id}
+                    title={book.title}
+                    author={book.author_name}
+                    category={book.category}
+                    cover={book.cover_url || ""}
+                    amazonLink={book.amazon_link || undefined}
+                    amazonAffiliateUrl={book.amazon_affiliate_url || undefined}
+                  />
+                ))}
           </div>
         </section>
       )}

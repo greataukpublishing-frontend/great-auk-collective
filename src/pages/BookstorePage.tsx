@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { Search, SlidersHorizontal } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import BookCard from "@/components/BookCard";
+import BookCard, { BookCardSkeleton } from "@/components/BookCard";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchAllBooks } from "@/lib/books";
 
@@ -171,14 +171,7 @@ export default function BookstorePage() {
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="bg-card rounded-xl overflow-hidden border border-border animate-pulse">
-                <div className="aspect-[2/3] bg-muted" />
-                <div className="p-4 space-y-2">
-                  <div className="h-3 bg-muted rounded w-1/2" />
-                  <div className="h-4 bg-muted rounded w-3/4" />
-                  <div className="h-3 bg-muted rounded w-1/3" />
-                </div>
-              </div>
+              <BookCardSkeleton key={i} />
             ))}
           </div>
         ) : sorted.length > 0 ? (
