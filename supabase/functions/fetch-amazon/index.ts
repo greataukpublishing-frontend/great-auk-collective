@@ -78,6 +78,7 @@ async function searchAmazonBooks(
     marketplace: MARKETPLACE,
     partnerTag: AFFILIATE_TAG,
     resources: [
+      "images.primary.large",
       "images.primary.medium",
       "itemInfo.title",
       "itemInfo.byLineInfo",
@@ -127,8 +128,8 @@ function formatAmazonProduct(item: any): any {
   const authors = byLineInfo.contributors || [];
   const author = authors.length > 0 ? authors[0].name : "Unknown Author";
 
-  // Get cover image
-  const coverImage = item.images?.primary?.medium?.url || null;
+  // Get cover image - try large first, fall back to medium
+  const coverImage = item.images?.primary?.large?.url || item.images?.primary?.medium?.url || null;
 
   // Build affiliate link
   const amazonLink = asin
