@@ -9,140 +9,126 @@ const corsHeaders = {
 const AMAZON_CLIENT_ID = Deno.env.get("AMAZON_CLIENT_ID");
 const AMAZON_CLIENT_SECRET = Deno.env.get("AMAZON_CLIENT_SECRET");
 const AFFILIATE_TAG = "greakaukpubli-21";
+const MARKETPLACE = "www.amazon.in";
 
 /**
- * Get an OAuth2 access token from Amazon using client credentials flow.
+ * Get an OAuth2 access token from Amazon Creators API v3.2 (EU region).
  */
 async function getAmazonAccessToken(): Promise<string> {
   if (!AMAZON_CLIENT_ID || !AMAZON_CLIENT_SECRET) {
     throw new Error("Missing Amazon API credentials (AMAZON_CLIENT_ID or AMAZON_CLIENT_SECRET)");
   }
 
-  const tokenUrl = "https://api.amazon.com/auth/o2/token";
-  const body = new URLSearchParams({
+  const tokenUrl = "https://api.amazon.co.uk/auth/o2/token";
+  const payload = {
     grant_type: "client_credentials",
     client_id: AMAZON_CLIENT_ID,
     client_secret: AMAZON_CLIENT_SECRET,
-    scope: "advertising::campaign_management",
-  });
+    scope: "creatorsapi::default",
+  };
 
-  const response = await fetch(tokenUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: body.toString(),
-  });
+  console.log("Requesting Amazon Creators API v3.2 OAuth2 token...");
+  console.log(`Token URL: ${tokenUrl}`);
+  console.log(`Scope: creatorsapi::default`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`Amazon token error: ${response.status} - ${errorText}`);
-    throw new Error(`Failed to get Amazon access token: ${response.status}`);
+  try {
+    const response = await fetch(tokenUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const responseText = await response.text();
+    console.log(`Token response status: ${response.status}`);
+    console.log(`Token response body: ${responseText}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to get Amazon access token: ${response.status} - ${responseText}`);
+    }
+
+    const data = JSON.parse(responseText);
+    if (!data.access_token) {
+      throw new Error("No access token in Amazon API response");
+    }
+
+    console.log("Successfully obtained Amazon access token");
+    return data.access_token;
+  } catch (error) {
+    console.error("Token request failed:", error);
+    throw error;
   }
-
-  const data = await response.json();
-  if (!data.access_token) {
-    throw new Error("No access token in Amazon API response");
-  }
-
-  return data.access_token;
 }
 
 /**
- * Search for books using Amazon's Product Advertising API v5.
- * This uses the GetItems or SearchItems operation.
+ * Search for books using Amazon Creators API v3.2 SearchItems operation.
  */
 async function searchAmazonBooks(
   accessToken: string,
   title: string,
   author: string
 ): Promise<any[]> {
-  // Build search query
   const searchQuery = author ? `${title} ${author}` : title;
-
-  // Try the SearchItems operation first
-  const apiUrl = "https://advertising-api.amazon.com/v2/sp/products/search";
+  const url = "https://creatorsapi.amazon/catalog/v1/searchItems";
 
   const payload = {
-    searchTerm: searchQuery,
-    filters: {
-      includeKeywordMetrics: false,
-    },
-    maxResults: 10,
+    keywords: searchQuery,
+    searchIndex: "Books",
+    marketplace: MARKETPLACE,
+    partnerTag: AFFILIATE_TAG,
+    resources: [
+      "images.primary.medium",
+      "itemInfo.title",
+      "itemInfo.byLineInfo",
+      "itemInfo.contentInfo",
+    ],
   };
 
+  console.log(`Searching Amazon Creators API for: "${searchQuery}"`);
+  console.log(`Search URL: ${url}`);
+  console.log(`Marketplace: ${MARKETPLACE}`);
+  console.log(`Payload: ${JSON.stringify(payload)}`);
+
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json",
-        "Amazon-Advertising-API-Scope": "profile_id",
+        "x-marketplace": MARKETPLACE,
       },
       body: JSON.stringify(payload),
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.products || [];
-    } else {
-      const errorText = await response.text();
-      console.error(`SearchItems error: ${response.status} - ${errorText}`);
-      return [];
+    const responseText = await response.text();
+    console.log(`Search response status: ${response.status}`);
+    console.log(`Search response body: ${responseText.substring(0, 1000)}`);
+
+    if (!response.ok) {
+      throw new Error(`Search failed: ${response.status} - ${responseText}`);
     }
-  } catch (error) {
-    console.error("SearchItems request failed:", error);
-    return [];
-  }
-}
 
-/**
- * Search using a simpler approach - construct Amazon search URL and scrape metadata.
- * Fallback when API endpoints fail.
- */
-async function searchAmazonBooksViaURL(
-  title: string,
-  author: string
-): Promise<any[]> {
-  try {
-    const searchQuery = author ? `${title} ${author}` : title;
-    const searchUrl = `https://www.amazon.in/s?k=${encodeURIComponent(searchQuery)}&i=digital-text`;
-
-    // This is a fallback that returns a basic result structure
-    // In production, you might want to use a proper web scraping library
-    return [
-      {
-        title: title,
-        author: author || "Unknown Author",
-        description: `Search result for "${searchQuery}"`,
-        cover_image: null,
-        amazon_link: searchUrl,
-        asin: null,
-        isbn: null,
-        publisher: null,
-        published_date: null,
-        page_count: null,
-        language: "en",
-      },
-    ];
+    const data = JSON.parse(responseText);
+    return data.searchResult?.items || [];
   } catch (error) {
-    console.error("URL search fallback failed:", error);
-    return [];
+    console.error("Search request failed:", error);
+    throw error;
   }
 }
 
 /**
  * Format Amazon product data to our standard format.
  */
-function formatAmazonProduct(product: any): any {
-  const asin = product.asin || product.sku || "";
-  const title = product.name || product.title || "";
-  const author = product.brand || product.author || "Unknown Author";
+function formatAmazonProduct(item: any): any {
+  const asin = item.asin || "";
+  const title = item.itemInfo?.title?.displayValue || "";
+  const byLineInfo = item.itemInfo?.byLineInfo || {};
+  const authors = byLineInfo.contributors || [];
+  const author = authors.length > 0 ? authors[0].name : "Unknown Author";
 
-  // Build cover image URL from ASIN
-  const coverImage = asin
-    ? `https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SX200_.jpg`
-    : null;
+  // Get cover image
+  const coverImage = item.images?.primary?.medium?.url || null;
 
   // Build affiliate link
   const amazonLink = asin
@@ -152,14 +138,14 @@ function formatAmazonProduct(product: any): any {
   return {
     title: title,
     author: author,
-    description: product.description || "",
+    description: item.itemInfo?.contentInfo?.publicationDate?.displayValue || "",
     cover_image: coverImage,
     amazon_link: amazonLink,
     asin: asin,
-    isbn: product.isbn || null,
-    publisher: product.publisher || null,
-    published_date: product.publication_date || null,
-    page_count: product.page_count || null,
+    isbn: null,
+    publisher: null,
+    published_date: null,
+    page_count: null,
     language: "en",
   };
 }
@@ -195,20 +181,29 @@ serve(async (req) => {
     let results: any[] = [];
 
     try {
-      // Try to get access token and search via API
+      // Get OAuth2 access token
       const accessToken = await getAmazonAccessToken();
+
+      // Search via Creators API v3.2
       results = await searchAmazonBooks(accessToken, searchTitle, searchAuthor);
     } catch (apiError) {
-      console.error("Amazon API search failed, trying fallback:", apiError);
-      // If API fails, use URL-based fallback
-      results = await searchAmazonBooksViaURL(searchTitle, searchAuthor);
+      console.error("Amazon API search failed:", apiError);
+      return new Response(
+        JSON.stringify({
+          error: (apiError as Error).message || "Amazon API request failed",
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     // Format results
     const formattedResults = results
       .slice(0, 10)
       .map(formatAmazonProduct)
-      .filter((r) => r.title && r.title.trim());
+      .filter((r) => r.title && r.title.trim() && r.asin);
 
     if (formattedResults.length === 0) {
       return new Response(
