@@ -725,14 +725,20 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
                       {hasDesc ? (
                         <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
                       ) : (
-                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Missing</Badge>
+                        <button onClick={() => {
+                          setDescriptionDialog(b);
+                          setDescriptionText(b.description || "");
+                        }} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
                       )}
                     </td>
                     <td className="p-3 text-xs">
                       {b.editorial_description ? (
                         <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
                       ) : (
-                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Missing</Badge>
+                        <button onClick={() => {
+                          setEditorialDialog(b);
+                          setEditorialText(b.editorial_description || "");
+                        }} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
                       )}
                     </td>
                     <td className="p-3">
