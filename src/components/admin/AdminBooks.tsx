@@ -33,6 +33,8 @@ export default function AdminBooks({ books, categories, onRefresh }: Props) {
   const [editorialText, setEditorialText] = useState("");
   const [descriptionDialog, setDescriptionDialog] = useState<any>(null);
   const [descriptionText, setDescriptionText] = useState("");
+  const [recommendDialog, setRecommendDialog] = useState<any>(null);
+  const [recommendText, setRecommendText] = useState("");
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
   const [descGenerating, setDescGenerating] = useState(false);
@@ -52,11 +54,16 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
   const [selectedAmazonResult, setSelectedAmazonResult] = useState<any>(null);
   const [newBook, setNewBook] = useState({
     title: "", author_name: "", category: "Fiction", description: "",
-    editorial_description: "", amazon_link: "", cover_url: "", language: "English",
-    asin: "", isbn: ""
-  });
+    editorial_description: "", amazon_link: "", cover_url: "", language: "Englis      asin: "", isbn: ""
+    });
+  };
 
-  const handleSearchAmazon = async () => {
+  const openRecommendEdit = (book: any) => {
+    setRecommendDialog(book);
+    setRecommendText(book.why_we_recommend || "");
+  };
+
+  const handleAddBook = async () => {
     if (!amazonSearchQuery.trim()) {
       toast({ title: "Please enter a title or author name", variant: "destructive" });
       return;
@@ -161,6 +168,7 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
       format: ["paperback"],
       asin: newBook.asin || null,
       isbn: newBook.isbn || null,
+      why_we_recommend: "",
     });
     setAddingBook(false);
     if (error) {
@@ -741,6 +749,13 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
                         }} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
                       )}
                     </td>
+                    <td className="p-3 text-xs">
+                      {b.why_we_recommend ? (
+                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
+                      ) : (
+                        <button onClick={() => openRecommendEdit(b)} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
+                      )}
+                    </td>
                     <td className="p-3">
                       <div className="flex gap-1 flex-wrap">
                         <button onClick={() => openEdit(b)} title="Edit" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
@@ -751,6 +766,9 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
                         </button>
                         <button onClick={() => openEditorialEdit(b)} title="Editorial" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
                           <FileText className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => openRecommendEdit(b)} title="Why Recommend" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
+                          <Star className="w-3.5 h-3.5" />
                         </button>
                         <button onClick={() => generateEditorial(b.id)} disabled={generatingId === b.id} title="Generate Editorial" className="p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50">
                           {generatingId === b.id ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
@@ -876,6 +894,36 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
                 Save
               </button>
               <button onClick={() => setEditorialDialog(null)}
+                className="flex-1 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-muted">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Why Recommend Dialog */}
+      {recommendDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="font-display text-xl font-bold mb-4">Edit Why We Recommend</h2>
+            <textarea placeholder="Why We Recommend This Book" value={recommendText} onChange={e => setRecommendText(e.target.value)}
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background h-40" />
+            <div className="flex gap-3 mt-4">
+              <button onClick={async () => {
+                const { error } = await supabase.from("books").update({ why_we_recommend: recommendText }).eq("id", recommendDialog.id);
+                if (error) {
+                  toast({ title: "Error saving recommendation", description: error.message, variant: "destructive" });
+                } else {
+                  toast({ title: "Recommendation saved" });
+                  setRecommendDialog(null);
+                  onRefresh();
+                }
+              }}
+                className="flex-1 py-2 bg-accent text-accent-foreground rounded-lg text-sm font-semibold hover:opacity-90">
+                Save
+              </button>
+              <button onClick={() => setRecommendDialog(null)}
                 className="flex-1 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-muted">
                 Cancel
               </button>
