@@ -351,6 +351,11 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
     }
   };
 
+  const openDescriptionEdit = (book: any) => {
+    setDescriptionDialog(book);
+    setDescriptionText(book.description || "");
+  };
+
   const openEditorialEdit = (book: any) => {
     setEditorialDialog(book);
     setEditorialText(book.editorial_description || "");
@@ -731,22 +736,26 @@ const getAmazonCover = (asin) => asin ? 'https://images-amazon.com/images/P/' + 
                     </td>
                     <td className="p-3 text-xs">
                       {hasDesc ? (
-                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
+                        <div className="flex items-center gap-1">
+                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
+                          <button onClick={() => openDescriptionEdit(b)} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
+                            <Pencil className="w-3 h-3" />
+                          </button>
+                        </div>
                       ) : (
-                        <button onClick={() => {
-                          setDescriptionDialog(b);
-                          setDescriptionText(b.description || "");
-                        }} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
+                        <button onClick={() => openDescriptionEdit(b)} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
                       )}
                     </td>
                     <td className="p-3 text-xs">
                       {b.editorial_description ? (
-                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
+                        <div className="flex items-center gap-1">
+                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">✓ OK</Badge>
+                          <button onClick={() => openEditorialEdit(b)} className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors">
+                            <Pencil className="w-3 h-3" />
+                          </button>
+                        </div>
                       ) : (
-                        <button onClick={() => {
-                          setEditorialDialog(b);
-                          setEditorialText(b.editorial_description || "");
-                        }} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
+                        <button onClick={() => openEditorialEdit(b)} className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors font-medium">+ Add</button>
                       )}
                     </td>
                     <td className="p-3 text-xs">
